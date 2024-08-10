@@ -3,7 +3,10 @@ from boxsdk import JWTAuth, Client
 from boxsdk.exception import BoxAPIException
 from dotenv import load_dotenv
 from boxsdk.object.folder import Folder
+import pandas as pd
 from datetime import datetime
+import pytz
+import logging
 
 load_dotenv(".env")
 # Load the configuration from environment variables
@@ -11,6 +14,7 @@ client_id = os.getenv("BOX_CLIENT_ID")
 client_secret = os.getenv("BOX_CLIENT_SECRET")
 enterprise_id = os.getenv("BOX_ENTERPRISE_ID")
 public_key_id = os.getenv("BOX_PUBLIC_KEY_ID")
+
 private_key = os.getenv("BOX_PRIVATE_KEY").replace("\\n", "\n").encode()
 passphrase = os.getenv("BOX_PASSPHRASE").encode()
 # Set up JWT authentication
@@ -126,51 +130,78 @@ except BoxAPIException as e:
 
 # get_folder()
 ##################################################################################################
+logging.basicConfig(
+    filename="download_errors.log",
+    level=logging.ERROR,
+    format="%(asctime)s %(levelname)s:%(message)s",
+)
 # Replace with your actual starting folder ID
 start_folder_id = get_folder_id_by_path("Data/empty-room/sub-emptyroom")
 
 # Define the local download directory
-download_directory = "data"
+download_directory = r"data"
 os.makedirs(download_directory, exist_ok=True)
 
 
-# Function to get file metadata
+def download_con_files_from_folder(folder_id, path, last_date):
+    try:
+        folder = client.folder(folder_id).get()
+        items = folder.get_items(limit=100, offset=0)
+
+        for item in items:
+            try:
+                if item.type == "file" and item.name.endswith(".con"):
+                    file_id = item.id
+                    file = client.file(file_id).get()
+                    modified_at = datetime.strptime(
+                        file.modified_at, "%Y-%m-%dT%H:%M:%S%z"
+                    )
+                    if last_date is None or modified_at > last_date:
+                        modified_at = file.modified_at
+                        formatted_date = datetime.strptime(
+                            modified_at, "%Y-%m-%dT%H:%M:%S%z"
+                        ).strftime("%d-%m-%y-%H-%M-%S")
+                        filename = f"{formatted_date}_{file.name}"
+                        file_path = f"{path}/{filename}"
+                        file_path = os.path.join(path, filename)
+                        with open(file_path, "wb") as open_file:
+                            file.download_to(open_file)
+                        print(f"Downloaded {filename} to {file_path}")
+
+                elif item.type == "folder":
+                    new_folder_path = os.path.join(path, item.name)
+                    os.makedirs(new_folder_path, exist_ok=True)
+                    download_con_files_from_folder(item.id, new_folder_path, last_date)
+            except Exception as e:
+                logging.error(
+                    f"Failed to download file or process folder '{item.name}': {str(e)}"
+                )
+                print(f"Error processing item '{item.name}': {str(e)}")
+
+    except Exception as e:
+        logging.error(f"Failed to access folder with ID {folder_id}: {str(e)}")
+        print(f"Error accessing folder with ID {folder_id}: {str(e)}")
+
+
 def get_file_metadata(file_id):
     box_file = client.file(file_id).get()
     modified_at = box_file.modified_at
     return modified_at
 
 
-def download_con_files_from_folder(folder_id, path):
-    # max_files=3
-    folder = client.folder(folder_id).get()
-    items = folder.get_items(limit=100, offset=0)
-
-    con_file_count = 0
-    for item in items:
-        # if con_file_count >= max_files:
-        #  break
-
-        if item.type == "file" and item.name.endswith(".con"):
-            file_id = item.id
-            file = client.file(file_id).get()
-            modified_at = file.modified_at
-            formatted_date = datetime.strptime(
-                modified_at, "%Y-%m-%dT%H:%M:%S%z"
-            ).strftime("%d-%m-%y-%H-%M-%S")
-            filename = f"{formatted_date}_{file.name}"
-            file_path = f"{path}/{filename}"
-            with open(file_path, "wb") as open_file:
-                file.download_to(open_file)
-            print(f"Downloaded {filename} to {file_path}")
-            # con_file_count += 1
-
-        elif item.type == "folder":
-            new_folder_path = os.path.join(path, item.name)
-            os.makedirs(new_folder_path, exist_ok=True)
-            download_con_files_from_folder(item.id, new_folder_path)
-            # , max_files
-
-
-# Start the recursive download from the starting folder
-download_con_files_from_folder(start_folder_id, download_directory)
+# Function to get last modification: files
+try:
+    csv_file = r"docs/source/9-dashboard/data/con_files_statistics.csv"
+    df = pd.read_csv(csv_file)
+    df["Date"] = pd.to_datetime(df["Date"], format="%d-%m-%y %H:%M:%S")
+    df = df.sort_values(by="Date")
+    # Get the last modification date
+    if not df.empty:
+        last_date = df["Date"].iloc[-1].tz_localize(pytz.utc)
+    else:
+        last_date = None
+    # Start the recursive download from the starting folder
+    download_con_files_from_folder(start_folder_id, download_directory, last_date)
+except Exception as e:
+    logging.error(f"An error occurred in the main script: {str(e)}")
+    print(f"An error occurred: {str(e)}")

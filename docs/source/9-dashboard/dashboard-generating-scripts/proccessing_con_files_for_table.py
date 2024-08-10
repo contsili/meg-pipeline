@@ -32,6 +32,7 @@ def process_all_con_files(base_folder):
                 file_path = os.path.join(root, file)
                 avg, var = process_con_file(file_path)
                 date = extract_date(file)
+                details = "Nothing added yet"
                 date_str = (
                     date.strftime("%d-%m-%y %H:%M:%S") if date else "Unknown Date"
                 )
@@ -41,6 +42,7 @@ def process_all_con_files(base_folder):
                         "Average": avg,
                         "Variance": var,
                         "Date": date_str,
+                        "Details": details,
                     }
                 )
 
@@ -162,6 +164,7 @@ results = process_all_con_files(base_folder)
 save_results_to_csv(results, output_file)
 
 print(f"Results saved to {output_file}")
+# print(results)
 
 csv_file = output_file  # Path to the CSV file
 output_avg_html = r"docs/source/_static/average_plot.html"  # Path to save the HTML file
