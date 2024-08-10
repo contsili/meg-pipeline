@@ -4,6 +4,7 @@ import plotly.graph_objects as go
 import pandas as pd
 from datetime import datetime
 
+
 def read_csv(file_path):
     """Read a CSV file and return its content as a list of rows."""
     with open(file_path, newline="") as csvfile:
@@ -92,11 +93,11 @@ if __name__ == "__main__":
     # base_folder = os.path.abspath(
     #     os.path.join(os.path.dirname(__file__), "../9-dashboard/data")
     # )
-    base_folder = "9-dashboard/data"
+    base_folder = r"docs/source/9-dashboard/data"
 
     # Set the output folder where .rst files will be saved
 
-    output_folder = "9-dashboard"
+    output_folder = r"docs/source/9-dashboard"
 
     # output_folder = os.path.abspath(
     #     os.path.join(os.path.dirname(__file__), "../9-dashboard")
@@ -105,11 +106,11 @@ if __name__ == "__main__":
     # Convert all CSV files in the base folder to RST format and save them in the output folder
     convert_all_csvs_to_rst(base_folder, output_folder)
 
-    #Generate the Plot html files
+    # Generate the Plot html files
 
-    #output_file = r"docs/source/9-dashboard/data/con_files_statistics.csv"
+    output_file = r"docs/source/9-dashboard/data/con_files_statistics.csv"
 
-    output_file = "9-dashboard/data/con_files_statistics.csv"
+    # output_file = "9-dashboard/data/con_files_statistics.csv"
 
     csv_file = output_file  # Path to the CSV file
 
@@ -123,4 +124,4 @@ if __name__ == "__main__":
     os.makedirs(os.path.dirname(output_html), exist_ok=True)
 
     # Create and save the plot
-    plot_data(csv_file, output_html)
+    # plot_data(csv_file, output_html)
