@@ -7,3 +7,4 @@ sphinx-gallery
 mne
 pandas
 boxsdk
+dotenv

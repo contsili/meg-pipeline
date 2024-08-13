@@ -123,5 +123,10 @@ if __name__ == "__main__":
     # Ensure output directory exists
     os.makedirs(os.path.dirname(output_html), exist_ok=True)
 
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+
+    files_and_folders = os.listdir(current_dir)
+
+    print(files_and_folders)
     # Create and save the plot
     # plot_data(csv_file, output_html)
