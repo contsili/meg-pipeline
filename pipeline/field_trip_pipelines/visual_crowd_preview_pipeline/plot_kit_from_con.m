@@ -1,3 +1,6 @@
+%
+
+
 confile = 'MEG data/Subj_001_02.con';
 %Load the data into fieldtrip
 
