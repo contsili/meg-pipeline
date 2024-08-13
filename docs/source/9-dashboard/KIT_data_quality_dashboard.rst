@@ -14,4 +14,5 @@ KIT SNR Plot of empty room data
 
 .. raw:: html
 
-   <iframe src="../_static/snr_plot.html" width="100%" height="600px"></iframe>
+       <iframe src="C:/Users/Admin/meg-pipeline/docs/source/_static/figure_table_test.html></iframe>
+
