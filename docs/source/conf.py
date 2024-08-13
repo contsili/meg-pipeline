@@ -77,7 +77,7 @@ epub_show_urls = "footnote"
 def run_box_script(app: Sphinx):
     """Run the dashboard generation script."""
     logger = logging.getLogger(__name__)
-    script_path = os.path.join(app.confdir, "9-dashboards", "dashboard-generating-scripts", "box_script.py")
+    script_path = os.path.join(app.confdir, "9-dashboard", "dashboard-generating-scripts", "box_script.py")
     if os.path.exists(script_path):
         logger.info(
             f"Found box_script.py at {script_path}, running it now."
