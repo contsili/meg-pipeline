@@ -8,7 +8,7 @@ from datetime import datetime
 import pytz
 import logging
 
-load_dotenv(".env")
+load_dotenv("box_secrets.env")
 # Load the configuration from environment variables
 client_id = os.getenv("BOX_CLIENT_ID")
 client_secret = os.getenv("BOX_CLIENT_SECRET")
@@ -191,7 +191,7 @@ def get_file_metadata(file_id):
 
 # Function to get last modification: files
 try:
-    csv_file = r"docs/source/9-dashboard/data/con_files_statistics.csv"
+    csv_file = r"9-dashboard/data/con_files_statistics.csv"
     df = pd.read_csv(csv_file)
     df["Date"] = pd.to_datetime(df["Date"], format="%d-%m-%y %H:%M:%S")
     df = df.sort_values(by="Date")
