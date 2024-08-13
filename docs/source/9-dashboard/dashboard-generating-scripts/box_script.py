@@ -15,9 +15,13 @@ else:
     print("box_secrets.env file not found. Skipping load.")
 # Load the configuration from environment variables
 client_id = os.getenv("BOX_CLIENT_ID")
+print(client_id)
 client_secret = os.getenv("BOX_CLIENT_SECRET")
+print(client_secret)
 enterprise_id = os.getenv("BOX_ENTERPRISE_ID")
+print(enterprise_id)
 public_key_id = os.getenv("BOX_PUBLIC_KEY_ID")
+print(public_key_id)
 
 private_key = os.getenv("BOX_PRIVATE_KEY").replace("\\n", "\n").encode()
 passphrase = os.getenv("BOX_PASSPHRASE").encode()
