@@ -78,6 +78,17 @@ def run_box_script(app: Sphinx):
     """Run the dashboard generation script."""
     logger = logging.getLogger(__name__)
     script_path = os.path.join(app.confdir, "9-dashboard", "dashboard-generating-scripts", "box_script.py")
+
+    client_id = os.getenv("BOX_CLIENT_ID")
+    print(client_id)
+    client_secret = os.getenv("BOX_CLIENT_SECRET")
+    print(client_secret)
+    enterprise_id = os.getenv("BOX_ENTERPRISE_ID")
+    print(enterprise_id)
+    public_key_id = os.getenv("BOX_PUBLIC_KEY_ID")
+    print(public_key_id)
+
+
     if os.path.exists(script_path):
         logger.info(
             f"Found box_script.py at {script_path}, running it now."
