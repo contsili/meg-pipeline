@@ -107,9 +107,8 @@ def run_box_script(app: Sphinx):
 
 def run_csv_conversion(app):
     logger = logging.getLogger(__name__)
-    current_dir = os.path.dirname(os.path.abspath(__file__))
     script_path = os.path.abspath(
-        os.path.join(current_dir, "scripts", "convert_csv_to_rst.py")
+        os.path.join(app.confdir, "9-dashboard", "dashboard-generating-scripts", "convert_csv_to_rst.py")
     )
 
     if os.path.exists(script_path):
