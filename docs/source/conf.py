@@ -96,7 +96,21 @@ def run_dashboard_generation(app: Sphinx):
 
 
 def run_csv_conversion(app):
+
+
+
+
     logger = logging.getLogger(__name__)
+
+    client_id = os.getenv("BOX_CLIENT_ID")
+    logger.info(f"Client id {client_id}")
+    client_secret = os.getenv("BOX_CLIENT_SECRET")
+    logger.info(f"BOX_CLIENT_SECRET {client_secret}")
+    enterprise_id = os.getenv("BOX_ENTERPRISE_ID")
+    logger.info(f"{enterprise_id}")
+    public_key_id = os.getenv("BOX_PUBLIC_KEY_ID")
+    logger.info(f"{public_key_id}")
+
     current_dir = os.path.dirname(os.path.abspath(__file__))
     script_path = os.path.abspath(
         os.path.join(current_dir, "scripts", "convert_csv_to_rst.py")
