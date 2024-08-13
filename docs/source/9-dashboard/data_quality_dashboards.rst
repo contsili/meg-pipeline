@@ -9,11 +9,17 @@ EEG scalp signals are about 50 to 100 :math:`\mu\text{V}`
 
 Several metrics are defined in the below table and will serve as basis to asess the quality of data.
 
-.. csv-table:: Metrics for asessing data quality (Noise levels)
-   :file: data/noise_metrics.csv
-   :header-rows: 1
+.. include:: noise_metrics.rst
 
+.. include:: con_files_statistics.rst
 
 .. include:: KIT_data_quality_dashboard.rst
 
 .. include:: OPM_data_quality_dashboard.rst
+
+Plot of Average and Variance Over Time
+######################################
+
+.. raw:: html
+
+    <iframe src="../_static/average_variance_plot.html" width="100%" height="600px" frameborder="0"></iframe>
