@@ -8,7 +8,11 @@ from datetime import datetime
 import pytz
 import logging
 
-load_dotenv("box_secrets.env")
+# Check if the file exists
+if os.path.exists("box_secrets.env"):
+    load_dotenv("box_secrets.env")
+else:
+    print("box_secrets.env file not found. Skipping load.")
 # Load the configuration from environment variables
 client_id = os.getenv("BOX_CLIENT_ID")
 client_secret = os.getenv("BOX_CLIENT_SECRET")

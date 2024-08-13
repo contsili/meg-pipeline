@@ -74,17 +74,17 @@ html_static_path = ["_static"]
 epub_show_urls = "footnote"
 
 
-def run_dashboard_generation(app: Sphinx):
+def run_box_script(app: Sphinx):
     """Run the dashboard generation script."""
     logger = logging.getLogger(__name__)
-    script_path = os.path.join(app.confdir, "dashboards", "generate_snr_dashboard.py")
+    script_path = os.path.join(app.confdir, "9-dashboards", "dashboard-generating-scripts", "box_script.py")
     if os.path.exists(script_path):
         logger.info(
-            f"Found generate_snr_dashboard.py at {script_path}, running it now."
+            f"Found box_script.py at {script_path}, running it now."
         )
         result = subprocess.run(["python", script_path], capture_output=True, text=True)
         if result.returncode == 0:
-            logger.info("generate_snr_dashboard.py ran successfully.")
+            logger.info("box_script.py ran successfully.")
         else:
             logger.error(
                 f"generate_snr_dashboard.py failed with return code {result.returncode}"
@@ -126,5 +126,5 @@ def run_csv_conversion(app):
 
 def setup(app: Sphinx):
     logging.basicConfig(level=logging.INFO)
-    app.connect("builder-inited", run_dashboard_generation)
+    app.connect("builder-inited", run_box_script)
     app.connect("builder-inited", run_csv_conversion)

@@ -1,3 +1,5 @@
+""" This script loads already downloaded .con files and then computes for each one of them, the metrics and saves them in a .csv"""
+
 import os
 import numpy as np
 import pandas as pd
@@ -116,6 +118,16 @@ def plot_data_avg(csv_file, output_html):
     # Save plot as HTML
     fig.write_html(output_html)
     print(f"Plot saved to {output_html}")
+
+
+def remove_zero_channels(raw):
+    data = raw.get_data()
+    non_zero_indices = np.any(data != 0, axis=1)
+    print(non_zero_indices)
+    raw.pick_channels(
+        [raw.ch_names[i] for i in range(len(non_zero_indices)) if non_zero_indices[i]]
+    )
+    return raw
 
 
 def plot_data_var(csv_file, output_html):
