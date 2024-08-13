@@ -6,7 +6,6 @@
 %%
 % Add FieldTrip directory to the top of the MATLAB path to fix the error of
 % the 'nearest' function
-addpath('C:\Users\tasni\AppData\Roaming\MathWorks\MATLAB Add-Ons\Collections\FieldTrip\utilities');
 
 % Set FieldTrip defaults
 ft_defaults;
@@ -16,42 +15,82 @@ which nearest
 
 %% Loading the MEG and MATLAB data
 
-% Define the paths to the MEG data and MATLAB data folders
-megDataFolder = 'MEG data';
-matlabDataFolder = 'MATLAB Data';
-resultsFolder = 'Averaging Results';
+% Read the environment variable to NYU BOX 'Data' folder
+MEG_DATA_FOLDER = getenv('MEG_DATA');
 
-% Get a list of all MEG data files in the folder matching the specific pattern
-megFiles = dir(fullfile(megDataFolder, 'Sub_*_01_vcp.con'));
+% Set path to KIT .con file of sub-03
+DATASET_PATH = [MEG_DATA_FOLDER,'visual_crowding_preview'];
 
-% Get a list of all MATLAB data files in the folder matching the specific pattern
-matFiles = dir(fullfile(matlabDataFolder, 'Sub_*_vcp.mat'));
+SAVE_PATH = 'output';
+
+% Get a list of all MEG data files
+MEGFILES = dir(fullfile(DATASET_PATH, 'sub-*-vcp','meg-kit', 'sub-*-vcp-analysis_NR.con'));
+
+disp(['Found ', num2str(length(MEGFILES)), ' MEG-KIT measurement .con files.']);
+
+% Display the names of the files
+for i = 1:length(MEGFILES)
+    disp(MEGFILES(i).name);
+end
 
 
-segmented_data_all = cell(1, length(megFiles));
+% Get a list of all MATLAB data files in the folder matching the pattern
+MATFILES = dir(fullfile(DATASET_PATH, 'sub-*-vcp','experiment-log', 'sub-*-vcp.mat'));
+
+
+disp(['Found ', num2str(length(MATFILES)), ' MATLAB experiment-log .mat files.']);
+
+
+% Display the names of the files
+for i = 1:length(MATFILES)
+    disp(MATFILES(i).name);
+end
+
+
+disp(' Make sure the orders in the two lists above match each other');
+
+
+%%
+
+
+segmented_data_all = cell(1, length(MEGFILES));
 
 % Loop over each MEG data file
-for k = 1:length(megFiles)
+%for k = 1:length(MEGFILES)
+    k = 1
     % Get the current MEG data file name
-    confile = fullfile(megDataFolder, megFiles(k).name);
+    
+    confile = fullfile(MEGFILES(k).folder, MEGFILES(k).name);
+    
+    [~, filename, ~] = fileparts(MEGFILES(k).name);
 
     % Extract the subject identifier from the MEG file name
-    [~, filename, ~] = fileparts(megFiles(k).name);
-    numericalPart = filename(5:7); % Extract the numerical part, assuming 'Sub_###'
+
+    match = regexp(filename, 'sub-(\d+)-vcp', 'tokens');
+
+    % Extract the matched number
+    if ~isempty(match)
+        numericalPart = match{1}{1};
+    else
+        disp(['ID for subject file', confile, 'not found']);
+    end
+
     subjectID = sprintf('Subject %s', numericalPart); % Format to 'Subject ###'
 
     % Construct the corresponding MATLAB data file path
-    matFileName = sprintf('Sub_%s_vcp.mat', numericalPart);
-    matFilePath = fullfile(matlabDataFolder, matFileName);
+    MATFILENAME = sprintf('sub-%s-vcp.mat', numericalPart);
+    
+    
+    MATFILEPATH = fullfile(MATFILES(k).folder, MATFILENAME);
 
     % Check if the MATLAB data file exists in the list of matFiles
-    if ~isfile(matFilePath)
+    if ~isfile(MATFILEPATH)
         fprintf('MATLAB data file not found for subject: %s\n', subjectID);
-        continue;
+        %continue;
     end
 
     % Load the MATLAB data
-    load_data_MAT = load(matFilePath);
+    load_data_MAT = load(MATFILEPATH);
     data_MAT = load_data_MAT.EXP.data; % Extracting the table from the structure
 
     % Preprocess the MEG data
@@ -170,7 +209,7 @@ for k = 1:length(megFiles)
     avgCWDG3 = ft_timelockanalysis(cfg, dataCrowding3);
 
     % Save the results for the current subject
-    subjectResultsFolder = fullfile(resultsFolder, subjectID);
+    subjectResultsFolder = fullfile(SAVE_PATH, subjectID);
     if ~exist(subjectResultsFolder, 'dir')
         mkdir(subjectResultsFolder);
     end
