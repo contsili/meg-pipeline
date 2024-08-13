@@ -87,7 +87,7 @@ def run_box_script(app: Sphinx):
             logger.info("box_script.py ran successfully.")
         else:
             logger.error(
-                f"generate_snr_dashboard.py failed with return code {result.returncode}"
+                f"box_script.py failed with return code {result.returncode}"
             )
             logger.error(result.stdout)
             logger.error(result.stderr)
