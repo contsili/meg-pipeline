@@ -79,13 +79,13 @@ def run_box_script(app: Sphinx):
     logger = logging.getLogger(__name__)
     script_path = os.path.join(app.confdir, "9-dashboard", "dashboard-generating-scripts", "box_script.py")
     client_id = os.getenv("BOX_CLIENT_ID")
-    logger.info("Client id {client_id}")
+    logger.info(f"Client id {client_id}")
     client_secret = os.getenv("BOX_CLIENT_SECRET")
-    logger.info("BOX_CLIENT_SECRET {client_secret}")
+    logger.info(f"BOX_CLIENT_SECRET {client_secret}")
     enterprise_id = os.getenv("BOX_ENTERPRISE_ID")
-    logger.info("{enterprise_id}")
+    logger.info(f"{enterprise_id}")
     public_key_id = os.getenv("BOX_PUBLIC_KEY_ID")
-    logger.info("{public_key_id}")
+    logger.info(f"{public_key_id}")
 
 
     if os.path.exists(script_path):
