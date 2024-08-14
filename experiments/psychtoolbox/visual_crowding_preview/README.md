@@ -20,7 +20,7 @@ The stimuli were presented as either valid or invalid, with the invalid stimulus
 After that, the participant has to decide weather or not the word displayed is the same your they saw during the trial by answering the question 'Is this the last word you saw?'.
 The study employs magnetoencephalography (MEG) and eye-tracking techniques to record brain activity.
 
-The trigger channels in MEG are as follows: 
+The trigger channels in MEG-KIT numbering are as follows (Keep in mind that MATLAB numbering starts from 1 and not 0, so channel 224 in KIT becomes 225 in MATLAB):
 
 - trigger channel 224: beginning of the overall experiment.
 - trigger channel 225: each display of the fixation point.

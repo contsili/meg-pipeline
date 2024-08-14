@@ -56,8 +56,8 @@ disp(' Make sure the orders in the two lists above match each other');
 segmented_data_all = cell(1, length(MEGFILES));
 
 % Loop over each MEG data file
-%for k = 1:length(MEGFILES)
-    k = 1
+for k = 1:length(MEGFILES)
+    
     % Get the current MEG data file name
     
     confile = fullfile(MEGFILES(k).folder, MEGFILES(k).name);
@@ -124,7 +124,47 @@ segmented_data_all = cell(1, length(MEGFILES));
     % figure
     % plot(previewTrigger)
 
-    %% Deifne trials and segment the data
+
+    %% Read raw confile 
+    
+    data_raw = ft_read_data(confile);
+    
+    %% Plot trigger channels
+
+    plot(data(225,1:100000));
+
+    %Plot with a focus on the top of the trigger
+    plot(data(225,1:100000), '.-');
+    figure
+    plot(data(226,1:100000));
+
+    %% Test: define trials
+    
+    cfg = [];
+    cfg.dataset  = confile;
+    %cfg.trialdef.eventvalue = 1;
+    cfg.trialdef.prestim    = 1;
+    cfg.trialdef.poststim   = 1;
+    cfg.trialfun = 'ft_trialfun_general';
+    %cfg.trialdef.eventvalue     = [1 2 3 4 5 6 7]; % the values of the stimulus trigger for the three conditions LF ch225=4, WN ch226=2, HF ch227=1 
+    cfg.trialdef.chanindx = 225:231; % this will make the binary value either 100 LF(ch225) or WN 010(ch226) or HF 001(ch227)
+    %cfg.trialdef.threshold = 0.5; % this is a meaningful value if the pulses have an amplitude of ~5 V
+    %cfg.trialdef.eventtype = 'combined_binary_trigger'; % this will be the type of the event if combinebinary = true
+    %cfg.trialdef.combinebinary = 1;
+    % cfg.trialdef.trigshift = 2; % return the value of the combined pulse 2 samples after the on-ramp (in case of small staircases)
+    cfg = ft_definetrial(cfg)
+    
+    cfg.demean = 'yes'
+    cfg.channel = 'AG*'
+    data = ft_preprocessing(cfg)
+
+
+    %%
+
+    hdr   = ft_read_header(confile);
+    %event = ft_read_event(confile, 'chanindx', 225:231, 'threshold', 1e4, 'detectflank', 'up');
+    event = ft_read_event(confile, 'chanindx', 225:231, 'detectflank', 'up');
+    %% Define trials and segment the data
 
     cfg = [];
     cfg.dataset  = confile;
