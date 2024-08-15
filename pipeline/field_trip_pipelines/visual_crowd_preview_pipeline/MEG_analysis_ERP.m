@@ -14,7 +14,7 @@ ft_defaults;
 which nearest
 
 %% Loading the MEG and MATLAB data
-
+%
 % If you have BOX app installed locally, set an environment variable with
 % details
 % Variable Name: MEG_DATA   Value: absolute path to 'Data' folder on box e.g.
