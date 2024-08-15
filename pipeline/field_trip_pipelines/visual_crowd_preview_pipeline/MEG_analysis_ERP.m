@@ -60,7 +60,7 @@ disp(' Make sure the orders in the two lists above match each other');
 
 
 %%
-
+%
 
 segmented_data_all = cell(1, length(MEGFILES));
 
