@@ -15,7 +15,16 @@ which nearest
 
 %% Loading the MEG and MATLAB data
 
-% Read the environment variable to NYU BOX 'Data' folder
+% If you have BOX app installed locally, set an environment variable with
+% details
+% Variable Name: MEG_DATA   Value: absolute path to 'Data' folder on box e.g.
+% C:/Box/MEG/Data/
+% If you do not have BOX app installed locally, then download the data
+% put in a folder structure 'MEG/Data/visual_crowding_preview/' then create
+% an environment variable with details
+% Variable Name: MEG_DATA   Value: absolute path to 'Data' folder e.g.
+% 'home/xyz/.../MEG/Data'
+
 MEG_DATA_FOLDER = getenv('MEG_DATA');
 
 % Set path to KIT .con file of sub-03
@@ -58,6 +67,9 @@ segmented_data_all = cell(1, length(MEGFILES));
 % Loop over each MEG data file
 for k = 1:length(MEGFILES)
     
+    % For testing purpose uncomment below
+    
+
     % Get the current MEG data file name
     
     confile = fullfile(MEGFILES(k).folder, MEGFILES(k).name);
@@ -92,12 +104,24 @@ for k = 1:length(MEGFILES)
     % Load the MATLAB data
     load_data_MAT = load(MATFILEPATH);
     data_MAT = load_data_MAT.EXP.data; % Extracting the table from the structure
+    
+    %% Preprocess data
 
     % Preprocess the MEG data
     cfg = [];
     cfg.dataset = confile;
     cfg.coilaccuracy = 0;
     data_MEG = ft_preprocessing(cfg);
+    
+
+    %% Remind that in the design of the experiment we had defined:
+    % - trigger channel 225: beginning of the overall experiment.
+    % - trigger channel 226: each display of the fixation point.
+    % - trigger channel 227: display of the preview image.
+    % - trigger channel 228: display of the cue (fixation point turns green).
+    % - trigger channel 229: saccade detection.
+    % - trigger channel 230: display of the target image.
+    % - trigger channel 231: display of the question image.
 
     %% Output the number of triggers on channel 227 for preview event
     % Number of triggers should corespond to the number of trials in the
@@ -107,6 +131,10 @@ for k = 1:length(MEGFILES)
     previewTrigger = data_MEG.trial{1}(227, :);
 
     % Define a threshold to detect transitions
+    % This threshold should only be used when we are sure that the channel
+    % contains atleast one trigger, if not the number of triggers is
+    % incorrect
+
     threshold = (max(previewTrigger) + min(previewTrigger)) / 2;
 
     % Detect transitions from low to high
@@ -123,13 +151,59 @@ for k = 1:length(MEGFILES)
 
     % figure
     % plot(previewTrigger)
+    
+    
+    %% Sanity Check: Count all trigger events on all trigger channels
+    % Initialize total trigger count
+    total_triggers = 0;
+    
+    % Initialize structs to store trigger counts and thresholds for each channel
+    trigger_counts = struct();
+    thresholds = struct(); % When signal is above the threshold, this part is considered a trigger-event
+    
+    fprintf('For %s \n', subjectID);
+    
+    disp(['If the value of threshold for one channel is close to zero, ' ...
+        'this probably means the channel has no triggers, remove it then from the count'])
+    % Loop through each channel from 225 to 231
+    for ch = 225:231
+        % Extract the trigger channel
+        previewTrigger = data_MEG.trial{1}(ch, :);
+        
+        % Define a threshold to detect transitions
+        threshold = (max(previewTrigger) + min(previewTrigger)) / 2;
+        
+        % Store the threshold for this channel
+        thresholds.(sprintf('Channel_%d', ch)) = threshold;
+        
+        % Detect transitions from low to high
+        transitions = diff(previewTrigger > threshold);
+        
+        % Count the number of positive transitions (indicating trigger onsets)
+        num_triggers = sum(transitions == 1);
+        
+        % Save the number of triggers for this channel
+        trigger_counts.(sprintf('Channel_%d', ch)) = num_triggers;
+        
+        
+        % Output the number of triggers and the threshold for this channel
+        fprintf('Channel %d: Number of triggers = %d, Threshold = %.2f\n', ch, num_triggers, threshold);
+
+        % Add to total trigger count
+        total_triggers = total_triggers + num_triggers;
+    end
+    
+    % Output the total number of triggers across all channels
+    fprintf('Total number of triggers across all channels for %s is: %d\n', subjectID, total_triggers);
 
 
     %% Read raw confile 
-    
+    % This simply returns the time series of all channels in one array
+    % without any metadata
+
     data_raw = ft_read_data(confile);
     
-    %% Plot trigger channels
+    %% Sanity Check: If we need to plot a trigger channel and verify it
 
     plot(data(225,1:100000));
 
