@@ -206,12 +206,21 @@ segmented_data_all = cell(1, length(MEGFILES));
     
     %% Sanity Check: If we need to plot a trigger channel and verify it
 
-    plot(data(225,1:100000));
+    %plot(data_raw(225,1:100000));
 
     %Plot with a focus on the top of the trigger
-    plot(data(225,1:100000), '.-');
+    %plot(data_raw(225,1:100000), '.-');
+
     figure
-    plot(data(226,1:100000));
+    hold on
+    plot(data_raw(225, :), 'r');   % Red
+    plot(data_raw(226, :), 'g');   % Green
+    plot(data_raw(227, :), 'b');   % Blue
+    plot(data_raw(228, :), 'c');   % Cyan
+    plot(data_raw(229, :), 'm');   % Magenta
+    plot(data_raw(230, :), 'y');   % Yellow
+    plot(data_raw(231, :), 'k');   % Black
+    hold off
 
     %% Test: define trials
     

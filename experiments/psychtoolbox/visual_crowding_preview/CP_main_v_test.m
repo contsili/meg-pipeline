@@ -163,8 +163,8 @@ try
     trig.ch231 = [0 0  1]; % 231 meg channel
     
 
-    counts.ch224=0; 
-    counts.ch225=0; 
+    counts.ch224 = 0; 
+    counts.ch225 = 0; 
     counts.ch226 = 0; 
     counts.ch227 = 0;
     counts.ch228 = 0;
