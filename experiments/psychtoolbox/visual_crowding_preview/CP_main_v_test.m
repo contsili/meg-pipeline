@@ -2,13 +2,28 @@ clearvars
 Screen('Preference', 'SkipSyncTests', 1);
 AssertOpenGL;
 
-Datapixx('Open');
 
-Datapixx('DisablePixelMode');
-Datapixx('RegWr');
+% Modes
+use_vpixx = 0;
+use_eyetracker = 0;
+trigger_test = 0;
 
-Datapixx('SetPropixxDlpSequenceProgram', 0);
-Datapixx('RegWr');
+% Open vpix
+
+if use_vpixx==1
+
+    Datapixx('Open');
+    
+    Datapixx('DisablePixelMode');
+    Datapixx('RegWr');
+    
+    Datapixx('SetPropixxDlpSequenceProgram', 0);
+    Datapixx('RegWr');
+
+end
+
+
+
 
 
 % PARTICIPANT DATA
@@ -43,6 +58,7 @@ try
 
     % Screen setup
     s = max(Screen('Screens'));
+
     % Set the background color to white during window initialization
     [w, rect] = Screen('OpenWindow', s, [255 255 255]); %,[200 200 1000 1000]);
     Priority(MaxPriority(w));
@@ -66,43 +82,47 @@ try
     trig.SACCADE = 3;
     trig.TARGET = 4;
     trig.RESPONSE = 5;
+    
+    if use_eyetracker==1
 
-    % EYE-TRACKING SETUP
-    el = EyelinkInitDefaults(w);
-    el.backgroundcolour = 255;
-    el.foregroundcolour = 0;
-    el.calibrationtargetcolour = [0 0 0];
-    el.msgfontcolour = 0;
-    EyelinkUpdateDefaults(el);
+        % EYE-TRACKING SETUP
+        el = EyelinkInitDefaults(w);
+        el.backgroundcolour = 255;
+        el.foregroundcolour = 0;
+        el.calibrationtargetcolour = [0 0 0];
+        el.msgfontcolour = 0;
+        EyelinkUpdateDefaults(el);
+    
+        if ~EyelinkInit() % 1 means enable dummy mode
+            fprintf('Eyelink Init aborted.\n');
+            Eyelink('Shutdown');
+            Screen('CloseAll');
+        end
+    
+        Eyelink('command', 'screen_pixel_coords = %ld %ld %ld %ld', 0, 0, rect(4)-1, rect(3)-1);
+    
+        % Link to edf data
+        Eyelink('command', 'file_event_filter = LEFT,RIGHT,FIXATION,SACCADE,BLINK,MESSAGE,BUTTON,INPUT'); WaitSecs(0.05);
+        Eyelink('command', 'file_sample_data  = LEFT,RIGHT,GAZE,HREF,AREA,GAZERES,STATUS,INPUT,HTARGET'); WaitSecs(0.05);
+    
+        % Link data to Matlab
+        Eyelink('command', 'link_event_filter = LEFT,RIGHT,FIXATION,SACCADE,BLINK,MESSAGE,BUTTON,FIXUPDATE,INPUT'); WaitSecs(0.05);
+        Eyelink('command', 'link_sample_data  = LEFT,RIGHT,GAZE,GAZERES,AREA,STATUS,INPUT,HTARGET'); WaitSecs(0.05);
+        Eyelink('command', 'link_event_data = GAZE,GAZERES,HREF,AREA,VELOCITY'); WaitSecs(0.05);
+    
+        edfFile = ['Subj' answer1{1} '.edf'];
+        Eyelink('Openfile', edfFile);
+    
+        Eyelink('command', 'calibration_type = HV6'); WaitSecs(0.05);
+        % Before recording, we place reference graphics on the host display
+        % Must be offline to draw to EyeLink screen
+        Eyelink('Command', 'set_idle_mode'); WaitSecs(0.05);
+    
+        EyelinkDoTrackerSetup(el); WaitSecs(0.05);
 
-    if ~EyelinkInit() % 1 means enable dummy mode
-        fprintf('Eyelink Init aborted.\n');
-        Eyelink('Shutdown');
-        Screen('CloseAll');
     end
 
-    Eyelink('command', 'screen_pixel_coords = %ld %ld %ld %ld', 0, 0, rect(4)-1, rect(3)-1);
-
-    % Link to edf data
-    Eyelink('command', 'file_event_filter = LEFT,RIGHT,FIXATION,SACCADE,BLINK,MESSAGE,BUTTON,INPUT'); WaitSecs(0.05);
-    Eyelink('command', 'file_sample_data  = LEFT,RIGHT,GAZE,HREF,AREA,GAZERES,STATUS,INPUT,HTARGET'); WaitSecs(0.05);
-
-    % Link data to Matlab
-    Eyelink('command', 'link_event_filter = LEFT,RIGHT,FIXATION,SACCADE,BLINK,MESSAGE,BUTTON,FIXUPDATE,INPUT'); WaitSecs(0.05);
-    Eyelink('command', 'link_sample_data  = LEFT,RIGHT,GAZE,GAZERES,AREA,STATUS,INPUT,HTARGET'); WaitSecs(0.05);
-    Eyelink('command', 'link_event_data = GAZE,GAZERES,HREF,AREA,VELOCITY'); WaitSecs(0.05);
-
-    edfFile = ['Subj' answer1{1} '.edf'];
-    Eyelink('Openfile', edfFile);
-
-    Eyelink('command', 'calibration_type = HV6'); WaitSecs(0.05);
-    % Before recording, we place reference graphics on the host display
-    % Must be offline to draw to EyeLink screen
-    Eyelink('Command', 'set_idle_mode'); WaitSecs(0.05);
-
-    EyelinkDoTrackerSetup(el); WaitSecs(0.05);
-
-    trigger_test = 0;
+    
 
     % Top left pixel that controls triggers in PixelMode
     if trigger_test == 0
@@ -117,11 +137,11 @@ try
     Screen('FillRect', w, black, trigRect);
     Screen('Flip', w);
 
-
-    Datapixx('EnablePixelMode');  % to use topleft pixel to code trigger information, see https://vpixx.com/vocal/pixelmode/
-    Datapixx('RegWr');
-
-
+    if use_vpixx==1
+        Datapixx('EnablePixelMode');  % to use topleft pixel to code trigger information, see https://vpixx.com/vocal/pixelmode/
+        Datapixx('RegWr');
+    end
+    
     % KEYBOARD SETUP
     responseKeys = {'c', 'v', 'a', 'y', 'n', 'return'}; % eyelink commands
     KbName('UnifyKeyNames');
@@ -141,7 +161,18 @@ try
     trig.ch229 = [0 16 0]; % 229 meg channel
     trig.ch230 = [0 64 0]; % 230 meg channel
     trig.ch231 = [0 0  1]; % 231 meg channel
+    
 
+    counts.ch224=0; 
+    counts.ch225=0; 
+    counts.ch226 = 0; 
+    counts.ch227 = 0;
+    counts.ch228 = 0;
+    counts.ch229 = 0;
+    counts.ch230 = 0;
+    counts.ch231 = 0;
+
+    
     % Clear the screen with the background color (white)
     Screen('FillRect', w, [255 255 255]);
     Screen('FillRect', w, black, trigRect);
@@ -188,22 +219,25 @@ try
     KbWait([], 2)
 
     % Trigger 1
+    counts.ch224 = counts.ch224+1;
     Screen('FillRect', w, trig.ch224, trigRect);
     Screen('Flip', w);
     Screen('FillRect', w, black, trigRect);
     Screen('Flip', w);
-
-    Eyelink('Command', 'SetOfflineMode');
-    Eyelink('StartRecording');
-    Screen('FillOval', w, fixColor, fixRect);
-    Screen('FillRect', w, fixColor, trigRect);
-    Screen('Flip', w);
-    WaitSecs(2);
-    trig.SYNCTIMEsecs = GetSecs();
-    Eyelink('Message', 'TRIGGER %d', trig.SYNCTIME);
-    eyeUsed = Eyelink('EyeAvailable');
-    eyeUsed = eyeUsed + 1;
-
+    
+    if use_eyetracker==1
+        Eyelink('Command', 'SetOfflineMode');
+        Eyelink('StartRecording');
+        Screen('FillOval', w, fixColor, fixRect);
+        Screen('FillRect', w, fixColor, trigRect);
+        Screen('Flip', w);
+        WaitSecs(2);
+        trig.SYNCTIMEsecs = GetSecs();
+        Eyelink('Message', 'TRIGGER %d', trig.SYNCTIME);
+        eyeUsed = Eyelink('EyeAvailable');
+        eyeUsed = eyeUsed + 1;
+    end
+    
     goodTrial = 1;
     nBadTrials = 0;
     i_trial = 1;
@@ -218,6 +252,8 @@ try
         if mod(i_trial, round(size(expTable, 1)/3+1)) == 0
             Screen('DrawText', w, 'WELL DONE, TAKE A BREAK !',  wx-400, wy, [0 0 0]);
             Screen('FillRect', w, fixColor, trigRect);
+            % Correction
+            Screen('FillRect', w, black, trigRect);
             Screen('Flip', w);
             KbWait([], 2)
 
@@ -291,7 +327,8 @@ try
         % FIXATION
         goodTrial = 1;
         errorMsg = 'BAD TRIAL';
-
+        
+        counts.ch225 = counts.ch225+1;
         Screen('DrawTexture', w, wFixation);
         Screen('FillRect', w, trig.ch225, trigRect);
         Screen('Flip', w);
@@ -301,7 +338,9 @@ try
 
         fixOnsetTime = GetSecs();
         expTable.fixStartTime(i_trial) = GetSecs();
-        Eyelink('Message', 'TRIGGER %d', trig.START);
+        if use_eyetracker==1
+            Eyelink('Message', 'TRIGGER %d', trig.START);
+        end
         expTable.fixDuration(i_trial) = (1000+randperm(500,1))/1000; % random fixation duration
         eyeX = nan; eyeY = nan;
         disp('DEBUG 3')
@@ -315,44 +354,47 @@ try
                 ListenChar(0)
                 return;
             end
+            
+            if use_eyetracker==1
 
-            if Eyelink('NewFloatSampleAvailable')
-                eyeSample = Eyelink('NewestFloatSample');
-                eyeX = eyeSample.gx(eyeUsed);
-                eyeY = eyeSample.gy(eyeUsed);
-
-                if eyeX~=el.MISSING_DATA && eyeY~=el.MISSING_DATA % no blinks
-                    dist_center = sqrt( (eyeX-wx)^2 + (eyeY-wy)^2 );
-                    if dist_center < fixTolerance % fixation is good
-                        if GetSecs() - expTable.fixStartTime(i_trial) > expTable.fixDuration(i_trial) % fixation is long enough
-                            break;
-                        end
-                    else
-                        for i=1:3
-                            Screen('FillRect', w, fixBadColor, fixRect);
-                            Screen('FillRect', w, fixColor, trigRect);
-
+                if Eyelink('NewFloatSampleAvailable')
+                    eyeSample = Eyelink('NewestFloatSample');
+                    eyeX = eyeSample.gx(eyeUsed);
+                    eyeY = eyeSample.gy(eyeUsed);
+    
+                    if eyeX~=el.MISSING_DATA && eyeY~=el.MISSING_DATA % no blinks
+                        dist_center = sqrt( (eyeX-wx)^2 + (eyeY-wy)^2 );
+                        if dist_center < fixTolerance % fixation is good
+                            if GetSecs() - expTable.fixStartTime(i_trial) > expTable.fixDuration(i_trial) % fixation is long enough
+                                break;
+                            end
+                        else
+                            for i=1:3
+                                Screen('FillRect', w, fixBadColor, fixRect);
+                                Screen('FillRect', w, fixColor, trigRect);
+    
+                                Screen('Flip', w);
+                                WaitSecs(.1);
+                                Screen('FillRect', w, fixColor, trigRect);
+    
+                                Screen('Flip', w);
+                                WaitSecs(.1);
+                            end
+                            counts.ch225 = counts.ch225+1;
+                            Screen('DrawTexture', w, wFixation);
+                            Screen('FillRect', w, trig.ch225, trigRect);
                             Screen('Flip', w);
-                            WaitSecs(.1);
+                            Screen('DrawTexture', w, wFixation);
                             Screen('FillRect', w, fixColor, trigRect);
-
                             Screen('Flip', w);
-                            WaitSecs(.1);
+    
+                            expTable.fixStartTime(i_trial) = GetSecs();
+                            Eyelink('Message', 'TRIGGER %d', trig.START);
                         end
-
-                        Screen('DrawTexture', w, wFixation);
-                        Screen('FillRect', w, trig.ch225, trigRect);
-                        Screen('Flip', w);
-                        Screen('DrawTexture', w, wFixation);
-                        Screen('FillRect', w, fixColor, trigRect);
-                        Screen('Flip', w);
-
+                    else % blink
                         expTable.fixStartTime(i_trial) = GetSecs();
                         Eyelink('Message', 'TRIGGER %d', trig.START);
                     end
-                else % blink
-                    expTable.fixStartTime(i_trial) = GetSecs();
-                    Eyelink('Message', 'TRIGGER %d', trig.START);
                 end
             end
 
@@ -367,6 +409,7 @@ try
 
 
         % PREVIEW AND CUE
+        counts.ch226 = counts.ch226+1;
         Screen('DrawTexture', w, wPreview);
         Screen('FillRect', w, trig.ch226, trigRect);
         Screen('Flip', w);
@@ -375,9 +418,13 @@ try
         Screen('Flip', w);
 
         expTable.previewOnsetTime(i_trial) = GetSecs();
-        Eyelink('Message', 'TRIGGER %d', trig.PREVIEW);
-        saccTrigger = 0;
+        
+        if use_eyetracker==1
+            Eyelink('Message', 'TRIGGER %d', trig.PREVIEW);
+        end
 
+        saccTrigger = 0;
+        
         while goodTrial
             [~,~, keyCode] = KbCheck();
             if find(keyCode) == KbName('escape')
@@ -388,65 +435,72 @@ try
                 ListenChar(0)
                 return;
             end
-
-            if Eyelink('NewFloatSampleAvailable')
-                eyeSample = Eyelink('NewestFloatSample');
-                eyeX = eyeSample.gx(eyeUsed);
-                eyeY = eyeSample.gy(eyeUsed);
-                disp(['EyeX: ', num2str(eyeX)]);
-
-                if eyeX~=el.MISSING_DATA && eyeY~=el.MISSING_DATA % no blinks
-                    dist_center = sqrt( (eyeX-wx)^2 + (eyeY-wy)^2 );
-                    if dist_center < fixTolerance % fixation is good
-                        if GetSecs() - expTable.fixStartTime(i_trial) > expTable.fixDuration(i_trial)+.5 % fixation is long enough
-                            Screen('DrawTexture', w, wCue);
-                            Screen('FillRect', w, trig.ch227, trigRect);
-                            Screen('Flip', w);
-                            Screen('DrawTexture', w, wCue);
-                            Screen('FillRect', w, black, trigRect);
-                            Screen('Flip', w);
-                            break;
+            if use_eyetracker==1
+                if Eyelink('NewFloatSampleAvailable')
+                    eyeSample = Eyelink('NewestFloatSample');
+                    eyeX = eyeSample.gx(eyeUsed);
+                    eyeY = eyeSample.gy(eyeUsed);
+                    disp(['EyeX: ', num2str(eyeX)]);
+    
+                    if eyeX~=el.MISSING_DATA && eyeY~=el.MISSING_DATA % no blinks
+                        dist_center = sqrt( (eyeX-wx)^2 + (eyeY-wy)^2 );
+                        if dist_center < fixTolerance % fixation is good
+                            if GetSecs() - expTable.fixStartTime(i_trial) > expTable.fixDuration(i_trial)+.5 % fixation is long enough
+                                counts.ch227 = counts.ch227+1;
+                                Screen('DrawTexture', w, wCue);
+                                Screen('FillRect', w, trig.ch227, trigRect);
+                                Screen('Flip', w);
+                                Screen('DrawTexture', w, wCue);
+                                Screen('FillRect', w, black, trigRect);
+                                Screen('Flip', w);
+                                break;
+                            end
+    %                     else
+    %                         goodTrial = 0;
                         end
-%                     else
-%                         goodTrial = 0;
+    %                 else % blink
+    %                     goodTrial = 0;
                     end
-%                 else % blink
-%                     goodTrial = 0;
                 end
             end
         end
 
 
         disp('DEBUG 4')
-        while goodTrial
-            % detect saccadeOnset with threshold
-            if Eyelink('NewFloatSampleAvailable')
-                eyeSample = Eyelink('NewestFloatSample');
-                newEyeX = eyeSample.gx(eyeUsed);
-                disp(['newEyeX: ', num2str(newEyeX)]); % Debugging output
-
-                if abs(newEyeX - eyeX) > saccThreshold % if neeyeX > over the imaginary boundary
-                    saccTrigger = saccTrigger + 1;
-                    if saccTrigger > 1
-                        expTable.saccadeOnsetTime(i_trial) = GetSecs();
-                        disp('Saccade detected'); % Debugging output
-
-                        Eyelink('Message', 'TRIGGER %d', trig.SACCADE);
-                        Screen('FillRect', w, trig.ch228, trigRect);
-                        Screen('Flip', w);
-                        Screen('FillRect', w, black, trigRect);
-                        Screen('Flip', w);
-                        break;
+        
+        if use_eyetracker==1
+            while goodTrial
+                % detect saccadeOnset with threshold
+                if Eyelink('NewFloatSampleAvailable')
+                    eyeSample = Eyelink('NewestFloatSample');
+                    newEyeX = eyeSample.gx(eyeUsed);
+                    disp(['newEyeX: ', num2str(newEyeX)]); % Debugging output
+    
+                    if abs(newEyeX - eyeX) > saccThreshold % if neeyeX > over the imaginary boundary
+                        saccTrigger = saccTrigger + 1;
+                        if saccTrigger > 1
+                            expTable.saccadeOnsetTime(i_trial) = GetSecs();
+                            disp('Saccade detected'); % Debugging output
+    
+                            Eyelink('Message', 'TRIGGER %d', trig.SACCADE);
+                            counts.ch228 = counts.ch228+1;
+                            Screen('FillRect', w, trig.ch228, trigRect);
+                            Screen('Flip', w);
+                            Screen('FillRect', w, black, trigRect);
+                            Screen('Flip', w);
+                            break;
+                        end
+                    else
+                        disp('Saccade not detected');
+                        saccTrigger=0;
                     end
-                else
-                    disp('Saccade not detected');
-                    saccTrigger=0;
+                    eyeX = newEyeX;
                 end
-                eyeX = newEyeX;
             end
         end
 
         % TARGET
+        counts.ch229 = counts.ch229+1;
         Screen('DrawTexture', w, wTarget);
         Screen('FillRect', w, trig.ch229, trigRect);
         Screen('Flip', w);
@@ -457,8 +511,9 @@ try
         % Set trigger back to black
 
         expTable.targetOnsetTime(i_trial) = GetSecs();
-        Eyelink('Message', 'TRIGGER %d', trig.TARGET);
-
+        if use_eyetracker==1
+            Eyelink('Message', 'TRIGGER %d', trig.TARGET);
+        end
         while GetSecs() - expTable.targetOnsetTime(i_trial) < targetDuration
             [~, ~, keyCode] = KbCheck();
             if find(keyCode) == KbName('escape')
@@ -468,26 +523,28 @@ try
                 sca;
                 ListenChar(0);
                 return; % Exit the script
-            elseif Eyelink('NewFloatSampleAvailable')
-                eyeSample = Eyelink('NewestFloatSample');
-                eyeX = eyeSample.gx(eyeUsed);
-                eyeY = eyeSample.gy(eyeUsed);
-
-                if eyeX~=el.MISSING_DATA && eyeY~=el.MISSING_DATA % if there are no blinks
-                    % dist_target = sqrt( (eyeX- (wx+saccadeOffset*expTable.side(i_trial)) )^2 + (eyeY-wy)^2 );
-                    dist_target = eyeX - (wx+saccadeOffset*expTable.side(i_trial));
-%                     disp(['dist_target: ', num2str(dist_target)]);
-                    if dist_target < fixTolerance % and the saccade landed inside the word
-                        if GetSecs() - expTable.targetOnsetTime(i_trial) > targetDuration % and they fixated the word long enough
-                            break;
+            elseif use_eyetracker==1
+                if Eyelink('NewFloatSampleAvailable')
+                    eyeSample = Eyelink('NewestFloatSample');
+                    eyeX = eyeSample.gx(eyeUsed);
+                    eyeY = eyeSample.gy(eyeUsed);
+    
+                    if eyeX~=el.MISSING_DATA && eyeY~=el.MISSING_DATA % if there are no blinks
+                        % dist_target = sqrt( (eyeX- (wx+saccadeOffset*expTable.side(i_trial)) )^2 + (eyeY-wy)^2 );
+                        dist_target = eyeX - (wx+saccadeOffset*expTable.side(i_trial));
+    %                     disp(['dist_target: ', num2str(dist_target)]);
+                        if dist_target < fixTolerance % and the saccade landed inside the word
+                            if GetSecs() - expTable.targetOnsetTime(i_trial) > targetDuration % and they fixated the word long enough
+                                break;
+                            end
+    %                     else
+    %                         errorMsg = 'BAD SACCADE';
+    %                         goodTrial = 0;
                         end
-%                     else
-%                         errorMsg = 'BAD SACCADE';
-%                         goodTrial = 0;
+    %                 else % blink
+    %                     errorMsg = 'BAD BLINK';
+    %                     goodTrial = 0;
                     end
-%                 else % blink
-%                     errorMsg = 'BAD BLINK';
-%                     goodTrial = 0;
                 end
             end
         end
@@ -499,6 +556,7 @@ try
 
 
         % RESPONSE
+        counts.ch230 = counts.ch230+1;
         Screen('DrawTexture', w, wQuestion);
         Screen('FillRect', w, trig.ch230, trigRect);
         Screen('Flip', w);
@@ -525,7 +583,11 @@ try
                 Screen('Flip', w); WaitSecs(2);
 
                 errorMsg = 'SLOW RT';
-                Eyelink('Message', ['BAD :' errorMsg]);
+                
+                if use_eyetracker ==1
+                    Eyelink('Message', ['BAD :' errorMsg]);
+                end
+                
                 expTable(end + 1, :) = expTable(i_trial, :);
                 expTable(i_trial, :) = [];
                 nBadTrials = nBadTrials + 1;
@@ -539,8 +601,10 @@ try
                 return; % Exit the script
 
             elseif response == 8 || response == 9 %good response 8 is yellow (yes)/ 9 is red (no)
-                Eyelink('Message', 'TRIGGER %d', trig.RESPONSE);
-
+                
+                if use_eyetracker==1
+                    Eyelink('Message', 'TRIGGER %d', trig.RESPONSE);
+                end    
 
                 % Response correctness
                 % if keyCode(KbName('y'))
@@ -557,19 +621,23 @@ try
                 else
                     expTable.correctness(i_trial) = 0; % response not correct
                 end
+                if use_eyetracker==1 
+                    Eyelink('Message',  ['COND ' num2str(expTable.preview(i_trial)) num2str(expTable.side(i_trial)+1) num2str(expTable.crowding(i_trial))]);
 
-                Eyelink('Message',  ['COND ' num2str(expTable.preview(i_trial)) num2str(expTable.side(i_trial)+1) num2str(expTable.crowding(i_trial))]);
-
-                i_trial = i_trial + 1;
-                Eyelink('command', 'record_status_message "TRIAL %d/%d"', i_trial, size(expTable, 1));
-            end
+                    i_trial = i_trial + 1;
+                    Eyelink('command', 'record_status_message "TRIAL %d/%d"', i_trial, size(expTable, 1));
+                end
+             end
         else
             disp(errorMsg)
-            Eyelink('Message', ['BAD :' errorMsg]);
-            expTable(end + 1, :) = expTable(i_trial, :);
-            expTable(i_trial, :) = [];
-            nBadTrials = nBadTrials + 1;
-            Eyelink('command', ['record_status_message "TRIAL BAD :' errorMsg '" ']);
+
+            if use_eyetracker==1
+                Eyelink('Message', ['BAD :' errorMsg]);
+                expTable(end + 1, :) = expTable(i_trial, :);
+                expTable(i_trial, :) = [];
+                nBadTrials = nBadTrials + 1;
+                Eyelink('command', ['record_status_message "TRIAL BAD :' errorMsg '" ']);
+            end
         end
 
 
@@ -581,28 +649,35 @@ try
     WaitSecs(5);
 
     expTable = expTable(validTrialsIndex, :);
-
-    Datapixx('DisablePixelMode');
-    Datapixx('RegWr');
-    Datapixx('Close');
-
+    if use_vpixx==1
+        Datapixx('DisablePixelMode');
+        Datapixx('RegWr');
+        Datapixx('Close');
+    end
     % SAVE DATA
     EXP.DEMO = DEMO;
     EXP.data = expTable;
     EXP.trig = trig;
     EXP.stim = stim_fn;
     save(['Sub' answer1{1} '.mat'], 'EXP')
-
+    
+    if use_eyetracker==1
     % SAVE EYE DATA
-    Eyelink('StopRecording');
-    Eyelink('CloseFile');
-    Eyelink('ReceiveFile');
-    Eyelink('ShutDown');
+        Eyelink('StopRecording');
+        Eyelink('CloseFile');
+        Eyelink('ReceiveFile');
+        Eyelink('ShutDown');
+    end
 
-    Datapixx('DisablePixelMode');
-    Datapixx('RegWr');
-    Datapixx('Close');
 
+    if use_vpixx==1
+
+        Datapixx('DisablePixelMode');
+        Datapixx('RegWr');
+        Datapixx('Close');
+    
+    end
+    
     % FINISH EXPERIMENT
     ShowCursor();
     RestrictKeysForKbCheck([]);
