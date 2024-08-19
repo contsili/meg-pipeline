@@ -66,7 +66,8 @@ segmented_data_all = cell(1, length(MEGFILES));
 
 % Loop over each MEG data file
 %for k = 1:length(MEGFILES)
-    
+%%
+
     % For testing purpose uncomment below
     k =1;
 
@@ -389,5 +390,5 @@ segmented_data_all = cell(1, length(MEGFILES));
 
 
 
-end
+%end
 
