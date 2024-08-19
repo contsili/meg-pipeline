@@ -13,6 +13,7 @@ def process_con_file(file_path):
     # Load the .con file using MNE
     raw = mne.io.read_raw_kit(file_path, preload=True)
     raw.pick_types(meg=True, eeg=False)
+    raw = remove_zero_channels(raw)
 
     # Get data for all channels
     data, times = raw.get_data(return_times=True)
@@ -100,7 +101,7 @@ def plot_data_avg(csv_file, output_html):
         go.Scatter(
             x=df["Date"],
             y=df["Average"],
-            mode="lines+markers",
+            mode="markers",
             line=dict(color="blue"),
             marker=dict(color="blue", size=8),
             name="Average",
@@ -123,7 +124,7 @@ def plot_data_avg(csv_file, output_html):
 def remove_zero_channels(raw):
     data = raw.get_data()
     non_zero_indices = np.any(data != 0, axis=1)
-    print(non_zero_indices)
+    # print(non_zero_indices)
     raw.pick_channels(
         [raw.ch_names[i] for i in range(len(non_zero_indices)) if non_zero_indices[i]]
     )
@@ -146,7 +147,7 @@ def plot_data_var(csv_file, output_html):
         go.Scatter(
             x=df["Date"],
             y=df["Variance"],
-            mode="lines+markers",
+            mode="markers",
             line=dict(color="grey"),
             marker=dict(color="grey", size=8),
             name="Variance",
@@ -167,7 +168,7 @@ def plot_data_var(csv_file, output_html):
 
 
 # Set the base folder containing .con files and subfolders
-base_folder = r"data"
+base_folder = r"data/meg-kit"
 # Set the output CSV file path
 output_file = r"docs/source/9-dashboard/data/con_files_statistics.csv"
 
@@ -196,3 +197,72 @@ os.makedirs(os.path.dirname(output_variance_html), exist_ok=True)
 
 # Create and save the plot
 plot_data_var(csv_file, output_variance_html)
+
+
+################################################################################
+import plotly.express as px
+import plotly.graph_objs as go
+from plotly.subplots import make_subplots
+
+
+def process_fifo_files(base_folder, output_file):
+    # List to store file names, averages, and variances
+    data = []
+
+    # Iterate over all files in the base_folder
+    for filename in os.listdir(base_folder):
+        if filename.endswith(".fifo"):
+            file_path = os.path.join(base_folder, filename)
+
+            try:
+                # Read data from the .fifo file
+                with open(file_path, "r") as file:
+                    data_lines = file.readlines()
+
+                # Convert data to a list of floats
+                values = [float(line.strip()) for line in data_lines if line.strip()]
+
+                # Calculate average and variance
+                mean = sum(values) / len(values)
+                variance = sum((x - mean) ** 2 for x in values) / len(values)
+
+                # Append the results to the data list
+                data.append([filename, mean, variance])
+
+                print(f"Processed {filename}: Mean={mean:.2f}, Variance={variance:.2f}")
+
+            except Exception as e:
+                print(f"Error processing {filename}: {e}")
+
+    # Convert the data list to a DataFrame
+    df = pd.DataFrame(data, columns=["Filename", "Average", "Variance"])
+
+    # Create a plot with Filename on the x-axis and both Average and Variance on the y-axis
+    fig = make_subplots(specs=[[{"secondary_y": True}]])
+
+    fig.add_trace(
+        go.Bar(x=df["Filename"], y=df["Average"], name="Average"),
+        secondary_y=False,
+    )
+
+    fig.add_trace(
+        go.Bar(x=df["Filename"], y=df["Variance"], name="Variance"),
+        secondary_y=True,
+    )
+
+    # Update layout for better readability
+    fig.update_layout(
+        title="Average and Variance of FIFO Files",
+        xaxis_title="Filename",
+        yaxis_title="Average",
+        yaxis2_title="Variance",
+        barmode="group",
+    )
+
+    # Save the plot as an HTML file
+    fig.write_html(output_file)
+
+
+base_folder = r"data/meg-opm"
+output_file = r"docs/source/_static/average_plot_opm_data.html"
+process_fifo_files(base_folder, output_file)

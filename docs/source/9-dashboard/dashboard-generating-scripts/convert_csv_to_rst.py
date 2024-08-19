@@ -93,11 +93,11 @@ if __name__ == "__main__":
     # base_folder = os.path.abspath(
     #     os.path.join(os.path.dirname(__file__), "../9-dashboard/data")
     # )
-    base_folder = r"docs/source/9-dashboard/data"
+    base_folder = r"9-dashboard/data"
 
     # Set the output folder where .rst files will be saved
 
-    output_folder = r"docs/source/9-dashboard"
+    output_folder = r"9-dashboard"
 
     # output_folder = os.path.abspath(
     #     os.path.join(os.path.dirname(__file__), "../9-dashboard")
@@ -108,20 +108,20 @@ if __name__ == "__main__":
 
     # Generate the Plot html files
 
-    output_file = r"docs/source/9-dashboard/data/con_files_statistics.csv"
+    output_file = r"9-dashboard/data/con_files_statistics.csv"
 
     # output_file = "9-dashboard/data/con_files_statistics.csv"
 
     csv_file = output_file  # Path to the CSV file
 
-    output_html = "_static/average_variance_plot.html"
+    # output_html = "_static/average_variance_plot.html"
 
     # output_html = (
     #     r"docs/source/_static/average_variance_plot.html"  # Path to save the HTML file
     # )
 
     # Ensure output directory exists
-    os.makedirs(os.path.dirname(output_html), exist_ok=True)
+    # os.makedirs(os.path.dirname(output_html), exist_ok=True)
 
     current_dir = os.path.dirname(os.path.abspath(__file__))
 
