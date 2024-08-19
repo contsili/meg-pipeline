@@ -65,10 +65,10 @@ disp(' Make sure the orders in the two lists above match each other');
 segmented_data_all = cell(1, length(MEGFILES));
 
 % Loop over each MEG data file
-for k = 1:length(MEGFILES)
+%for k = 1:length(MEGFILES)
     
     % For testing purpose uncomment below
-    
+    k =1;
 
     % Get the current MEG data file name
     
@@ -239,7 +239,7 @@ for k = 1:length(MEGFILES)
     %event = ft_read_event(confile, 'chanindx', 225:231, 'threshold', 1e4, 'detectflank', 'up');
     event = ft_read_event(confile, 'chanindx', 225:231, 'detectflank', 'up');
     %% Define trials and segment the data
-
+    
     cfg = [];
     cfg.dataset  = confile;
     cfg.trialdef.eventvalue = 1; % placeholder for the conditions
