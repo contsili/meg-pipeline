@@ -20,7 +20,8 @@ def process_con_file(file_path):
     print(f"Processing file: {file_path}")
     print(f"Data shape: {data.shape}")
     # Calculate average and variance across all channels
-    avg = (np.mean(data)) * 1e15
+    #TODO: check correction of this
+    avg = (np.mean(data))
     var = np.var(data)
 
     return avg, var
@@ -173,7 +174,7 @@ def plot_data_var(csv_file, output_html):
 # Set the base folder containing .con files and subfolders
 base_folder = r"data/meg-kit"
 # Set the output CSV file path
-output_file = r"docs/source/9-dashboard/data/con_files_statistics.csv"
+output_file = r"data/con_files_statistics.csv"
 
 # Process all .con files and save the results
 results = process_all_con_files(base_folder)
