@@ -137,6 +137,9 @@ def download_file(file_path, download_path):
         print(f"Error downloading file: {e}")
         traceback.print_exc()
 
+
+logging.basicConfig(level=logging.INFO)
+
 # Check if the file exists
 if os.path.exists("box_secrets.env"):
     load_dotenv("box_secrets.env")
@@ -145,6 +148,8 @@ else:
 
 # Try to auth else exit box-script
 try:
+
+
     # Load the configuration from environment variables
     client_id = os.getenv("BOX_CLIENT_ID")
     # print(client_id)
@@ -213,15 +218,15 @@ try:
             logging.info(f"File {csv_file} does not exist")
             last_date = None
 
+        logging.info("Downloading con files")
         # Start the recursive download from the starting folder
         download_con_files_from_folder(start_folder_id, download_directory, last_date)
 
     except Exception as e:
         logging.error(f"An error occurred in the main script: {str(e)}")
-        print(f"An error occurred: {str(e)}")
         traceback.print_exc()
 
 except Exception as e:
-    print(f"Error during Box authentication setup: {e}")
-    print("Skipping Box script and continuing with the Sphinx build.")
+    logging.error(f"Error during Box authentication setup: {e}")
+    logging.info("Skipping Box script and continuing with the Sphinx build.")
     traceback.print_exc()
