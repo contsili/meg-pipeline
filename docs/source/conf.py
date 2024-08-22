@@ -77,7 +77,9 @@ epub_show_urls = "footnote"
 def run_box_script(app: Sphinx):
     """Run the dashboard generation script."""
     logger = logging.getLogger(__name__)
-    script_path = os.path.join(app.confdir, "9-dashboard", "dashboard-generating-scripts", "box_script.py")
+    script_path = os.path.join(
+        app.confdir, "9-dashboard", "dashboard-generating-scripts", "box_script.py"
+    )
     client_id = os.getenv("BOX_CLIENT_ID")
     logger.info(f"Client id {client_id}")
     client_secret = os.getenv("BOX_CLIENT_SECRET")
@@ -87,18 +89,13 @@ def run_box_script(app: Sphinx):
     public_key_id = os.getenv("BOX_PUBLIC_KEY_ID")
     logger.info(f"{public_key_id}")
 
-
     if os.path.exists(script_path):
-        logger.info(
-            f"Found box_script.py at {script_path}, running it now."
-        )
+        logger.info(f"Found box_script.py at {script_path}, running it now.")
         result = subprocess.run(["python", script_path], capture_output=True, text=True)
         if result.returncode == 0:
             logger.info("box_script.py ran successfully.")
         else:
-            logger.error(
-                f"box_script.py failed with return code {result.returncode}"
-            )
+            logger.error(f"box_script.py failed with return code {result.returncode}")
             logger.error(result.stdout)
             logger.error(result.stderr)
     else:
@@ -108,13 +105,16 @@ def run_box_script(app: Sphinx):
 def run_csv_conversion(app):
     logger = logging.getLogger(__name__)
     script_path = os.path.abspath(
-        os.path.join(app.confdir, "9-dashboard", "dashboard-generating-scripts", "convert_csv_to_rst.py")
+        os.path.join(
+            app.confdir,
+            "9-dashboard",
+            "dashboard-generating-scripts",
+            "convert_csv_to_rst.py",
+        )
     )
 
     if os.path.exists(script_path):
-        logger.info(
-            f"Found convert_csv_to_rst.py at {script_path}, running it now."
-        )
+        logger.info(f"Found convert_csv_to_rst.py at {script_path}, running it now.")
 
         result = subprocess.run(["python", script_path], check=True)
 
@@ -133,7 +133,41 @@ def run_csv_conversion(app):
         logger.error(f"The script {script_path} does not exist.")
 
 
+def run_proccessing_files(app):
+    logger = logging.getLogger(__name__)
+    script_path = os.path.abspath(
+        os.path.join(
+            app.confdir,
+            "9-dashboard",
+            "dashboard-generating-scripts",
+            "proccessing_con_files_for_table.py",
+        )
+    )
+
+    if os.path.exists(script_path):
+        logger.info(
+            f"Found proccessing_con_files_for_table.py at {script_path}, running it now."
+        )
+
+        result = subprocess.run(["python", script_path], check=True)
+
+        if result.returncode == 0:
+            logger.info("proccessing_con_files_for_table.py ran successfully.")
+        else:
+            logger.error(
+                f"proccessing_con_files_for_table.py failed with return code {result.returncode}"
+            )
+            logger.error(result.stdout)
+            logger.error(result.stderr)
+            raise RuntimeError(
+                f"CSV to RST conversion script failed with exit code {result.returncode}"
+            )
+    else:
+        logger.error(f"The script {script_path} does not exist.")
+
+
 def setup(app: Sphinx):
     logging.basicConfig(level=logging.INFO)
     app.connect("builder-inited", run_box_script)
+    app.connect("builder-inited", run_proccessing_files)
     app.connect("builder-inited", run_csv_conversion)
