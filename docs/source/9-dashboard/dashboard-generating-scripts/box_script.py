@@ -144,7 +144,7 @@ logging.basicConfig(level=logging.INFO)
 if os.path.exists("box_secrets.env"):
     load_dotenv("box_secrets.env")
 else:
-    print("box_secrets.env file not found. Skipping load.")
+    logging.info("box_secrets.env file not found. Skipping load.")
 
 # Try to auth else exit box-script
 try:
