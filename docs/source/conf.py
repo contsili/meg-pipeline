@@ -86,8 +86,7 @@ def run_box_script(app: Sphinx):
         result = subprocess.run(["python", script_path], capture_output=True, text=True)
         if result.returncode == 0:
             logger.info("box_script.py ran successfully.")
-            logger.info(result.stdout)
-            logger.error(result.stderr)
+            #logger.info(result.stdout)
         else:
             logger.error(f"box_script.py failed with return code {result.returncode}")
             logger.error(result.stdout)
