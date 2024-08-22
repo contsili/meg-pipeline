@@ -152,7 +152,7 @@ try:
 
     # Load the configuration from environment variables
     client_id = os.getenv("BOX_CLIENT_ID")
-    # print(client_id)
+    logging.info(f"Client ID {client_id}")
     client_secret = os.getenv("BOX_CLIENT_SECRET")
     # print(client_secret)
     enterprise_id = os.getenv("BOX_ENTERPRISE_ID")
