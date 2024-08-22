@@ -99,7 +99,7 @@ saccThreshold = 7; % pixel -> 0.18 dva
 
         if ~isfile(imageFilePath)
             validTrialsIndex(i_trial)
-            i_trial = i_trial + i_trial;
+            i_trial = i_trial + 1;
             continue;
             disp('File does not exist IF triggered')
         end

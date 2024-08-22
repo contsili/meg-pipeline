@@ -263,7 +263,7 @@ try
         Eyelink('Command', 'SetOfflineMode');
         Eyelink('StartRecording');
         Screen('FillOval', w, fixColor, fixRect);
-        Screen('FillRect', w, fixColor, trigRect);
+        Screen('FillRect', w, black, trigRect);
         Screen('Flip', w);
         WaitSecs(2);
         trig.SYNCTIMEsecs = GetSecs();
@@ -284,7 +284,7 @@ try
 
     while i_trial <= size(expTable, 1)
 
-                % PAUSE
+        % PAUSE
         if mod(i_trial, round(size(expTable, 1)/3+1)) == 0
             Screen('DrawText', w, 'WELL DONE, TAKE A BREAK !',  wx-400, wy, [0 0 0]);
             %Screen('FillRect', w, black, trigRect);
@@ -379,6 +379,7 @@ try
         if use_eyetracker==1
             Eyelink('Message', 'TRIGGER %d', trig.START);
         end
+
         expTable.fixDuration(i_trial) = (1000+randperm(500,1))/1000; % random fixation duration
         eyeX = nan; eyeY = nan;
         disp('DEBUG 3')
