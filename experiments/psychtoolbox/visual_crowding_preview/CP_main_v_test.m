@@ -3,6 +3,40 @@ Screen('Preference', 'SkipSyncTests', 1);
 AssertOpenGL;
 
 
+% 
+% For Subject 001 
+% If the value of threshold for one channel is close to zero, this probably means the channel has no triggers, remove it then from the count
+% Channel 224: Number of triggers = 1, Threshold = 0.75
+% Channel 225: Number of triggers = 335, Threshold = 0.83
+% Channel 226: Number of triggers = 300, Threshold = 0.81
+% Channel 227: Number of triggers = 300, Threshold = 0.82
+% Channel 228: Number of triggers = 300, Threshold = 0.85
+% Channel 229: Number of triggers = 300, Threshold = 0.88
+% Channel 230: Number of triggers = 300, Threshold = 0.81
+% Total number of triggers across all channels for Subject 001 is: 1836
+
+% For Subject 002 
+% If the value of threshold for one channel is close to zero, this probably means the channel has no triggers, remove it then from the count
+% Channel 224: Number of triggers = 1, Threshold = 0.75
+% Channel 225: Number of triggers = 1135, Threshold = 0.84
+% Channel 226: Number of triggers = 305, Threshold = 0.81
+% Channel 227: Number of triggers = 305, Threshold = 0.82
+% Channel 228: Number of triggers = 305, Threshold = 0.85
+% Channel 229: Number of triggers = 305, Threshold = 0.88
+% Channel 230: Number of triggers = 305, Threshold = 0.81
+% Total number of triggers across all channels for Subject 002 is: 2661
+
+% For Subject 003 
+% If the value of threshold for one channel is close to zero, this probably means the channel has no triggers, remove it then from the count
+% Channel 224: Number of triggers = 1, Threshold = 0.75
+% Channel 225: Number of triggers = 1878, Threshold = 0.84
+% Channel 226: Number of triggers = 302, Threshold = 0.81
+% Channel 227: Number of triggers = 302, Threshold = 0.82
+% Channel 228: Number of triggers = 302, Threshold = 0.85
+% Channel 229: Number of triggers = 302, Threshold = 0.89
+% Channel 230: Number of triggers = 302, Threshold = 0.81
+% Total number of triggers across all channels for Subject 003 is: 3389
+
 % Modes
 use_vpixx = 0;
 use_eyetracker = 0;
@@ -243,6 +277,8 @@ try
     i_trial = 1;
     numTrials = size(expTable, 1);
     questIdx = 1;
+    
+    %Question: What is this validTrialsIndex?
     validTrialsIndex = true(size(expTable,1), 1);
 
 
@@ -251,7 +287,7 @@ try
                 % PAUSE
         if mod(i_trial, round(size(expTable, 1)/3+1)) == 0
             Screen('DrawText', w, 'WELL DONE, TAKE A BREAK !',  wx-400, wy, [0 0 0]);
-            Screen('FillRect', w, fixColor, trigRect);
+            %Screen('FillRect', w, black, trigRect);
             % Correction
             Screen('FillRect', w, black, trigRect);
             Screen('Flip', w);
@@ -262,16 +298,18 @@ try
         conn = expTable.connection(i_trial);
         cwdg = expTable.crowding(i_trial);
         imgIdx = expTable.imageIndex(i_trial);
-
+        
         preview_fn = sprintf('%s_conn_%d_cwdg_%d_%d.jpg', stim_set, conn, cwdg, imgIdx);
 
         imageFilePath = fullfile(stim_set, preview_fn);
-
+        
         if ~isfile(imageFilePath)
+            % Question: the following line doesn't do anything
             validTrialsIndex(i_trial)
             i_trial = i_trial + i_trial;
             continue;
         end
+        
         previewMatrix = imread(fullfile(stim_set, preview_fn));
         previewTexture = Screen('MakeTexture', w, previewMatrix);
         targetTexture = previewTexture;
@@ -333,7 +371,7 @@ try
         Screen('FillRect', w, trig.ch225, trigRect);
         Screen('Flip', w);
         Screen('DrawTexture', w, wFixation);
-        Screen('FillRect', w, fixColor, trigRect);
+        Screen('FillRect', w, black, trigRect);
         Screen('Flip', w);
 
         fixOnsetTime = GetSecs();
@@ -371,28 +409,35 @@ try
                         else
                             for i=1:3
                                 Screen('FillRect', w, fixBadColor, fixRect);
-                                Screen('FillRect', w, fixColor, trigRect);
+                                Screen('FillRect', w, black, trigRect);
     
                                 Screen('Flip', w);
                                 WaitSecs(.1);
-                                Screen('FillRect', w, fixColor, trigRect);
+                                Screen('FillRect', w, black, trigRect);
     
                                 Screen('Flip', w);
                                 WaitSecs(.1);
                             end
                             counts.ch225 = counts.ch225+1;
                             Screen('DrawTexture', w, wFixation);
+                            % Question: The number of 225 triggers is
+                            % random because the "break" is not in this
+                            % section
                             Screen('FillRect', w, trig.ch225, trigRect);
                             Screen('Flip', w);
                             Screen('DrawTexture', w, wFixation);
-                            Screen('FillRect', w, fixColor, trigRect);
+                            Screen('FillRect', w, black, trigRect);
                             Screen('Flip', w);
     
                             expTable.fixStartTime(i_trial) = GetSecs();
+                            % Question: Does this line display something on
+                            % the screen?
                             Eyelink('Message', 'TRIGGER %d', trig.START);
                         end
                     else % blink
                         expTable.fixStartTime(i_trial) = GetSecs();
+                        % Question: Does this line display something on
+                        % the screen?
                         Eyelink('Message', 'TRIGGER %d', trig.START);
                     end
                 end

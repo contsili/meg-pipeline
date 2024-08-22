@@ -211,7 +211,7 @@ segmented_data_all = cell(1, length(MEGFILES));
     %Plot with a focus on the top of the trigger
     %plot(data_raw(225,1:100000), '.-');
         
-    %Sequence: Red, green, blue, lightblue, orange, black
+    %Sequence: Red, green, blue, lightblue, magenta, orange, black
     %
     figure
     hold on
