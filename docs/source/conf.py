@@ -33,7 +33,6 @@ extensions = [
     "sphinx_gallery.load_style",
     "sphinx.ext.mathjax",
 ]
-
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3/", None),
     "sphinx": ("https://www.sphinx-doc.org/en/master/", None),
@@ -86,11 +85,14 @@ def run_box_script(app: Sphinx):
         result = subprocess.run(["python", script_path], capture_output=True, text=True)
         if result.returncode == 0:
             logger.info("box_script.py ran successfully.")
-            #logger.info(result.stdout)
+
         else:
             logger.error(f"box_script.py failed with return code {result.returncode}")
-            logger.error(result.stdout)
-            logger.error(result.stderr)
+
+
+        logger.info(result.stdout)
+        logger.error(result.stderr)
+
     else:
         logger.error(f"The script {script_path} does not exist.")
 
@@ -109,7 +111,7 @@ def run_csv_conversion(app):
     if os.path.exists(script_path):
         logger.info(f"Found convert_csv_to_rst.py at {script_path}, running it now.")
 
-        result = subprocess.run(["python", script_path], check=True)
+        result = subprocess.run(["python", script_path], check=True, capture_output=True, text=True)
 
         if result.returncode == 0:
             logger.info("convert_csv_to_rst.py ran successfully.")
@@ -142,19 +144,21 @@ def run_proccessing_files(app):
             f"Found proccessing_con_files_for_table.py at {script_path}, running it now."
         )
 
-        result = subprocess.run(["python", script_path], check=True)
+        result = subprocess.run(["python", script_path], check=True, capture_output=True, text=True)
 
         if result.returncode == 0:
             logger.info("proccessing_con_files_for_table.py ran successfully.")
+
         else:
             logger.error(
                 f"proccessing_con_files_for_table.py failed with return code {result.returncode}"
             )
-            logger.error(result.stdout)
-            logger.error(result.stderr)
             raise RuntimeError(
                 f"CSV to RST conversion script failed with exit code {result.returncode}"
             )
+        logger.info(result.stdout)
+        logger.error(result.stderr)
+
     else:
         logger.error(f"The script {script_path} does not exist.")
 
