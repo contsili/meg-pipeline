@@ -1,4 +1,4 @@
-% This script handles the preprocessing of the MEG data, including defining trials and data segmentation, 
+% This script handles the preprocessing of the MEG data, including defining trials and data segmentation,
 % cleaning the data using filters and manual visual rejection, seperating
 % trials into conditions and Timelockanalysis
 % Finally, the ERPs are plotted
@@ -72,9 +72,9 @@ segmented_data_all = cell(1, length(MEGFILES));
     k =2;
 
     % Get the current MEG data file name
-    
+
     confile = fullfile(MEGFILES(k).folder, MEGFILES(k).name);
-    
+
     [~, filename, ~] = fileparts(MEGFILES(k).name);
 
     % Extract the subject identifier from the MEG file name
@@ -92,8 +92,8 @@ segmented_data_all = cell(1, length(MEGFILES));
 
     % Construct the corresponding MATLAB data file path
     MATFILENAME = sprintf('sub-%s-vcp.mat', numericalPart);
-    
-    
+
+
     MATFILEPATH = fullfile(MATFILES(k).folder, MATFILENAME);
 
     % Check if the MATLAB data file exists in the list of matFiles
@@ -105,7 +105,7 @@ segmented_data_all = cell(1, length(MEGFILES));
     % Load the MATLAB data
     load_data_MAT = load(MATFILEPATH);
     data_MAT = load_data_MAT.EXP.data; % Extracting the table from the structure
-    
+
     %% Preprocess data
 
     % Preprocess the MEG data
@@ -113,7 +113,7 @@ segmented_data_all = cell(1, length(MEGFILES));
     cfg.dataset = confile;
     cfg.coilaccuracy = 0;
     data_MEG = ft_preprocessing(cfg);
-    
+
 
     %% Remind that in the design of the experiment we had defined:
     % - trigger channel 225: beginning of the overall experiment.
@@ -146,29 +146,53 @@ segmented_data_all = cell(1, length(MEGFILES));
 
     trigger_indices = find(transitions == 1);
 
-    
+
     % Output the number of triggers
     fprintf('Number of triggers: %d\n', num_triggers);
 
     % figure
     % plot(previewTrigger)
-    
-    
+
+
     %% Sanity Check: Count all trigger events on all trigger channels
-    
-    
+    function count = countSequencesWithAtLeastTwoOnes(arr)
+    count = 0;
+    n = length(arr);
+    i = 1;
+
+    while i <= n
+        if arr(i) == 1
+            sequence_length = 0;
+            % Start counting the length of the sequence of 1s
+            while i <= n && arr(i) == 1
+                sequence_length = sequence_length + 1;
+                i = i + 1;
+            end
+            % If the sequence has at least two 1s, increment the counter
+            if sequence_length >= 2
+                count = count + 1;
+            end
+        else
+            i = i + 1;
+        end
+    end
+    end
+
+
     function count = countSpecialSequences(arr)
     count = 0;
     n = length(arr);
     i = 2;
-    
+
         while i <= n-1
             % Check for a sequence of consecutive 1s surrounded by 0s
             if arr(i) == 1 && arr(i-1) == 0
                 j = i;
                 while j <= n && arr(j) == 1
                     j = j + 1;
+
                 end
+
                 % Check if the sequence ends with a 0 or is at the end of the array
                 if j <= n && arr(j) == 0
                     count = count + 1;
@@ -181,14 +205,14 @@ segmented_data_all = cell(1, length(MEGFILES));
             end
         end
     end
-    
+
     % Initialize total trigger count
     total_triggers = 0;
-    
+
     % Initialize structs to store trigger counts and thresholds for each channel
     trigger_counts = struct();
     thresholds = struct(); % When signal is above the threshold, this part is considered a trigger-event
-    
+
     fprintf('For %s \n', subjectID);
     total_triggers2=0;
     disp(['If the value of threshold for one channel is close to zero, ' ...
@@ -197,25 +221,27 @@ segmented_data_all = cell(1, length(MEGFILES));
     for ch = 225:231
         % Extract the trigger channel
         previewTrigger = data_MEG.trial{1}(ch, :);
-        
+
         % Define a threshold to detect transitions
         threshold = (max(previewTrigger) + min(previewTrigger)) / 2;
-        
+
         % Store the threshold for this channel
         thresholds.(sprintf('Channel_%d', ch)) = threshold;
-        
+
         % Detect transitions from low to high
         transitions = diff(previewTrigger > threshold);
-        
+        difference = previewTrigger >threshold;
+        counts = countSequencesWithAtLeastTwoOnes(transitions);
+        fprintf('counts %d', counts);
         % Count the number of positive transitions (indicating trigger onsets)
         num_triggers = sum(transitions == 1);
-        
-        num_triggers2 = countSpecialSequences(transitions);
-        
+
+        num_triggers2 = countSpecialSequences(difference);
+
         % Save the number of triggers for this channel
         trigger_counts.(sprintf('Channel_%d', ch)) = num_triggers;
-        
-        
+
+
         % Output the number of triggers and the threshold for this channel
         fprintf('Channel %d: Number of triggers = %d, Threshold = %.2f\n', ch, num_triggers, threshold);
         fprintf('Channel %d: Number of triggers method 2 = %d, Threshold = %.2f\n', ch, num_triggers2, threshold);
@@ -223,56 +249,56 @@ segmented_data_all = cell(1, length(MEGFILES));
         total_triggers = total_triggers + num_triggers;
         total_triggers2 = total_triggers2+num_triggers2;
     end
-    
+
     % Output the total number of triggers across all channels
     fprintf('Total number of triggers across all channels for %s is: %d\n', subjectID, total_triggers);
 
     fprintf('Total number of triggers across all channels for %s is: %d\n', subjectID, total_triggers2);
-    %% Read raw confile 
+    %% Read raw confile
     % This simply returns the time series of all channels in one array
     % without any metadata
 
     data_raw = ft_read_data(confile);
-    
+
     %% Sanity Check: If we need to plot a trigger channel and verify it
 
     %plot(data_raw(225,1:100000));
 
     %Plot with a focus on the top of the trigger
     %plot(data_raw(225,1:100000), '.-');
-        
+
     %Sequence: Red, green, blue, lightblue, magenta, orange, black
     %
     figure
     hold on
     plot(data_raw(225, :), 'r');   % Red
     plot(data_raw(226, :), 'g');   % Green
-    plot(data_raw(227, :), 'b');   % Blue 
+    plot(data_raw(227, :), 'b');   % Blue
     plot(data_raw(228, :), 'c');   % Cyan
     plot(data_raw(229, :), 'm');   % Magenta
     plot(data_raw(230, :), 'y');   % Yellow
     plot(data_raw(231, :), 'k');   % Black
     hold off
-    
-    %Make sure sequence is correct 
+
+    %Make sure sequence is correct
 
 
     %% Test: define trials
-    
+
     cfg = [];
     cfg.dataset  = confile;
     %cfg.trialdef.eventvalue = 1;
     cfg.trialdef.prestim    = 1;
     cfg.trialdef.poststim   = 1;
     cfg.trialfun = 'ft_trialfun_general';
-    %cfg.trialdef.eventvalue     = [1 2 3 4 5 6 7]; % the values of the stimulus trigger for the three conditions LF ch225=4, WN ch226=2, HF ch227=1 
+    %cfg.trialdef.eventvalue     = [1 2 3 4 5 6 7]; % the values of the stimulus trigger for the three conditions LF ch225=4, WN ch226=2, HF ch227=1
     cfg.trialdef.chanindx = 225:231; % this will make the binary value either 100 LF(ch225) or WN 010(ch226) or HF 001(ch227)
     %cfg.trialdef.threshold = 0.5; % this is a meaningful value if the pulses have an amplitude of ~5 V
     %cfg.trialdef.eventtype = 'combined_binary_trigger'; % this will be the type of the event if combinebinary = true
     %cfg.trialdef.combinebinary = 1;
     % cfg.trialdef.trigshift = 2; % return the value of the combined pulse 2 samples after the on-ramp (in case of small staircases)
     cfg = ft_definetrial(cfg)
-    
+
     cfg.demean = 'yes'
     cfg.channel = 'AG*'
     data = ft_preprocessing(cfg)
@@ -284,7 +310,7 @@ segmented_data_all = cell(1, length(MEGFILES));
     %event = ft_read_event(confile, 'chanindx', 225:231, 'threshold', 1e4, 'detectflank', 'up');
     event = ft_read_event(confile, 'chanindx', 225:231, 'detectflank', 'up');
     %% Define trials and segment the data
-    
+
     cfg = [];
     cfg.dataset  = confile;
     cfg.trialdef.eventvalue = 1; % placeholder for the conditions

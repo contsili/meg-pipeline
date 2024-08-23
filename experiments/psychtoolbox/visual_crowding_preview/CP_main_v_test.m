@@ -3,8 +3,8 @@ Screen('Preference', 'SkipSyncTests', 1);
 AssertOpenGL;
 
 
-% 
-% For Subject 001 
+%
+% For Subject 001
 % If the value of threshold for one channel is close to zero, this probably means the channel has no triggers, remove it then from the count
 % Channel 224: Number of triggers = 1, Threshold = 0.75
 % Channel 225: Number of triggers = 335, Threshold = 0.83
@@ -15,7 +15,7 @@ AssertOpenGL;
 % Channel 230: Number of triggers = 300, Threshold = 0.81
 % Total number of triggers across all channels for Subject 001 is: 1836
 
-% For Subject 002 
+% For Subject 002
 % If the value of threshold for one channel is close to zero, this probably means the channel has no triggers, remove it then from the count
 % Channel 224: Number of triggers = 1, Threshold = 0.75
 % Channel 225: Number of triggers = 1135, Threshold = 0.84
@@ -26,7 +26,7 @@ AssertOpenGL;
 % Channel 230: Number of triggers = 305, Threshold = 0.81
 % Total number of triggers across all channels for Subject 002 is: 2661
 
-% For Subject 003 
+% For Subject 003
 % If the value of threshold for one channel is close to zero, this probably means the channel has no triggers, remove it then from the count
 % Channel 224: Number of triggers = 1, Threshold = 0.75
 % Channel 225: Number of triggers = 1878, Threshold = 0.84
@@ -48,10 +48,10 @@ use_response_box = 0;
 if use_vpixx==1
 
     Datapixx('Open');
-    
+
     Datapixx('DisablePixelMode');
     Datapixx('RegWr');
-    
+
     Datapixx('SetPropixxDlpSequenceProgram', 0);
     Datapixx('RegWr');
 
@@ -77,6 +77,10 @@ DEMO.sex = answer1{3};
 DEMO.age = str2double(answer1{4});
 DEMO.order = str2double(answer1{5});
 DEMO.date = datetime;
+
+logFilename = sprintf('trigger_log_subject_%s.txt', DEMO.ID);
+logFile = fopen(logFilename, 'w');
+fprintf(logFile, 'Trial\tChannel\tCondition\tTime\tImageName\tConditionLabel\tMessage\n');
 
 fixColor = [0 0 0]; % Fixation color (black)
 fixColorCue = [0 128 0];
@@ -117,7 +121,7 @@ try
     trig.SACCADE = 3;
     trig.TARGET = 4;
     trig.RESPONSE = 5;
-    
+
     if use_eyetracker==1
 
         % EYE-TRACKING SETUP
@@ -127,37 +131,37 @@ try
         el.calibrationtargetcolour = [0 0 0];
         el.msgfontcolour = 0;
         EyelinkUpdateDefaults(el);
-    
+
         if ~EyelinkInit() % 1 means enable dummy mode
             fprintf('Eyelink Init aborted.\n');
             Eyelink('Shutdown');
             Screen('CloseAll');
         end
-    
+
         Eyelink('command', 'screen_pixel_coords = %ld %ld %ld %ld', 0, 0, rect(4)-1, rect(3)-1);
-    
+
         % Link to edf data
         Eyelink('command', 'file_event_filter = LEFT,RIGHT,FIXATION,SACCADE,BLINK,MESSAGE,BUTTON,INPUT'); WaitSecs(0.05);
         Eyelink('command', 'file_sample_data  = LEFT,RIGHT,GAZE,HREF,AREA,GAZERES,STATUS,INPUT,HTARGET'); WaitSecs(0.05);
-    
+
         % Link data to Matlab
         Eyelink('command', 'link_event_filter = LEFT,RIGHT,FIXATION,SACCADE,BLINK,MESSAGE,BUTTON,FIXUPDATE,INPUT'); WaitSecs(0.05);
         Eyelink('command', 'link_sample_data  = LEFT,RIGHT,GAZE,GAZERES,AREA,STATUS,INPUT,HTARGET'); WaitSecs(0.05);
         Eyelink('command', 'link_event_data = GAZE,GAZERES,HREF,AREA,VELOCITY'); WaitSecs(0.05);
-    
+
         edfFile = ['Subj' answer1{1} '.edf'];
         Eyelink('Openfile', edfFile);
-    
+
         Eyelink('command', 'calibration_type = HV6'); WaitSecs(0.05);
         % Before recording, we place reference graphics on the host display
         % Must be offline to draw to EyeLink screen
         Eyelink('Command', 'set_idle_mode'); WaitSecs(0.05);
-    
+
         EyelinkDoTrackerSetup(el); WaitSecs(0.05);
 
     end
 
-    
+
 
     % Top left pixel that controls triggers in PixelMode
     if trigger_test == 0
@@ -176,7 +180,7 @@ try
         Datapixx('EnablePixelMode');  % to use topleft pixel to code trigger information, see https://vpixx.com/vocal/pixelmode/
         Datapixx('RegWr');
     end
-    
+
     % KEYBOARD SETUP
     responseKeys = {'c', 'v', 'a', 'y', 'n', 'return'}; % eyelink commands
     KbName('UnifyKeyNames');
@@ -196,18 +200,18 @@ try
     trig.ch229 = [0 16 0]; % 229 meg channel
     trig.ch230 = [0 64 0]; % 230 meg channel
     trig.ch231 = [0 0  1]; % 231 meg channel
-    
 
-    counts.ch224 = 0; 
-    counts.ch225 = 0; 
-    counts.ch226 = 0; 
+
+    counts.ch224 = 0;
+    counts.ch225 = 0;
+    counts.ch226 = 0;
     counts.ch227 = 0;
     counts.ch228 = 0;
     counts.ch229 = 0;
     counts.ch230 = 0;
     counts.ch231 = 0;
 
-    
+
     % Clear the screen with the background color (white)
     Screen('FillRect', w, [255 255 255]);
     Screen('FillRect', w, black, trigRect);
@@ -231,8 +235,10 @@ try
 
     CP_table;
 
+    fprintf(logFile, 'N/A\t224\tStart Experiment\t%f\tN/A\tN/A\tTriggering start of experiment\n', GetSecs());
+
     % START EXPERIMENT
-    text = { 
+    text = {
         'You will see a fixation point in the middle of the screen. Please keep your eyes fixated on it.'
         'Keep your eyes fixated on the point until it turns green.'
         'When the point turns green, look at the wrod either to the left or righ of the fixation point.'
@@ -259,7 +265,7 @@ try
     Screen('Flip', w);
     Screen('FillRect', w, black, trigRect);
     Screen('Flip', w);
-    
+
     if use_eyetracker==1
         Eyelink('Command', 'SetOfflineMode');
         Eyelink('StartRecording');
@@ -272,13 +278,13 @@ try
         eyeUsed = Eyelink('EyeAvailable');
         eyeUsed = eyeUsed + 1;
     end
-    
+
     goodTrial = 1;
     nBadTrials = 0;
     i_trial = 1;
     numTrials = size(expTable, 1);
     questIdx = 1;
-    
+
     %Question: What is this validTrialsIndex?
     validTrialsIndex = true(size(expTable,1), 1);
 
@@ -299,18 +305,18 @@ try
         conn = expTable.connection(i_trial);
         cwdg = expTable.crowding(i_trial);
         imgIdx = expTable.imageIndex(i_trial);
-        
+
         preview_fn = sprintf('%s_conn_%d_cwdg_%d_%d.jpg', stim_set, conn, cwdg, imgIdx);
 
         imageFilePath = fullfile(stim_set, preview_fn);
-        
+
         if ~isfile(imageFilePath)
             % Question: the following line doesn't do anything
             validTrialsIndex(i_trial)
             i_trial = i_trial + 1;
             continue;
         end
-        
+
         previewMatrix = imread(fullfile(stim_set, preview_fn));
         previewTexture = Screen('MakeTexture', w, previewMatrix);
         targetTexture = previewTexture;
@@ -366,7 +372,7 @@ try
         % FIXATION
         goodTrial = 1;
         errorMsg = 'BAD TRIAL';
-        
+
         counts.ch225 = counts.ch225+1;
         Screen('DrawTexture', w, wFixation);
         Screen('FillRect', w, trig.ch225, trigRect);
@@ -394,14 +400,14 @@ try
                 ListenChar(0)
                 return;
             end
-            
+
             if use_eyetracker==1
 
                 if Eyelink('NewFloatSampleAvailable')
                     eyeSample = Eyelink('NewestFloatSample');
                     eyeX = eyeSample.gx(eyeUsed);
                     eyeY = eyeSample.gy(eyeUsed);
-    
+
                     if eyeX~=el.MISSING_DATA && eyeY~=el.MISSING_DATA % no blinks
                         dist_center = sqrt( (eyeX-wx)^2 + (eyeY-wy)^2 );
                         if dist_center < fixTolerance % fixation is good
@@ -412,11 +418,11 @@ try
                             for i=1:3
                                 Screen('FillRect', w, fixBadColor, fixRect);
                                 Screen('FillRect', w, black, trigRect);
-    
+
                                 Screen('Flip', w);
                                 WaitSecs(.1);
                                 Screen('FillRect', w, black, trigRect);
-    
+
                                 Screen('Flip', w);
                                 WaitSecs(.1);
                             end
@@ -430,7 +436,7 @@ try
                             Screen('DrawTexture', w, wFixation);
                             Screen('FillRect', w, black, trigRect);
                             Screen('Flip', w);
-    
+
                             expTable.fixStartTime(i_trial) = GetSecs();
                             % Question: Does this line display something on
                             % the screen?
@@ -465,13 +471,13 @@ try
         Screen('Flip', w);
 
         expTable.previewOnsetTime(i_trial) = GetSecs();
-        
+
         if use_eyetracker==1
             Eyelink('Message', 'TRIGGER %d', trig.PREVIEW);
         end
 
         saccTrigger = 0;
-        
+
         while goodTrial
             [~,~, keyCode] = KbCheck();
             if find(keyCode) == KbName('escape')
@@ -488,7 +494,7 @@ try
                     eyeX = eyeSample.gx(eyeUsed);
                     eyeY = eyeSample.gy(eyeUsed);
                     disp(['EyeX: ', num2str(eyeX)]);
-    
+
                     if eyeX~=el.MISSING_DATA && eyeY~=el.MISSING_DATA % no blinks
                         dist_center = sqrt( (eyeX-wx)^2 + (eyeY-wy)^2 );
                         if dist_center < fixTolerance % fixation is good
@@ -524,7 +530,7 @@ try
 
 
         disp('DEBUG 4')
-        
+
         if use_eyetracker==1
             while goodTrial
                 % detect saccadeOnset with threshold
@@ -532,13 +538,13 @@ try
                     eyeSample = Eyelink('NewestFloatSample');
                     newEyeX = eyeSample.gx(eyeUsed);
                     disp(['newEyeX: ', num2str(newEyeX)]); % Debugging output
-    
+
                     if abs(newEyeX - eyeX) > saccThreshold % if neeyeX > over the imaginary boundary
                         saccTrigger = saccTrigger + 1;
                         if saccTrigger > 1
                             expTable.saccadeOnsetTime(i_trial) = GetSecs();
                             disp('Saccade detected'); % Debugging output
-    
+
                             Eyelink('Message', 'TRIGGER %d', trig.SACCADE);
                             counts.ch228 = counts.ch228+1;
                             Screen('FillRect', w, trig.ch228, trigRect);
@@ -596,7 +602,7 @@ try
                     eyeSample = Eyelink('NewestFloatSample');
                     eyeX = eyeSample.gx(eyeUsed);
                     eyeY = eyeSample.gy(eyeUsed);
-    
+
                     if eyeX~=el.MISSING_DATA && eyeY~=el.MISSING_DATA % if there are no blinks
                         % dist_target = sqrt( (eyeX- (wx+saccadeOffset*expTable.side(i_trial)) )^2 + (eyeY-wy)^2 );
                         dist_target = eyeX - (wx+saccadeOffset*expTable.side(i_trial));
@@ -631,73 +637,76 @@ try
         Screen('DrawTexture', w, wQuestion);
         Screen('FillRect', w, black, trigRect);
         Screen('Flip', w);
-        
+
         expTable.questionOnsetTime(i_trial) = GetSecs();
         % expTable.responseOnsetTime(i_trial) = GetSecs();
 
         if goodTrial
             nBadTrials = 0;
-            %         [ResponseC 
-            % 
-            % 
+            %         [ResponseC
+            %
+            %
             %  Time, keyCode] = KbWait([], 2);
-            [response, ResponseTime] = getButton();
             if use_response_box==1
-                if ResponseTime - expTable.questionOnsetTime(i_trial) > 1.5 % slow response
-                    %                 Screen('FillRect', w, black, trigRect);
-                    %                 Screen('Flip', w);
-                    Screen('DrawText', w, 'TOO SLOW !!',  wx - 150, wy, [0 0 0]);
-                    Screen('FillRect', w, black, trigRect);
-    
-                    Screen('Flip', w); WaitSecs(2);
-    
-                    errorMsg = 'SLOW RT';
-                    
-                    if use_eyetracker ==1
-                        Eyelink('Message', ['BAD :' errorMsg]);
+                [response, ResponseTime] = getButton();
+
+                    if ResponseTime - expTable.questionOnsetTime(i_trial) > 1.5 % slow response
+                        %                 Screen('FillRect', w, black, trigRect);
+                        %                 Screen('Flip', w);
+                        Screen('DrawText', w, 'TOO SLOW !!',  wx - 150, wy, [0 0 0]);
+                        Screen('FillRect', w, black, trigRect);
+
+                        Screen('Flip', w); WaitSecs(2);
+
+                        errorMsg = 'SLOW RT';
+
+                        if use_eyetracker ==1
+                            Eyelink('Message', ['BAD :' errorMsg]);
+                        end
+
+                        expTable(end + 1, :) = expTable(i_trial, :);
+                        expTable(i_trial, :) = [];
+                        nBadTrials = nBadTrials + 1;
+                        Eyelink('command', ['record_status_message "TRIAL BAD :' errorMsg '" ']);
+                    elseif find(keyCode) == KbName('escape') % exit response
+                        ShowCursor();
+                        RestrictKeysForKbCheck([]);
+                        Screen('CloseAll');
+                        sca;
+                        ListenChar(0);
+                        return; % Exit the script
+
+                    elseif response == 8 || response == 9 %good response 8 is yellow (yes)/ 9 is red (no)
+
+                        if use_eyetracker==1
+                            Eyelink('Message', 'TRIGGER %d', trig.RESPONSE);
+                        end
+
+                        % Response correctness
+                        % if keyCode(KbName('y'))
+                        %     response = num2str('y');
+                        % elseif keyCode(KbName('n'))
+                        %     response = num2str('n');
+                        % end
+
+                        expTable.response(i_trial) = response;
+                        expTable.responseOnsetTime(i_trial) = ResponseTime;
+
+                        if (targetTexture == questionTexture && response == 8) || (targetTexture ~= questionTexture && response == 9)
+                            expTable.correctness(i_trial) = 1; % response correct
+                        else
+                            expTable.correctness(i_trial) = 0; % response not correct
+                        end
+                        if use_eyetracker==1
+                            Eyelink('Message',  ['COND ' num2str(expTable.preview(i_trial)) num2str(expTable.side(i_trial)+1) num2str(expTable.crowding(i_trial))]);
+
+                            i_trial = i_trial + 1;
+                            Eyelink('command', 'record_status_message "TRIAL %d/%d"', i_trial, size(expTable, 1));
+                        end
                     end
-                    
-                    expTable(end + 1, :) = expTable(i_trial, :);
-                    expTable(i_trial, :) = [];
-                    nBadTrials = nBadTrials + 1;
-                    Eyelink('command', ['record_status_message "TRIAL BAD :' errorMsg '" ']);
-                elseif find(keyCode) == KbName('escape') % exit response
-                    ShowCursor();
-                    RestrictKeysForKbCheck([]);
-                    Screen('CloseAll');
-                    sca;
-                    ListenChar(0);
-                    return; % Exit the script
-    
-                elseif response == 8 || response == 9 %good response 8 is yellow (yes)/ 9 is red (no)
-                    
-                    if use_eyetracker==1
-                        Eyelink('Message', 'TRIGGER %d', trig.RESPONSE);
-                    end    
-    
-                    % Response correctness
-                    % if keyCode(KbName('y'))
-                    %     response = num2str('y');
-                    % elseif keyCode(KbName('n'))
-                    %     response = num2str('n');
-                    % end
-    
-                    expTable.response(i_trial) = response;
-                    expTable.responseOnsetTime(i_trial) = ResponseTime;
-    
-                    if (targetTexture == questionTexture && response == 8) || (targetTexture ~= questionTexture && response == 9)
-                        expTable.correctness(i_trial) = 1; % response correct
-                    else
-                        expTable.correctness(i_trial) = 0; % response not correct
-                    end
-                    if use_eyetracker==1 
-                        Eyelink('Message',  ['COND ' num2str(expTable.preview(i_trial)) num2str(expTable.side(i_trial)+1) num2str(expTable.crowding(i_trial))]);
-    
-                        i_trial = i_trial + 1;
-                        Eyelink('command', 'record_status_message "TRIAL %d/%d"', i_trial, size(expTable, 1));
-                    end
-                end
-            end   
+            else
+                i_trial = i_trial + 1;
+            end
         else
             disp(errorMsg)
 
@@ -714,7 +723,7 @@ try
     end
 
     Screen('DrawText', w, 'Congrats! You are done.',  wx-400, wy, [0 0 0]);
-    Screen('FillRect', w, fixColor, trigRect);
+    Screen('FillRect', w, black, trigRect);
     Screen('Flip', w);
     WaitSecs(5);
 
@@ -730,7 +739,7 @@ try
     EXP.trig = trig;
     EXP.stim = stim_fn;
     save(['Sub' answer1{1} '.mat'], 'EXP')
-    
+
     if use_eyetracker==1
     % SAVE EYE DATA
         Eyelink('StopRecording');
@@ -745,9 +754,9 @@ try
         Datapixx('DisablePixelMode');
         Datapixx('RegWr');
         Datapixx('Close');
-    
+
     end
-    
+
     % FINISH EXPERIMENT
     ShowCursor();
     RestrictKeysForKbCheck([]);
@@ -755,12 +764,16 @@ try
     sca;
     ListenChar(0);
 
+
 catch
     % FINISH EXPERIMENT
     ShowCursor();
+    fprintf(logFile, 'ERROR\tN/A\t%f\tN/A\tN/A\t%s\n', GetSecs(), ME.message);
     RestrictKeysForKbCheck([]);
     Screen('CloseAll');
     sca;
     ListenChar(0);
     rethrow(lasterror);
 end
+
+fclose(logFile);
