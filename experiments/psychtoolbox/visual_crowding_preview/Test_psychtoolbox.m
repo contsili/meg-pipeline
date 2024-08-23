@@ -93,7 +93,6 @@ saccadeOffset = 305; % pixel -> 8 dva
 targetDuration = .5; % seconds
 saccThreshold = 7; % pixel -> 0.18 dva
 
-try
 
     % Screen setup
     s = max(Screen('Screens'));
@@ -288,10 +287,9 @@ try
     %Question: What is this validTrialsIndex?
     validTrialsIndex = true(size(expTable,1), 1);
 
-
+    counter = 0;
     while i_trial <= size(expTable, 1)
-
-        % PAUSE
+           
         if mod(i_trial, round(size(expTable, 1)/3+1)) == 0
             Screen('DrawText', w, 'WELL DONE, TAKE A BREAK !',  wx-400, wy, [0 0 0]);
             %Screen('FillRect', w, black, trigRect);
@@ -342,7 +340,7 @@ try
             end
         end
 
-        % OFFSCREEN
+                % OFFSCREEN
 
         wFixation = Screen('OpenOffscreenWindow', w, 255);
         % fixRect = CenterRectOnPoint([0, 0, fixRadius*2, fixRadius*2], wx, wy);
@@ -390,6 +388,8 @@ try
         expTable.fixDuration(i_trial) = (1000+randperm(500,1))/1000; % random fixation duration
         eyeX = nan; eyeY = nan;
         disp('DEBUG 3')
+
+
         while goodTrial
             [~,~, keyCode] = KbCheck();
             if find(keyCode) == KbName('escape')
@@ -400,7 +400,7 @@ try
                 ListenChar(0)
                 return;
             end
-
+            
             if use_eyetracker==1
 
                 if Eyelink('NewFloatSampleAvailable')
@@ -449,6 +449,8 @@ try
                         Eyelink('Message', 'TRIGGER %d', trig.START);
                     end
                 end
+            else
+                break;
             end
 
 %             if GetSecs() - fixOnsetTime > 10
@@ -459,7 +461,6 @@ try
 %                 goodTrial = 0;
 %             end
         end
-
 
         % PREVIEW AND CUE
         counts.ch226 = counts.ch226+1;
@@ -528,7 +529,6 @@ try
             end
         end
 
-
         disp('DEBUG 4')
 
         if use_eyetracker==1
@@ -570,7 +570,7 @@ try
             Screen('Flip', w);
             Screen('FillRect', w, black, trigRect);
             Screen('Flip', w);
-            break;
+          
         end
 
         % TARGET
@@ -588,6 +588,7 @@ try
         if use_eyetracker==1
             Eyelink('Message', 'TRIGGER %d', trig.TARGET);
         end
+
         while GetSecs() - expTable.targetOnsetTime(i_trial) < targetDuration
             [~, ~, keyCode] = KbCheck();
             if find(keyCode) == KbName('escape')
@@ -622,11 +623,12 @@ try
                 end
             end
         end
+        
 
         Screen('FillRect', w, [255 255 255]);
         Screen('FillRect', w, black, trigRect);
         Screen('Flip', w);
-        WaitSecs(1)
+        WaitSecs(0.1)
 
 
         % RESPONSE
@@ -640,6 +642,7 @@ try
 
         expTable.questionOnsetTime(i_trial) = GetSecs();
         % expTable.responseOnsetTime(i_trial) = GetSecs();
+        
 
         if goodTrial
             nBadTrials = 0;
@@ -656,7 +659,7 @@ try
                         Screen('DrawText', w, 'TOO SLOW !!',  wx - 150, wy, [0 0 0]);
                         Screen('FillRect', w, black, trigRect);
 
-                        Screen('Flip', w); WaitSecs(2);
+                        Screen('Flip', w); WaitSecs(.1);
 
                         errorMsg = 'SLOW RT';
 
@@ -718,61 +721,10 @@ try
                 Eyelink('command', ['record_status_message "TRIAL BAD :' errorMsg '" ']);
             end
         end
-
-
+        
+        
+        counter = counter+1;
+        
     end
 
-    Screen('DrawText', w, 'Congrats! You are done.',  wx-400, wy, [0 0 0]);
-    Screen('FillRect', w, black, trigRect);
-    Screen('Flip', w);
-    WaitSecs(5);
-
-    expTable = expTable(validTrialsIndex, :);
-    if use_vpixx==1
-        Datapixx('DisablePixelMode');
-        Datapixx('RegWr');
-        Datapixx('Close');
-    end
-    % SAVE DATA
-    EXP.DEMO = DEMO;
-    EXP.data = expTable;
-    EXP.trig = trig;
-    EXP.stim = stim_fn;
-    save(['Sub' answer1{1} '.mat'], 'EXP')
-
-    if use_eyetracker==1
-    % SAVE EYE DATA
-        Eyelink('StopRecording');
-        Eyelink('CloseFile');
-        Eyelink('ReceiveFile');
-        Eyelink('ShutDown');
-    end
-
-    if use_vpixx==1
-
-        Datapixx('DisablePixelMode');
-        Datapixx('RegWr');
-        Datapixx('Close');
-
-    end
-
-    % FINISH EXPERIMENT
-    ShowCursor();
-    RestrictKeysForKbCheck([]);
-    Screen('CloseAll');
-    sca;
-    ListenChar(0);
-
-
-catch
-    % FINISH EXPERIMENT
-    ShowCursor();
-    fprintf(logFile, 'ERROR\tN/A\t%f\tN/A\tN/A\t%s\n', GetSecs(), ME.message);
-    RestrictKeysForKbCheck([]);
-    Screen('CloseAll');
-    sca;
-    ListenChar(0);
-    rethrow(lasterror);
-end
-
-fclose(logFile);
+disp(counter);
