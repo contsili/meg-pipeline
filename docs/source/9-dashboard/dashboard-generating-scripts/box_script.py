@@ -159,8 +159,19 @@ try:
     public_key_id = os.getenv("BOX_PUBLIC_KEY_ID")
     # print(public_key_id)
 
-    private_key = os.getenv("BOX_PRIVATE_KEY").replace("\\n", "\n").encode()
+    private_key = os.getenv("BOX_PRIVATE_KEY")
+
+    # Ensure it's correctly formatted (remove extra quotes if they exist)
+    if private_key.startswith("'") and private_key.endswith("'"):
+        private_key = private_key[1:-1]
+
+    # Replace escaped newlines with actual newlines
+    private_key = private_key.replace("\\n", "\n").encode()
+
+
+    #private_key = os.getenv("BOX_PRIVATE_KEY").replace("\\n", "\n").encode()
     logging.info(f"key {private_key}")
+
     passphrase = os.getenv("BOX_PASSPHRASE").encode()
 
     if all([client_id, client_secret, enterprise_id, public_key_id, private_key, passphrase]):
