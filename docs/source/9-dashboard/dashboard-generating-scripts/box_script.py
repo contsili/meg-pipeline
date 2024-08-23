@@ -161,16 +161,12 @@ try:
 
     private_key = os.getenv("BOX_PRIVATE_KEY")
 
-    # Ensure it's correctly formatted (remove extra quotes if they exist)
+    # Ensure it's correctly formatted (remove extra quotes if they exist) This caused an issue on the RTD scripts
     if private_key.startswith("'") and private_key.endswith("'"):
         private_key = private_key[1:-1]
 
     # Replace escaped newlines with actual newlines
     private_key = private_key.replace("\\n", "\n").encode()
-
-
-    #private_key = os.getenv("BOX_PRIVATE_KEY").replace("\\n", "\n").encode()
-    logging.info(f"key {private_key}")
 
     passphrase = os.getenv("BOX_PASSPHRASE").encode()
 
