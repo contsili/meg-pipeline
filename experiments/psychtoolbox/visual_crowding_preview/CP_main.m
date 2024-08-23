@@ -240,7 +240,7 @@ try
 
         if ~isfile(imageFilePath)
             validTrialsIndex(i_trial)
-            i_trial = i_trial + i_trial;
+            i_trial = i_trial + 1;
             continue;
         end
         previewMatrix = imread(fullfile(stim_set, preview_fn));
