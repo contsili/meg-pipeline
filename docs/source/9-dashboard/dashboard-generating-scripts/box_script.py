@@ -160,6 +160,7 @@ try:
     # print(public_key_id)
 
     private_key = os.getenv("BOX_PRIVATE_KEY").replace("\\n", "\n").encode()
+    logging.info(f"key {private_key}")
     passphrase = os.getenv("BOX_PASSPHRASE").encode()
 
     if all([client_id, client_secret, enterprise_id, public_key_id, private_key, passphrase]):
