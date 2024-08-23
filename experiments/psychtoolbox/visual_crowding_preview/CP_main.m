@@ -28,6 +28,10 @@ DEMO.age = str2double(answer1{4});
 DEMO.order = str2double(answer1{5});
 DEMO.date = datetime;
 
+logFilename = sprintf('trigger_log_subject_%s.txt', DEMO.ID);
+logFile = fopen(logFilename, 'w');
+fprintf(logFile, 'Trial\tChannel\tCondition\tTime\tImageName\tConditionLabel\tMessage\n');
+
 fixColor = [0 0 0]; % Fixation color (black)
 fixColorCue = [0 128 0];
 fixBadColor = [255 0 0]; % Fixation bad color (red)
@@ -187,6 +191,9 @@ try
     Screen('Flip', w);
     KbWait([], 2)
 
+    fprintf(logFile, 'N/A\t224\tStart Experiment\t%f\tN/A\tN/A\tTriggering start of experiment\n', GetSecs());
+
+
     % Trigger 1
     Screen('FillRect', w, trig.ch224, trigRect);
     Screen('Flip', w);
@@ -287,6 +294,23 @@ try
         Screen('DrawText', wQuestion, 'yes', wx - 305, wy + 150, black);
         Screen('DrawText', wQuestion, 'no', wx + 305, wy + 150, black);
 
+        if i_trial <= size(expTable, 1)
+            imageName = expTable.imageFn{i_trial};  % Get the image name for this trial
+
+            % Extract the condition label from the image name
+            conditionPattern = 'cwdg_(\d+)';  % Regex pattern to match 'cwdg_X'
+            conditionMatch = regexp(imageName, conditionPattern, 'tokens');
+            if ~isempty(conditionMatch)
+                conditionLabel = conditionMatch{1}{1};  % Extract the condition number (e.g., '3')
+            else
+                conditionLabel = 'Unknown';  % In case the condition can't be determined
+            end
+
+        else
+            imageName = 'N/A';  % No image available (indicating an extra trigger)
+            conditionLabel = 'N/A';  % No condition for extra triggers
+        end
+
 
         % FIXATION
         goodTrial = 1;
@@ -368,6 +392,11 @@ try
 
         % PREVIEW AND CUE
         Screen('DrawTexture', w, wPreview);
+        if strcmp(imageName, 'N/A')
+            fprintf(logFile, '%d\t226\tPreview Image\t%f\t%s\t%s\tExtra trigger - no image\n', i_trial, GetSecs(), imageName, conditionLabel);
+        else
+            fprintf(logFile, '%d\t226\tPreview Image\t%f\t%s\t%s\tTriggering preview image\n', i_trial, GetSecs(), imageName, conditionLabel);
+        end
         Screen('FillRect', w, trig.ch226, trigRect);
         Screen('Flip', w);
         Screen('DrawTexture', w, wPreview);
@@ -400,6 +429,11 @@ try
                     if dist_center < fixTolerance % fixation is good
                         if GetSecs() - expTable.fixStartTime(i_trial) > expTable.fixDuration(i_trial)+.5 % fixation is long enough
                             Screen('DrawTexture', w, wCue);
+                            if strcmp(imageName, 'N/A')
+                                fprintf(logFile, '%d\t227\tPreview Image\t%f\t%s\t%s\tExtra trigger - no image\n', i_trial, GetSecs(), imageName, conditionLabel);
+                            else
+                                fprintf(logFile, '%d\t227\tPreview Image\t%f\t%s\t%s\tTriggering preview image\n', i_trial, GetSecs(), imageName, conditionLabel);
+                            end
                             Screen('FillRect', w, trig.ch227, trigRect);
                             Screen('Flip', w);
                             Screen('DrawTexture', w, wCue);
@@ -448,6 +482,11 @@ try
 
         % TARGET
         Screen('DrawTexture', w, wTarget);
+        if strcmp(imageName, 'N/A')
+            fprintf(logFile, '%d\t229\tPreview Image\t%f\t%s\t%s\tExtra trigger - no image\n', i_trial, GetSecs(), imageName, conditionLabel);
+        else
+            fprintf(logFile, '%d\t229\tPreview Image\t%f\t%s\t%s\tTriggering preview image\n', i_trial, GetSecs(), imageName, conditionLabel);
+        end
         Screen('FillRect', w, trig.ch229, trigRect);
         Screen('Flip', w);
         Screen('DrawTexture', w, wTarget);
@@ -572,6 +611,7 @@ try
             Eyelink('command', ['record_status_message "TRIAL BAD :' errorMsg '" ']);
         end
 
+        fprintf(logFile, '%d\tEnd\tN/A\t%f\t%s\t%s\tEnding trial\n', i_trial, GetSecs(), imageName, conditionLabel);
 
     end
 
@@ -612,6 +652,8 @@ try
 
 catch
     % FINISH EXPERIMENT
+    fprintf(logFile, 'ERROR\tN/A\t%f\tN/A\tN/A\t%s\n', GetSecs(), ME.message);
+
     ShowCursor();
     RestrictKeysForKbCheck([]);
     Screen('CloseAll');
@@ -619,3 +661,4 @@ catch
     ListenChar(0);
     rethrow(lasterror);
 end
+fclose(logFile);
