@@ -149,10 +149,9 @@ else:
 # Try to auth else exit box-script
 try:
 
-
     # Load the configuration from environment variables
     client_id = os.getenv("BOX_CLIENT_ID")
-    logging.info(f"Client ID {client_id}")
+    #logging.info(f"Client ID {client_id}")
     client_secret = os.getenv("BOX_CLIENT_SECRET")
     # print(client_secret)
     enterprise_id = os.getenv("BOX_ENTERPRISE_ID")
@@ -162,6 +161,12 @@ try:
 
     private_key = os.getenv("BOX_PRIVATE_KEY").replace("\\n", "\n").encode()
     passphrase = os.getenv("BOX_PASSPHRASE").encode()
+
+    if all([client_id, client_secret, enterprise_id, public_key_id, private_key, passphrase]):
+        logging.info("Secrets retrieved successfully.")
+    else:
+        logging.error("Secrets not retrieved.")
+
     # Set up JWT authentication
     auth = JWTAuth(
         client_id=client_id,
@@ -182,14 +187,10 @@ try:
         print(f"User ID: {user.id}")
         print(f"User Login: {user.login}")
     except BoxAPIException as e:
-        print(f"Error getting user details: {e}")
+       logging.info(f"Error getting user details: {e}")
 
 
-    logging.basicConfig(
-        filename="download_errors.log",
-        level=logging.ERROR,
-        format="%(asctime)s %(levelname)s:%(message)s",
-    )
+
     # Replace with your actual starting folder ID
 
     start_folder_id = get_folder_id_by_path(EMPTY_ROOM_DATA_PATH)
