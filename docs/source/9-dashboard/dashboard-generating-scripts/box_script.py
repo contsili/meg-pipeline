@@ -138,6 +138,9 @@ def download_file(file_path, download_path):
         traceback.print_exc()
 
 
+# Set the logging level for the boxsdk to WARNING or ERROR
+logging.getLogger('boxsdk').setLevel(logging.WARNING)
+
 logging.basicConfig(level=logging.INFO)
 
 # Check if the file exists
