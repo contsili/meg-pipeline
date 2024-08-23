@@ -11,6 +11,8 @@ import plotly.graph_objects as go
 
 def process_con_file(file_path):
     # Load the .con file using MNE
+    # 3 set to be the Threshold
+    s = 3
     raw = mne.io.read_raw_kit(file_path, preload=True)
     raw.pick_types(meg=True, eeg=False)
     raw = remove_zero_channels(raw)
@@ -20,11 +22,18 @@ def process_con_file(file_path):
     print(f"Processing file: {file_path}")
     print(f"Data shape: {data.shape}")
     # Calculate average and variance across all channels
-    #TODO: check correction of this
-    avg = (np.mean(data))
+    # TODO: check correction of this
+    avg = np.mean(data)
     var = np.var(data)
+    status = [
+        (
+            f'<span style="color: green;">•</span> In the threshold'
+            if avg < s
+            else f'<span style="color: red;">•</span> Above the threshold'
+        )
+    ]
 
-    return avg, var
+    return avg, var, status
 
 
 # for negative values: tried looking at the channels of the files that give negative  values found some of them provide negative values
@@ -37,7 +46,7 @@ def process_all_con_files(base_folder):
         for file in files:
             if file.endswith(".con"):
                 file_path = os.path.join(root, file)
-                avg, var = process_con_file(file_path)
+                avg, var, status = process_con_file(file_path)
                 date = extract_date(file)
                 details = "Nothing added yet"
                 date_str = (
@@ -45,6 +54,7 @@ def process_all_con_files(base_folder):
                 )
                 results.append(
                     {
+                        "Status": status,
                         "File Name": file,
                         "Average": avg,
                         "Variance": var,
