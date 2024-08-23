@@ -69,7 +69,7 @@ segmented_data_all = cell(1, length(MEGFILES));
 %%
 
     % For testing purpose uncomment below
-    k =1;
+    k =2;
 
     % Get the current MEG data file name
     
@@ -146,7 +146,7 @@ segmented_data_all = cell(1, length(MEGFILES));
 
     trigger_indices = find(transitions == 1);
 
-
+    
     % Output the number of triggers
     fprintf('Number of triggers: %d\n', num_triggers);
 
@@ -155,6 +155,33 @@ segmented_data_all = cell(1, length(MEGFILES));
     
     
     %% Sanity Check: Count all trigger events on all trigger channels
+    
+    
+    function count = countSpecialSequences(arr)
+    count = 0;
+    n = length(arr);
+    i = 2;
+    
+        while i <= n-1
+            % Check for a sequence of consecutive 1s surrounded by 0s
+            if arr(i) == 1 && arr(i-1) == 0
+                j = i;
+                while j <= n && arr(j) == 1
+                    j = j + 1;
+                end
+                % Check if the sequence ends with a 0 or is at the end of the array
+                if j <= n && arr(j) == 0
+                    count = count + 1;
+                elseif j == n+1
+                    count = count + 1;
+                end
+                i = j; % Move index to the end of the current sequence
+            else
+                i = i + 1;
+            end
+        end
+    end
+    
     % Initialize total trigger count
     total_triggers = 0;
     
@@ -163,7 +190,7 @@ segmented_data_all = cell(1, length(MEGFILES));
     thresholds = struct(); % When signal is above the threshold, this part is considered a trigger-event
     
     fprintf('For %s \n', subjectID);
-    
+    total_triggers2=0;
     disp(['If the value of threshold for one channel is close to zero, ' ...
         'this probably means the channel has no triggers, remove it then from the count'])
     % Loop through each channel from 225 to 231
@@ -183,21 +210,24 @@ segmented_data_all = cell(1, length(MEGFILES));
         % Count the number of positive transitions (indicating trigger onsets)
         num_triggers = sum(transitions == 1);
         
+        num_triggers2 = countSpecialSequences(transitions);
+        
         % Save the number of triggers for this channel
         trigger_counts.(sprintf('Channel_%d', ch)) = num_triggers;
         
         
         % Output the number of triggers and the threshold for this channel
         fprintf('Channel %d: Number of triggers = %d, Threshold = %.2f\n', ch, num_triggers, threshold);
-
+        fprintf('Channel %d: Number of triggers method 2 = %d, Threshold = %.2f\n', ch, num_triggers2, threshold);
         % Add to total trigger count
         total_triggers = total_triggers + num_triggers;
+        total_triggers2 = total_triggers2+num_triggers2;
     end
     
     % Output the total number of triggers across all channels
     fprintf('Total number of triggers across all channels for %s is: %d\n', subjectID, total_triggers);
 
-
+    fprintf('Total number of triggers across all channels for %s is: %d\n', subjectID, total_triggers2);
     %% Read raw confile 
     % This simply returns the time series of all channels in one array
     % without any metadata
@@ -217,12 +247,15 @@ segmented_data_all = cell(1, length(MEGFILES));
     hold on
     plot(data_raw(225, :), 'r');   % Red
     plot(data_raw(226, :), 'g');   % Green
-    plot(data_raw(227, :), 'b');   % Blue
+    plot(data_raw(227, :), 'b');   % Blue 
     plot(data_raw(228, :), 'c');   % Cyan
     plot(data_raw(229, :), 'm');   % Magenta
     plot(data_raw(230, :), 'y');   % Yellow
     plot(data_raw(231, :), 'k');   % Black
     hold off
+    
+    %Make sure sequence is correct 
+
 
     %% Test: define trials
     

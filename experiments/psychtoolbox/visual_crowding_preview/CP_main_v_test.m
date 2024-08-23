@@ -41,6 +41,7 @@ AssertOpenGL;
 use_vpixx = 0;
 use_eyetracker = 0;
 trigger_test = 0;
+use_response_box = 0;
 
 % Open vpix
 
@@ -306,7 +307,7 @@ try
         if ~isfile(imageFilePath)
             % Question: the following line doesn't do anything
             validTrialsIndex(i_trial)
-            i_trial = i_trial + i_trial;
+            i_trial = i_trial + 1;
             continue;
         end
         
@@ -508,6 +509,16 @@ try
     %                     goodTrial = 0;
                     end
                 end
+            else
+                % No eyetracker trigger 227
+                counts.ch227 = counts.ch227+1;
+                Screen('DrawTexture', w, wCue);
+                Screen('FillRect', w, trig.ch227, trigRect);
+                Screen('Flip', w);
+                Screen('DrawTexture', w, wCue);
+                Screen('FillRect', w, black, trigRect);
+                Screen('Flip', w);
+                break;
             end
         end
 
@@ -543,6 +554,17 @@ try
                     eyeX = newEyeX;
                 end
             end
+        else
+            %expTable.saccadeOnsetTime(i_trial) = GetSecs();
+            %disp('Saccade detected'); % Debugging output
+
+            %Eyelink('Message', 'TRIGGER %d', trig.SACCADE);
+            counts.ch228 = counts.ch228+1;
+            Screen('FillRect', w, trig.ch228, trigRect);
+            Screen('Flip', w);
+            Screen('FillRect', w, black, trigRect);
+            Screen('Flip', w);
+            break;
         end
 
         % TARGET
@@ -620,60 +642,62 @@ try
             % 
             %  Time, keyCode] = KbWait([], 2);
             [response, ResponseTime] = getButton();
-            if ResponseTime - expTable.questionOnsetTime(i_trial) > 1.5 % slow response
-                %                 Screen('FillRect', w, black, trigRect);
-                %                 Screen('Flip', w);
-                Screen('DrawText', w, 'TOO SLOW !!',  wx - 150, wy, [0 0 0]);
-                Screen('FillRect', w, black, trigRect);
-
-                Screen('Flip', w); WaitSecs(2);
-
-                errorMsg = 'SLOW RT';
-                
-                if use_eyetracker ==1
-                    Eyelink('Message', ['BAD :' errorMsg]);
+            if use_response_box==1
+                if ResponseTime - expTable.questionOnsetTime(i_trial) > 1.5 % slow response
+                    %                 Screen('FillRect', w, black, trigRect);
+                    %                 Screen('Flip', w);
+                    Screen('DrawText', w, 'TOO SLOW !!',  wx - 150, wy, [0 0 0]);
+                    Screen('FillRect', w, black, trigRect);
+    
+                    Screen('Flip', w); WaitSecs(2);
+    
+                    errorMsg = 'SLOW RT';
+                    
+                    if use_eyetracker ==1
+                        Eyelink('Message', ['BAD :' errorMsg]);
+                    end
+                    
+                    expTable(end + 1, :) = expTable(i_trial, :);
+                    expTable(i_trial, :) = [];
+                    nBadTrials = nBadTrials + 1;
+                    Eyelink('command', ['record_status_message "TRIAL BAD :' errorMsg '" ']);
+                elseif find(keyCode) == KbName('escape') % exit response
+                    ShowCursor();
+                    RestrictKeysForKbCheck([]);
+                    Screen('CloseAll');
+                    sca;
+                    ListenChar(0);
+                    return; % Exit the script
+    
+                elseif response == 8 || response == 9 %good response 8 is yellow (yes)/ 9 is red (no)
+                    
+                    if use_eyetracker==1
+                        Eyelink('Message', 'TRIGGER %d', trig.RESPONSE);
+                    end    
+    
+                    % Response correctness
+                    % if keyCode(KbName('y'))
+                    %     response = num2str('y');
+                    % elseif keyCode(KbName('n'))
+                    %     response = num2str('n');
+                    % end
+    
+                    expTable.response(i_trial) = response;
+                    expTable.responseOnsetTime(i_trial) = ResponseTime;
+    
+                    if (targetTexture == questionTexture && response == 8) || (targetTexture ~= questionTexture && response == 9)
+                        expTable.correctness(i_trial) = 1; % response correct
+                    else
+                        expTable.correctness(i_trial) = 0; % response not correct
+                    end
+                    if use_eyetracker==1 
+                        Eyelink('Message',  ['COND ' num2str(expTable.preview(i_trial)) num2str(expTable.side(i_trial)+1) num2str(expTable.crowding(i_trial))]);
+    
+                        i_trial = i_trial + 1;
+                        Eyelink('command', 'record_status_message "TRIAL %d/%d"', i_trial, size(expTable, 1));
+                    end
                 end
-                
-                expTable(end + 1, :) = expTable(i_trial, :);
-                expTable(i_trial, :) = [];
-                nBadTrials = nBadTrials + 1;
-                Eyelink('command', ['record_status_message "TRIAL BAD :' errorMsg '" ']);
-            elseif find(keyCode) == KbName('escape') % exit response
-                ShowCursor();
-                RestrictKeysForKbCheck([]);
-                Screen('CloseAll');
-                sca;
-                ListenChar(0);
-                return; % Exit the script
-
-            elseif response == 8 || response == 9 %good response 8 is yellow (yes)/ 9 is red (no)
-                
-                if use_eyetracker==1
-                    Eyelink('Message', 'TRIGGER %d', trig.RESPONSE);
-                end    
-
-                % Response correctness
-                % if keyCode(KbName('y'))
-                %     response = num2str('y');
-                % elseif keyCode(KbName('n'))
-                %     response = num2str('n');
-                % end
-
-                expTable.response(i_trial) = response;
-                expTable.responseOnsetTime(i_trial) = ResponseTime;
-
-                if (targetTexture == questionTexture && response == 8) || (targetTexture ~= questionTexture && response == 9)
-                    expTable.correctness(i_trial) = 1; % response correct
-                else
-                    expTable.correctness(i_trial) = 0; % response not correct
-                end
-                if use_eyetracker==1 
-                    Eyelink('Message',  ['COND ' num2str(expTable.preview(i_trial)) num2str(expTable.side(i_trial)+1) num2str(expTable.crowding(i_trial))]);
-
-                    i_trial = i_trial + 1;
-                    Eyelink('command', 'record_status_message "TRIAL %d/%d"', i_trial, size(expTable, 1));
-                end
-             end
+            end   
         else
             disp(errorMsg)
 
