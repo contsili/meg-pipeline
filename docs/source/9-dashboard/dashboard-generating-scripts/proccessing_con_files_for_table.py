@@ -23,7 +23,7 @@ def process_con_file(file_path):
     print(f"Data shape: {data.shape}")
     # Calculate average and variance across all channels
     # TODO: check correction of this
-    avg = np.mean(data)
+    avg = (np.mean(data)) * 1e15
     var = np.var(data)
     status = [(f"🟢 In the threshold" if avg < s else f"🔴 Above the threshold")]
 
@@ -176,7 +176,7 @@ def plot_data_var(csv_file, output_html):
 
 
 # Set the base folder containing .con files and subfolders
-base_folder = r"data/meg-kit"
+base_folder = r"data"
 # Set the output CSV file path
 output_file = r"data/con_files_statistics.csv"
 
@@ -188,7 +188,7 @@ print(f"Results saved to {output_file}")
 # print(results)
 
 csv_file = output_file  # Path to the CSV file
-output_avg_html = r"docs/source/_static/average_plot.html"  # Path to save the HTML file
+output_avg_html = "_static/average_plot.html"  # Path to save the HTML file
 
 # Ensure output directory exists
 os.makedirs(os.path.dirname(output_avg_html), exist_ok=True)
@@ -196,9 +196,7 @@ os.makedirs(os.path.dirname(output_avg_html), exist_ok=True)
 # Create and save the plot
 plot_data_avg(csv_file, output_avg_html)
 
-output_variance_html = (
-    r"docs/source/_static/variance_plot.html"  # Path to save the HTML file
-)
+output_variance_html = "_static/variance_plot.html"  # Path to save the HTML file
 
 # Ensure output directory exists
 os.makedirs(os.path.dirname(output_variance_html), exist_ok=True)
