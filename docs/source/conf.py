@@ -89,7 +89,6 @@ def run_box_script(app: Sphinx):
         else:
             logger.error(f"box_script.py failed with return code {result.returncode}")
 
-
         logger.info(result.stdout)
         logger.error(result.stderr)
 
@@ -99,19 +98,19 @@ def run_box_script(app: Sphinx):
 
 def run_csv_conversion(app):
     logger = logging.getLogger(__name__)
-    script_path = os.path.abspath(
-        os.path.join(
-            app.confdir,
-            "9-dashboard",
-            "dashboard-generating-scripts",
-            "convert_csv_to_rst.py",
-        )
+    script_path = os.path.join(
+        app.confdir,
+        "9-dashboard",
+        "dashboard-generating-scripts",
+        "convert_csv_to_rst.py",
     )
 
     if os.path.exists(script_path):
         logger.info(f"Found convert_csv_to_rst.py at {script_path}, running it now.")
 
-        result = subprocess.run(["python", script_path], check=True, capture_output=True, text=True)
+        result = subprocess.run(
+            ["python", script_path], check=True, capture_output=True, text=True
+        )
 
         if result.returncode == 0:
             logger.info("convert_csv_to_rst.py ran successfully.")
@@ -130,13 +129,11 @@ def run_csv_conversion(app):
 
 def run_proccessing_files(app):
     logger = logging.getLogger(__name__)
-    script_path = os.path.abspath(
-        os.path.join(
-            app.confdir,
-            "9-dashboard",
-            "dashboard-generating-scripts",
-            "proccessing_con_files_for_table.py",
-        )
+    script_path = os.path.join(
+        app.confdir,
+        "9-dashboard",
+        "dashboard-generating-scripts",
+        "proccessing_con_files_for_table.py",
     )
 
     if os.path.exists(script_path):
@@ -144,7 +141,9 @@ def run_proccessing_files(app):
             f"Found proccessing_con_files_for_table.py at {script_path}, running it now."
         )
 
-        result = subprocess.run(["python", script_path], check=True, capture_output=True, text=True)
+        result = subprocess.run(
+            ["python", script_path], check=True, capture_output=True, text=True
+        )
 
         if result.returncode == 0:
             logger.info("proccessing_con_files_for_table.py ran successfully.")

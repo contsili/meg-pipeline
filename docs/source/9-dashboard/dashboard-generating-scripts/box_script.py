@@ -11,6 +11,8 @@ import traceback
 
 
 EMPTY_ROOM_DATA_PATH = "Data/empty-room/sub-emptyroom"
+
+
 def upload_file(folder_path):
     # Locate the target folder
     try:
@@ -35,6 +37,8 @@ def upload_file(folder_path):
     except FileNotFoundError:
         print(f"File not found: {file_path}")
         traceback.print_exc()
+
+
 def get_folder_id_by_path(path):
     folder_id = "0"  # Start with the root folder
     for folder_name in path.split("/"):
@@ -48,11 +52,12 @@ def get_folder_id_by_path(path):
             raise ValueError(f'Folder "{folder_name}" not found in path.')
     return folder_id
 
+
 def download_con_files_from_folder(folder_id, path, last_date):
 
     try:
         folder = client.folder(folder_id).get()
-        items = folder.get_items(limit=100, offset=0)
+        items = folder.get_items(limit=10000, offset=0)
 
         for item in items:
             try:
@@ -77,9 +82,7 @@ def download_con_files_from_folder(folder_id, path, last_date):
                 elif item.type == "folder":
                     new_folder_path = os.path.join(path, item.name)
                     os.makedirs(new_folder_path, exist_ok=True)
-                    download_con_files_from_folder(
-                        item.id, new_folder_path, last_date
-                    )
+                    download_con_files_from_folder(item.id, new_folder_path, last_date)
             except Exception as e:
                 logging.error(
                     f"Failed to download file or process folder '{item.name}': {str(e)}"
@@ -91,6 +94,8 @@ def download_con_files_from_folder(folder_id, path, last_date):
         logging.error(f"Failed to access folder with ID {folder_id}: {str(e)}")
         print(f"Error accessing folder with ID {folder_id}: {str(e)}")
         traceback.print_exc()
+
+
 def get_folder():
     try:
         items = client.folder("0").get_items()
@@ -101,10 +106,13 @@ def get_folder():
         print(f"Error fetching folder contents: {e}")
         traceback.print_exc()
 
+
 def get_file_metadata(file_id):
     box_file = client.file(file_id).get()
     modified_at = box_file.modified_at
     return modified_at
+
+
 def download_file(file_path, download_path):
     path_parts = file_path.split("/")
     file_name = path_parts[-1]
@@ -139,7 +147,7 @@ def download_file(file_path, download_path):
 
 
 # Set the logging level for the boxsdk to WARNING or ERROR
-logging.getLogger('boxsdk').setLevel(logging.WARNING)
+logging.getLogger("boxsdk").setLevel(logging.WARNING)
 
 logging.basicConfig(level=logging.INFO)
 
@@ -154,7 +162,7 @@ try:
 
     # Load the configuration from environment variables
     client_id = os.getenv("BOX_CLIENT_ID")
-    #logging.info(f"Client ID {client_id}")
+    # logging.info(f"Client ID {client_id}")
     client_secret = os.getenv("BOX_CLIENT_SECRET")
     # print(client_secret)
     enterprise_id = os.getenv("BOX_ENTERPRISE_ID")
@@ -173,7 +181,16 @@ try:
 
     passphrase = os.getenv("BOX_PASSPHRASE").encode()
 
-    if all([client_id, client_secret, enterprise_id, public_key_id, private_key, passphrase]):
+    if all(
+        [
+            client_id,
+            client_secret,
+            enterprise_id,
+            public_key_id,
+            private_key,
+            passphrase,
+        ]
+    ):
         logging.info("Secrets retrieved successfully.")
     else:
         logging.error("Secrets not retrieved.")
@@ -198,9 +215,7 @@ try:
         print(f"User ID: {user.id}")
         print(f"User Login: {user.login}")
     except BoxAPIException as e:
-       logging.info(f"Error getting user details: {e}")
-
-
+        logging.info(f"Error getting user details: {e}")
 
     # Replace with your actual starting folder ID
 
