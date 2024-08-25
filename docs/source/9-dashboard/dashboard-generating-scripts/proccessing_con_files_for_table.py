@@ -25,13 +25,7 @@ def process_con_file(file_path):
     # TODO: check correction of this
     avg = np.mean(data)
     var = np.var(data)
-    status = [
-        (
-            f'<span style="color: green;">•</span> In the threshold'
-            if avg < s
-            else f'<span style="color: red;">•</span> Above the threshold'
-        )
-    ]
+    status = [(f"🟢 In the threshold" if avg < s else f"🔴 Above the threshold")]
 
     return avg, var, status
 
