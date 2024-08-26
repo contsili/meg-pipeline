@@ -178,7 +178,7 @@ def plot_data_var(csv_file, output_html):
 # Set the base folder containing .con files and subfolders
 base_folder = r"data"
 # Set the output CSV file path
-output_file = r"data/con_files_statistics.csv"
+output_file = "9-dashboard/data/con_files_statistics.csv"
 
 # Process all .con files and save the results
 results = process_all_con_files(base_folder)
@@ -271,4 +271,4 @@ def process_fifo_files(base_folder, output_file):
 
 base_folder = r"data/meg-opm"
 output_file = r"docs/source/_static/average_plot_opm_data.html"
-process_fifo_files(base_folder, output_file)
+# process_fifo_files(base_folder, output_file)
