@@ -46,15 +46,12 @@ end
 % Get a list of all MATLAB data files in the folder matching the pattern
 MATFILES = dir(fullfile(DATASET_PATH, 'sub-*-vcp','experiment-log', 'sub-*-vcp.mat'));
 
-
 disp(['Found ', num2str(length(MATFILES)), ' MATLAB experiment-log .mat files.']);
-
 
 % Display the names of the files
 for i = 1:length(MATFILES)
     disp(MATFILES(i).name);
 end
-
 
 disp(' Make sure the orders in the two lists above match each other');
 
@@ -69,7 +66,7 @@ segmented_data_all = cell(1, length(MEGFILES));
 %%
 
     % For testing purpose uncomment below
-    k =2;
+    k =1;
 
     % Get the current MEG data file name
 
@@ -115,7 +112,7 @@ segmented_data_all = cell(1, length(MEGFILES));
     data_MEG = ft_preprocessing(cfg);
 
 
-    %% Remind that in the design of the experiment we had defined:
+    %% Remind that in the design of the experiment we had defined: (in MATLAB indexing not the MEG reference)
     % - trigger channel 225: beginning of the overall experiment.
     % - trigger channel 226: each display of the fixation point.
     % - trigger channel 227: display of the preview image.
@@ -155,56 +152,6 @@ segmented_data_all = cell(1, length(MEGFILES));
 
 
     %% Sanity Check: Count all trigger events on all trigger channels
-    function count = countSequencesWithAtLeastTwoOnes(arr)
-    count = 0;
-    n = length(arr);
-    i = 1;
-
-    while i <= n
-        if arr(i) == 1
-            sequence_length = 0;
-            % Start counting the length of the sequence of 1s
-            while i <= n && arr(i) == 1
-                sequence_length = sequence_length + 1;
-                i = i + 1;
-            end
-            % If the sequence has at least two 1s, increment the counter
-            if sequence_length >= 2
-                count = count + 1;
-            end
-        else
-            i = i + 1;
-        end
-    end
-    end
-
-
-    function count = countSpecialSequences(arr)
-    count = 0;
-    n = length(arr);
-    i = 2;
-
-        while i <= n-1
-            % Check for a sequence of consecutive 1s surrounded by 0s
-            if arr(i) == 1 && arr(i-1) == 0
-                j = i;
-                while j <= n && arr(j) == 1
-                    j = j + 1;
-
-                end
-
-                % Check if the sequence ends with a 0 or is at the end of the array
-                if j <= n && arr(j) == 0
-                    count = count + 1;
-                elseif j == n+1
-                    count = count + 1;
-                end
-                i = j; % Move index to the end of the current sequence
-            else
-                i = i + 1;
-            end
-        end
-    end
 
     % Initialize total trigger count
     total_triggers = 0;
@@ -236,24 +183,20 @@ segmented_data_all = cell(1, length(MEGFILES));
         % Count the number of positive transitions (indicating trigger onsets)
         num_triggers = sum(transitions == 1);
 
-        num_triggers2 = countSpecialSequences(difference);
-
         % Save the number of triggers for this channel
         trigger_counts.(sprintf('Channel_%d', ch)) = num_triggers;
 
-
         % Output the number of triggers and the threshold for this channel
         fprintf('Channel %d: Number of triggers = %d, Threshold = %.2f\n', ch, num_triggers, threshold);
-        fprintf('Channel %d: Number of triggers method 2 = %d, Threshold = %.2f\n', ch, num_triggers2, threshold);
+
         % Add to total trigger count
         total_triggers = total_triggers + num_triggers;
-        total_triggers2 = total_triggers2+num_triggers2;
+
     end
 
     % Output the total number of triggers across all channels
     fprintf('Total number of triggers across all channels for %s is: %d\n', subjectID, total_triggers);
 
-    fprintf('Total number of triggers across all channels for %s is: %d\n', subjectID, total_triggers2);
     %% Read raw confile
     % This simply returns the time series of all channels in one array
     % without any metadata
@@ -282,7 +225,6 @@ segmented_data_all = cell(1, length(MEGFILES));
 
     %Make sure sequence is correct
 
-
     %% Test: define trials
 
     cfg = [];
@@ -304,13 +246,18 @@ segmented_data_all = cell(1, length(MEGFILES));
     data = ft_preprocessing(cfg)
 
 
-    %%
+    %% DEBUG ONLY: Reading triggers from confile
 
     hdr   = ft_read_header(confile);
     %event = ft_read_event(confile, 'chanindx', 225:231, 'threshold', 1e4, 'detectflank', 'up');
     event = ft_read_event(confile, 'chanindx', 225:231, 'detectflank', 'up');
-    %% Define trials and segment the data
 
+    %% Define trials and segment the data
+    
+    previewTrigger = data_MEG.trial{1}(227, :);
+
+    threshold = (max(previewTrigger) + min(previewTrigger)) / 2;
+    
     cfg = [];
     cfg.dataset  = confile;
     cfg.trialdef.eventvalue = 1; % placeholder for the conditions
@@ -326,12 +273,16 @@ segmented_data_all = cell(1, length(MEGFILES));
     if size(cfg.trl, 1) > 300
         cfg.trl = cfg.trl(1:300, :);
     end
+
     % Update the fourth column (eventvalue placeholder) of cfg.trl with the conditions
     cfg.trl(:, 4) = data_MAT.crowding;
+    
 
     % Segment the data based on the defined trials
+    % Maybe this is not needed when no filter are applied yet
     segmented_data = ft_preprocessing(cfg);
 
+    
     %% Cleaning: Filtering the data using bandpass and notch filter
 
     % Band-pass filter the data
@@ -351,7 +302,17 @@ segmented_data_all = cell(1, length(MEGFILES));
     %% Cleaning: Inspect and exclude trials for artefacts
 
     % Identify the MEG channels (assuming MEG channels are 1 to 224)
+    % Channel 92 is broken sensor should be excluded
+    % Plot of channel 92
+    cfg = [];
+    cfg.channel = data_MEG.label{92};  % Assuming you want to plot the 5th channel
+    cfg.xlim = [data_MEG.time{1}(1) data_MEG.time{1}(end)];  % This sets the x-axis to cover the entire time range
+    ft_singleplotER(cfg, data_MEG);
+      
+    % MEG channels
     meg_channels = 1:208;
+    %Corrected
+    meg_channels = setdiff(1:208, 92);
 
     % Use ft_databrowser for interactive visualization excluding trigger channels
     cfg_reject = [];
@@ -380,7 +341,7 @@ segmented_data_all = cell(1, length(MEGFILES));
 
     cfg.trials = (segmented_data_clean.trialinfo==3);
     dataCrowding3 = ft_selectdata(cfg, segmented_data_clean);
-
+ 
     % Visualize the first trial of channel 20
     % figure
     % plot(dataCrowding1.time{1}, dataCrowding1.trial{1}(20,:))
