@@ -30,7 +30,8 @@ MEG_DATA_FOLDER = getenv('MEG_DATA');
 % Set path to KIT .con file of sub-03
 DATASET_PATH = [MEG_DATA_FOLDER,'visual_crowding_preview'];
 
-SAVE_PATH = 'output';
+%THis needs fixing to sav eproperly
+SAVE_PATH = [MEG_DATA_FOLDER, 'visual_crowding_preview'];
 
 % Get a list of all MEG data files
 MEGFILES = dir(fullfile(DATASET_PATH, 'sub-*-vcp','meg-kit', 'sub-*-vcp-analysis_NR.con'));
@@ -276,7 +277,7 @@ segmented_data_all = cell(1, length(MEGFILES));
 
     % Update the fourth column (eventvalue placeholder) of cfg.trl with the conditions
     cfg.trl(:, 4) = data_MAT.crowding;
-    
+
 
     % Segment the data based on the defined trials
     % Maybe this is not needed when no filter are applied yet
@@ -299,16 +300,38 @@ segmented_data_all = cell(1, length(MEGFILES));
     data_filtered = ft_preprocessing(cfg, data_bp);
 
 
-    %% Cleaning: Inspect and exclude trials for artefacts
+    %% Plot bad channel
 
     % Identify the MEG channels (assuming MEG channels are 1 to 224)
     % Channel 92 is broken sensor should be excluded
     % Plot of channel 92
+    
     cfg = [];
-    cfg.channel = data_MEG.label{92};  % Assuming you want to plot the 5th channel
-    cfg.xlim = [data_MEG.time{1}(1) data_MEG.time{1}(end)];  % This sets the x-axis to cover the entire time range
+    cfg.channel = data_MEG.label{92};  
+    %cfg.xlim = [data_MEG.time{1}(1) data_MEG.time{1}(end)];  % This sets the x-axis to cover the entire time range
+    cfg.xlim = 'maxmin';  % Automatically set x-axis limits based on the data range
+    cfg.ylim = 'maxmin';  % Automatically set y-axis limits based on the data range
+    
+    % Shows that at 10^-26 scale 
     ft_singleplotER(cfg, data_MEG);
-      
+    
+
+    %% Plot good channel
+
+    % Identify the MEG channels (assuming MEG channels are 1 to 224)
+    % Channel 92 is broken sensor should be excluded
+    % Plot of channel 92
+    
+    cfg = [];
+    cfg.channel = data_MEG.label{91};  
+    %cfg.xlim = [data_MEG.time{1}(1) data_MEG.time{1}(end)];  % This sets the x-axis to cover the entire time range
+    cfg.xlim = 'maxmin';  % Automatically set x-axis limits based on the data range
+    cfg.ylim = 'maxmin';  % Automatically set y-axis limits based on the data range
+    
+
+    ft_singleplotER(cfg, data_MEG);
+    
+    %% Cleaning: Inspect and exclude trials for artefacts 
     % MEG channels
     meg_channels = 1:208;
     %Corrected
@@ -327,7 +350,7 @@ segmented_data_all = cell(1, length(MEGFILES));
 
     %% Cleaning: ICA
 
-
+    
 
     %% separate the trials into the conditions
 
@@ -364,8 +387,7 @@ segmented_data_all = cell(1, length(MEGFILES));
     save(fullfile(subjectResultsFolder, sprintf('%s_avgCWDG2.mat', subjectID)), 'avgCWDG2');
     save(fullfile(subjectResultsFolder, sprintf('%s_avgCWDG3.mat', subjectID)), 'avgCWDG3');
 
-
-    % Plot all ERPs in sensor space
+%% Plot all ERPs in sensor space
     cfg = [];
     cfg.showlabels = 'no';
     cfg.fontsize = 6;
@@ -418,6 +440,11 @@ segmented_data_all = cell(1, length(MEGFILES));
     title(sprintf('Topographic plot of condition 3: %s', subjectID), 'Interpreter', 'none');
     saveas(gcf, fullfile(subjectResultsFolder, sprintf('%s_Topographic_plot_cwdg_3.png', subjectID)));
 
+
+
+    %% Do a constrast analysis High crowding - No Crowding
+
+    
 
 
 
