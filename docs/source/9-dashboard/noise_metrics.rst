@@ -1,4 +1,5 @@
 .. list-table:: Metrics for assessing data quality (Noise levels)
+   :widths: 25 25
    :header-rows: 1
 
    * - Metric

@@ -19,6 +19,8 @@ def process_con_file(file_path):
 
     # Get data for all channels
     data, times = raw.get_data(return_times=True)
+    sfreq = raw.info["sfreq"]
+    freqs, fft_data = compute_fft(data, sfreq)
     print(f"Processing file: {file_path}")
     print(f"Data shape: {data.shape}")
     # Calculate average and variance across all channels
@@ -27,7 +29,7 @@ def process_con_file(file_path):
     var = np.var(data)
     status = [(f"🟢 In the threshold" if avg < s else f"🔴 Above the threshold")]
 
-    return avg, var, status
+    return avg, var, status, freqs, fft_data
 
 
 # for negative values: tried looking at the channels of the files that give negative  values found some of them provide negative values
@@ -40,7 +42,7 @@ def process_all_con_files(base_folder):
         for file in files:
             if file.endswith(".con"):
                 file_path = os.path.join(root, file)
-                avg, var, status = process_con_file(file_path)
+                avg, var, status, freqs, fft_data = process_con_file(file_path)
                 date = extract_date(file)
                 details = "Nothing added yet"
                 date_str = (
@@ -173,6 +175,12 @@ def plot_data_var(csv_file, output_html):
     # Save plot as HTML
     fig.write_html(output_html)
     print(f"Plot saved to {output_html}")
+
+
+def compute_fft(data, sfreq):
+    fft_data = np.fft.rfft(data, axis=-1)
+    freqs = np.fft.rfftfreq(data.shape[-1], d=1 / sfreq)
+    return freqs, np.abs(fft_data)
 
 
 # Set the base folder containing .con files and subfolders

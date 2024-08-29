@@ -167,3 +167,4 @@ def setup(app: Sphinx):
     app.connect("builder-inited", run_box_script)
     app.connect("builder-inited", run_proccessing_files)
     app.connect("builder-inited", run_csv_conversion)
+    # app.add_css_file('custom.css')
