@@ -100,7 +100,7 @@ def plot_data_avg(csv_file, output_html):
     df = pd.read_csv(csv_file)
 
     # Ensure 'Date' column is in datetime format
-    df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
+    df["Date"] = pd.to_datetime(df["Date"], format="%d-%m-%y %H:%M:%S", errors="coerce")
     df = df.sort_values(by="Date")
 
     # Create figure
@@ -146,7 +146,7 @@ def plot_data_var(csv_file, output_html):
     df = pd.read_csv(csv_file)
 
     # Ensure 'Date' column is in datetime format
-    df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
+    df["Date"] = pd.to_datetime(df["Date"], format="%d-%m-%y %H:%M:%S", errors="coerce")
     df = df.sort_values(by="Date")
 
     # Create figure

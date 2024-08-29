@@ -39,16 +39,20 @@ Documentation for the following dashboard
 ##########################################
 
 The following dashboard contains: one table containing the status of each empty-room data file, and two graphs containing the average and the variance of each empty-room data file.
-- 1.Data source:
 
- Box-data download .con files , date from the metadata of each file, we get the date of last-modified
-- 2. Over-view of the table:
+1. Data source:
+   
+   Box-data download .con files, date from the metadata of each file, we get the date of last-modified.
 
- create table
- 
- column-name/description/matrics
-- 3.Use cases
+2. Overview of the table:
 
- monitor status using table: green means everything is well, red means somthing is wrong
- 
- get the average of each room data with variance.
+   Create table
+
+   - **Column name**
+   - **Description**
+   - **Metrics**
+
+3. Use cases:
+
+   - Monitor status using table: green means everything is well, red means something is wrong.
+   - Get the average of each room data with variance.
