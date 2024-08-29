@@ -15,8 +15,6 @@ Several metrics are defined in the below table and will serve as basis to asess 
 
 .. include:: KIT_data_quality_dashboard.rst
 
-.. include:: OPM_data_quality_dashboard.rst
-
 Plot of Average and Variance Over Time
 ######################################
 
@@ -24,7 +22,8 @@ Plot of Average and Variance Over Time
 
     <iframe src="../_static/average_plot.html" width="100%" height="600px" frameborder="0"></iframe>
     <iframe src="../_static/variance_plot.html" width="100%" height="600px" frameborder="0"></iframe>
-    <iframe src="../_static/average_plot_opm_data.html" width="100%" height="600px"></iframe>
+
+.. include:: OPM_data_quality_dashboard.rst
 
 Dashboard generation developper guide
 #####################################
@@ -40,11 +39,16 @@ Documentation for the following dashboard
 ##########################################
 
 The following dashboard contains: one table containing the status of each empty-room data file, and two graphs containing the average and the variance of each empty-room data file.
-1.Data source:
-Box-data download .con files , date from the metadata of each file, we get the date of last-modified
-2. Over-view of the table:
-create table
-column-name/description/matrics
-3.Use cases
-monitor status using table: green means everything is well, red means somthing is wrong
-get the average of each room data with variance.
+- 1.Data source:
+
+ Box-data download .con files , date from the metadata of each file, we get the date of last-modified
+- 2. Over-view of the table:
+
+ create table
+ 
+ column-name/description/matrics
+- 3.Use cases
+
+ monitor status using table: green means everything is well, red means somthing is wrong
+ 
+ get the average of each room data with variance.
