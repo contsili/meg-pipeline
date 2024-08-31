@@ -33,6 +33,7 @@ It has graphs showing the average and variance of each empty-room data file, as 
 
 1. The source of this data is the files generated from each experiment, hosted on the NYU-BOX data drive. This process is done by a python script that authontificats on BOX-DATA, downloads all the '.con' files that exists inside the empty-room while also getting the date they were last modified. 
 
+
 2. Overview of the table:
 
 
@@ -43,7 +44,11 @@ It has graphs showing the average and variance of each empty-room data file, as 
      - Description
      - Obtained
    * - Status
-     - Gives the status of the given file's average if it's above or within the threshold. The status is indicated by a color: green for safe, red for above the threshold. The threshold is defined as below 3 fT.
+     - Gives the status of the given file's average if it's above or within the threshold. 
+     
+     The status is indicated by a color: green for safe, red for above the threshold. 
+     
+     The threshold is defined as below 3 fT.
      - Calculates the average of the signal over time and compares it to the threshold.
    * - File Name
      - It is a combination of the time and the name of the file, separated by a '-'.
