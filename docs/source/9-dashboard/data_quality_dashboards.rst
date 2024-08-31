@@ -39,16 +39,13 @@ It has graphs showing the average and variance of each empty-room data file, as 
 
   .. list-table:: File Details
    :header-rows: 1
+   :widths: 15 50 35
 
    * - Column Name
      - Description
      - Obtained
    * - Status
-     - Gives the status of the given file's average if it's above or within the threshold. 
-     
-     The status is indicated by a color: green for safe, red for above the threshold. 
-     
-     The threshold is defined as below 3 fT.
+     - Gives the status of the given file's average if it's above or within the threshold. The status is indicated by a color: green for safe, red for above the threshold. The threshold is defined as below 3 fT.
      - Calculates the average of the signal over time and compares it to the threshold.
    * - File Name
      - It is a combination of the time and the name of the file, separated by a '-'.
