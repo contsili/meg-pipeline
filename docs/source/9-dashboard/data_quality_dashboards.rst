@@ -82,7 +82,7 @@ This guide explains how to download empty room data from the NYU-BOX storage usi
 - `box_script.py` connects to NYU-BOX and downloads empty room data to the build server. It uses private keys, which can be provided as an `.env` file on your machine or set as environment variables in your build. This step will vary depending on your setup, so it's important to include error handling.
 
 Installation
-------------
+-----------
 
 First, you need to install the `boxsdk` library. If you are using a `.env` file, you will also need to install `python-dotenv`:
 
@@ -92,7 +92,7 @@ First, you need to install the `boxsdk` library. If you are using a `.env` file,
    pip install python-dotenv
 
 Setting Up Authentication
---------------------------
+------------------------
 
 Define your private keys, such as `client_id`, `client_secret`, and any other necessary keys. Then, set up JWT authentication:
 
@@ -109,7 +109,7 @@ Define your private keys, such as `client_id`, `client_secret`, and any other ne
    client = Client(auth)
 
 Accessing Folders
------------------
+---------------
 
 After accessing the Box data correctly, you need to create a function that retrieves the ID of folders (the unique address for each folder). This function will start at the root directory and traverse the path, which is a list of folder names separated by "/". It begins with the root folder ID and checks each folder name in the path. If it finds a folder with the matching name, it updates the `folder_id` to that folder's ID and continues to the next folder:
 
@@ -130,7 +130,7 @@ After accessing the Box data correctly, you need to create a function that retri
        return folder_id
 
 Downloading Files
------------------
+----------------
 
 Next, create a function that downloads files from a specified directory. This function will download all `.con` files and, if it finds a folder, it will call the function again recursively:
 
@@ -159,7 +159,7 @@ Next, create a function that downloads files from a specified directory. This fu
 To get the date when a file was last modified, you can use `file.modified_at`.
 
 Data Preparation
-----------------
+---------------
 
 - `processing_con_files_for_table.py` processes the `.con` files, computes metrics, and generates a `.csv` file with the results.
 
