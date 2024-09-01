@@ -28,10 +28,10 @@ Several metrics are defined in the below table and will serve as basis to asess 
 Documentation for the following dashboard
 ##########################################
 
-This dashboard's objective is to monitor the quality of the empty-room data with informative labels, for quick acess and over all numerical values in a simple format.
+This dashboard's objective is to monitor the quality of the empty-room data with informative labels, for quick access and over all numerical values in a simple format.
 It has graphs showing the average and variance of each empty-room data file, as well as one table listing the current state of each empty-room data file.
 
-*1.* The source of this data is the files generated from each experiment, hosted on the NYU-BOX data drive. This process is done by a python script that authontificats on BOX-DATA, downloads all the '.con' files that exists inside the empty-room while also getting the date they were last modified. 
+*1.* The source of this data is the files generated from each experiment, hosted on the NYU-BOX data drive. This process is done by a Python script that authenticates on BOX-DATA, downloads all the '.con' files that exists inside the empty-room while also getting the date they were last modified. 
 
 
 *2.* Overview of the table:
@@ -66,8 +66,8 @@ It has graphs showing the average and variance of each empty-room data file, as 
 
 *3.* Use cases:
 
-   - Easly monitor the status using table
-   - Get the average of each room data with variance.
+   - Easily monitor the status using the table
+   - Get the average of each room's data with variance.
 
 Dashboard Generation Developer Guide
 ####################################
@@ -127,7 +127,7 @@ After accessing the Box data correctly, you need to create a function that retri
 
 *Downloading Files*
 
-Next, create a function that downloads files from a specified directory. This function will download all `.con` files and, if it finds a folder, it will call the function again recursively:
+Next, create a function that downloads files from a specified directory. This function will download all `.con` files, and if it finds a folder, it will call the function again recursively:
 
 .. code-block:: python
 
