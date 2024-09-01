@@ -71,6 +71,10 @@ It has graphs showing the average and variance of each empty-room data file, as 
    - Easily monitor the status using the table
    - Get the average of each room's data with variance.
 
+*4.* Future directions:
+    
+    As more data becomes available, we can build many dashboards to accommodate various needs as we move forward. keeping the processed data online in a database. In relation to the end findings, we can put up a notice system in the unlikely case that any values go above the specified threshold.
+
 Dashboard Generation Developer Guide
 ####################################
 
