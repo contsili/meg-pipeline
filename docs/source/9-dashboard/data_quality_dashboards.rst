@@ -76,12 +76,18 @@ The dashboard is generated from empty room data hosted on NYU-BOX storage drive.
 The scripts generating the dashboard are under `docs/source/9-dashboard/dashboard-generating-scripts`
 
 - `box_script.py` connects to NYU BOX and downloads empty room data to the build server by entering the private keys as either .env file in your machine or as environment variable in your build. This step will differ depending on your needs so it's important to add error handlers.
+
+
 First, you need to install the boxsdk library:
+
+
 .. code-block:: python
    pip install boxsdk
 
 
 DEfine your privet keys like the client_id, client_secret and any other keys. Then, set up the JWT authentication:
+
+
 .. code-block:: python
   auth = JWTAuth(
         client_id=client_id,
@@ -91,6 +97,8 @@ DEfine your privet keys like the client_id, client_secret and any other keys. Th
   client = Client(auth)
 
 After you access the Box-DATA correctly, you will need to create a function that gets the ID of the folders (unique address for each folder): Given a path, it starts at the root directory,the path is a list of folder names separated by a "/". It starts with the root folder ID and goes through each folder name in the path one by one. If it finds a folder with the right name, it updates the folder_id to that folder's ID, and then it moves into that folder to keep searching.
+
+
 .. code-block:: python
    def get_folder_id_by_path(path):
    #root folder id is 0
@@ -107,6 +115,8 @@ After you access the Box-DATA correctly, you will need to create a function that
     return folder_id
 
 Then a function that downloads the files in a directory that you define.
+
+
 .. code-block:: python
     def download_con_files_from_folder(folder_id, path):
         folder = client.folder(folder_id).get()
@@ -125,6 +135,7 @@ Then a function that downloads the files in a directory that you define.
                     new_folder_path = os.path.join(path, item.name)
                     os.makedirs(new_folder_path, exist_ok=True)
                     download_con_files_from_folder(item.id, new_folder_path, last_date)
+
 
 If you would like to get the date, it was last modified  just add " file.modified_at"
 
