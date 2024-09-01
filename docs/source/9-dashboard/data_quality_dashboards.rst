@@ -15,8 +15,8 @@ Several metrics are defined in the below table and will serve as basis to asess 
 
 .. include:: KIT_data_quality_dashboard.rst
 
-Plot of Average and Variance Over Time
-######################################
+#Plot of Average and Variance Over Time#
+
 
 .. raw:: html
 
@@ -31,10 +31,10 @@ Documentation for the following dashboard
 This dashboard's objective is to monitor the quality of the empty-room data with informative labels, for quick acess and over all numerical values in a simple format.
 It has graphs showing the average and variance of each empty-room data file, as well as one table listing the current state of each empty-room data file.
 
-1. The source of this data is the files generated from each experiment, hosted on the NYU-BOX data drive. This process is done by a python script that authontificats on BOX-DATA, downloads all the '.con' files that exists inside the empty-room while also getting the date they were last modified. 
+#1.# The source of this data is the files generated from each experiment, hosted on the NYU-BOX data drive. This process is done by a python script that authontificats on BOX-DATA, downloads all the '.con' files that exists inside the empty-room while also getting the date they were last modified. 
 
 
-2. Overview of the table:
+#2.# Overview of the table:
 
 
   .. list-table:: File Details
@@ -64,7 +64,7 @@ It has graphs showing the average and variance of each empty-room data file, as 
      - Added by the user, default is "Nothing added yet".
 
 
-3. Use cases:
+#3.# Use cases:
 
    - Easly monitor the status using table
    - Get the average of each room data with variance.
@@ -72,8 +72,7 @@ It has graphs showing the average and variance of each empty-room data file, as 
 Dashboard Generation Developer Guide
 ####################################
 
-Overview
---------
+#Overview#
 
 The dashboard is generated from empty room data hosted on the NYU-BOX storage drive. The scripts for generating the dashboard are located under `docs/source/9-dashboard/dashboard-generating-scripts`.
 
@@ -81,8 +80,7 @@ This guide explains how to download empty room data from the NYU-BOX storage usi
 
 - `box_script.py` connects to NYU-BOX and downloads empty room data to the build server. It uses private keys, which can be provided as an `.env` file on your machine or set as environment variables in your build. This step will vary depending on your setup, so it's important to include error handling.
 
-Installation
------------
+#Installation#
 
 First, you need to install the `boxsdk` library. If you are using a `.env` file, you will also need to install `python-dotenv`:
 
@@ -91,8 +89,7 @@ First, you need to install the `boxsdk` library. If you are using a `.env` file,
    pip install boxsdk
    pip install python-dotenv
 
-Setting Up Authentication
-------------------------
+#Setting Up Authentication#
 
 Define your private keys, such as `client_id`, `client_secret`, and any other necessary keys. Then, set up JWT authentication:
 
@@ -108,8 +105,7 @@ Define your private keys, such as `client_id`, `client_secret`, and any other ne
    )
    client = Client(auth)
 
-Accessing Folders
----------------
+#Accessing Folders#
 
 After accessing the Box data correctly, you need to create a function that retrieves the ID of folders (the unique address for each folder). This function will start at the root directory and traverse the path, which is a list of folder names separated by "/". It begins with the root folder ID and checks each folder name in the path. If it finds a folder with the matching name, it updates the `folder_id` to that folder's ID and continues to the next folder:
 
@@ -129,8 +125,7 @@ After accessing the Box data correctly, you need to create a function that retri
                raise ValueError(f'Folder "{folder_name}" not found in path.')
        return folder_id
 
-Downloading Files
-----------------
+#Downloading Files#
 
 Next, create a function that downloads files from a specified directory. This function will download all `.con` files and, if it finds a folder, it will call the function again recursively:
 
@@ -158,8 +153,7 @@ Next, create a function that downloads files from a specified directory. This fu
 
 To get the date when a file was last modified, you can use `file.modified_at`.
 
-Data Preparation
----------------
+#Data Preparation#
 
 - `processing_con_files_for_table.py` processes the `.con` files, computes metrics, and generates a `.csv` file with the results.
 
