@@ -220,8 +220,7 @@ con_files = glob.glob(r"data/*.con")
 for con_file in con_files:
     try:
         raw = mne.io.read_raw_ctf(con_file, preload=True)
-        raw.filter(1.0, 40.0, fir_design="firwin")
-        psds, freqs = mne.time_frequency.psd_welch(raw, fmin=1.0, fmax=40.0, n_fft=2048)
+        psds, freqs = mne.time_frequency.psd_welch(raw, n_fft=2048)
 
         fig.add_trace(
             go.Scatter(x=freqs, y=psds.mean(axis=0), mode="lines", name=con_file)
