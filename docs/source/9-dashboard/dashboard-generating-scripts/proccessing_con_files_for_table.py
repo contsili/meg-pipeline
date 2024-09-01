@@ -211,7 +211,26 @@ os.makedirs(os.path.dirname(output_variance_html), exist_ok=True)
 
 # Create and save the plot
 plot_data_var(csv_file, output_variance_html)
+########################################################################
+import glob
+import plotly.graph_objs as go
 
+fig = go.Figure()
+con_files = glob.glob(r"data")
+for con_file in con_files:
+    raw = mne.io.read_raw_ctf(con_file, preload=True)
+    raw.filter(1.0, 40.0, fir_design="firwin")
+    psds, freqs = mne.time_frequency.psd_welch(raw, fmin=1.0, fmax=40.0, n_fft=2048)
+
+    fig.add_trace(go.Scatter(x=freqs, y=psds.mean(axis=0), mode="lines", name=con_file))
+
+fig.update_layout(
+    title="FFT Plots for Multiple .con Files",
+    xaxis_title="Frequency (Hz)",
+    yaxis_title="Power Spectral Density (dB)",
+)
+fig.write_html("_static/fft_plots_combined.html")
+print("fft plot saved!")
 
 ################################################################################
 import plotly.express as px
