@@ -72,15 +72,27 @@ It has graphs showing the average and variance of each empty-room data file, as 
 Dashboard Generation Developer Guide
 ####################################
 
+Overview
+--------
+
 The dashboard is generated from empty room data hosted on the NYU-BOX storage drive. The scripts for generating the dashboard are located under `docs/source/9-dashboard/dashboard-generating-scripts`.
+
+This guide explains how to download empty room data from the NYU-BOX storage using Python scripts. It covers setting up the Box SDK, authenticating using JWT, accessing folder data, and downloading `.con` files. The scripts that process the previously downloaded files.
 
 - `box_script.py` connects to NYU BOX and downloads empty room data to the build server. It does this by using private keys, which can be provided as an `.env` file on your machine or set as environment variables in your build. This step will vary depending on your setup, so it's important to include error handling.
 
-First, you need to install the `boxsdk` library:
+Installation
+------------
+
+First, you need to install the `boxsdk` library, and if you are using a .env file you will also need to download python-dotenv:
 
 .. code-block:: bash
 
    pip install boxsdk
+   pip install python-dotenv
+
+Setting Up Authentication
+-------------------------
 
 Define your private keys, such as `client_id`, `client_secret`, and any other necessary keys. Then, set up JWT authentication:
 
@@ -90,8 +102,12 @@ Define your private keys, such as `client_id`, `client_secret`, and any other ne
        client_id=client_id,
        client_secret=client_secret,
        jwt_key_id=public_key_id,
+       #add any additional keys needed
    )
    client = Client(auth)
+
+Accessing Folders
+------------------
 
 After accessing the Box data correctly, you need to create a function that retrieves the ID of folders (the unique address for each folder). This function will start at the root directory and traverse the path, which is a list of folder names separated by "/". It begins with the root folder ID and checks each folder name in the path. If it finds a folder with the matching name, it updates the `folder_id` to that folder's ID and continues to the next folder:
 
@@ -111,7 +127,10 @@ After accessing the Box data correctly, you need to create a function that retri
                raise ValueError(f'Folder "{folder_name}" not found in path.')
        return folder_id
 
-Next, create a function that downloads files from a specified directory:
+Downloading Files
+------------------
+
+Next, create a function that downloads files from a specified directory, this function will download all the .con files and if it finds a folder it will call the function again:
 
 .. code-block:: python
 
@@ -120,6 +139,7 @@ Next, create a function that downloads files from a specified directory:
        items = folder.get_items(limit=100, offset=0)
 
        for item in items:
+       #define the type of file you want to download
            if item.type == "file" and item.name.endswith(".con"):
                file_id = item.id
                file = client.file(file_id).get()
@@ -134,6 +154,78 @@ Next, create a function that downloads files from a specified directory:
 
 To get the date when a file was last modified, you can use `file.modified_at`.
 
-- `processing_con_files_for_table.py` processes the .con files, computes metrics, and generates a .csv file with the results. The script processes all the .con files, calculating the average and variance of each signal. It also checks the date to see if it falls within a specified threshold. It creates a .csv file with the results and graphs to display the numerical values.
+Data preparation
+-----------------
 
-- `convert_csv_to_rst.py` generates `.rst` pages from the CSV files.
+- `processing_con_files_for_table.py` processes the .con files, computes metrics, and generates a .csv file with the results.
+
+.. code-block:: python
+
+    import os
+    import numpy as np
+    import pandas as pd
+    import mne
+
+    def process_all_con_files(base_folder):
+        results = []
+
+        for root, _, files in os.walk(base_folder):
+            for file in files:
+                if file.endswith(".con"):
+                    file_path = os.path.join(root, file)
+                    #the results of the function that calculates the average the variance and the status
+                    avg, var, status= process_con_file(file_path)
+                    # a function that extracts date
+                    date = extract_date(file)
+                    #put the default
+                    details = "Nothing added yet"
+                    # this is how we defined the date modfie the string to your needs
+                    date_str = (
+                        date.strftime("%d-%m-%y %H:%M:%S") if date else "Unknown Date"
+                    )
+                    results.append(
+                        {
+                            "Status": status,
+                            "File Name": file,
+                            "Average": avg,
+                            "Variance": var,
+                            "Date": date_str,
+                            "Details": details,
+                        }
+                    )
+
+        return results
+
+
+The script processes all the .con files, calculating the average and variance of each signal. It also checks the date to see if it falls within a specified threshold. 
+
+.. code-block:: python
+    def process_con_file(file_path):
+        # Load the .con file using MNE
+        # 3 set to be the Threshold
+        s = 3
+        raw = mne.io.read_raw_kit(file_path, preload=True)
+        raw.pick_types(meg=True, eeg=False)
+
+        # Get data for all channels
+        data, times = raw.get_data(return_times=True)
+        # Calculate average and variance across all channels
+        avg = (np.mean(data)) * 1e15
+        var = np.var(data)
+        status = [(f"🟢 In the threshold" if avg < s else f"🔴 Above the threshold")]
+
+        return avg, var, status
+
+
+It creates a .csv file with the results and graphs to display the numerical values.
+
+.. code-block:: python
+    def save_results_to_csv(results, output_file):
+        # Ensure the directory exists
+        os.makedirs(os.path.dirname(output_file), exist_ok=True)
+
+        # Save results to CSV
+        df = pd.DataFrame(results)
+        df.to_csv(output_file, index=False)
+
+- `convert_csv_to_rst.py` generates `.rst` pages from the CSV files. It acesses all the .csv files in a specific directory and turns them into  reStructuredText format and save them in the output folder
