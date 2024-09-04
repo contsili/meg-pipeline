@@ -9,10 +9,16 @@ from datetime import datetime
 import plotly.graph_objects as go
 
 
+def threshold(threshold, value_data):
+    return "🟢 In the threshold" if value_data < threshold else "🔴 Above the threshold"
+
+
 def process_con_file(file_path):
     # Load the .con file using MNE
     # 3 set to be the Threshold
-    s = 3
+    s_avg = 3
+    # add other matrixs here
+    s_fft = 10
     raw = mne.io.read_raw_kit(file_path, preload=True)
     raw.pick_types(meg=True, eeg=False)
     raw = remove_zero_channels(raw)
@@ -27,9 +33,18 @@ def process_con_file(file_path):
     # TODO: check correction of this
     avg = (np.mean(data)) * 1e15
     var = np.var(data)
-    status = [(f"🟢 In the threshold" if avg < s else f"🔴 Above the threshold")]
+    max_val = max(data)
+    status_avg = [
+        (f"🟢 In the threshold" if avg < s_avg else f"🔴 Above the threshold")
+    ]
+    status_fft = [
+        (f"🟢 In the threshold" if var < s_avg else f"🔴 Above the threshold")
+    ]
+    status_max = [
+        (f"🟢 In the threshold" if max_val < s_avg else f"🔴 Above the threshold")
+    ]
 
-    return avg, var, status, freqs, fft_data
+    return avg, var, max_val, status_avg, freqs, fft_data, status_fft, status_max
 
 
 # for negative values: tried looking at the channels of the files that give negative  values found some of them provide negative values
@@ -42,7 +57,9 @@ def process_all_con_files(base_folder):
         for file in files:
             if file.endswith(".con"):
                 file_path = os.path.join(root, file)
-                avg, var, status, freqs, fft_data = process_con_file(file_path)
+                avg, var, max_val, status, freqs, fft_data, status_fft, status_max = (
+                    process_con_file(file_path)
+                )
                 date = extract_date(file)
                 details = "Nothing added yet"
                 date_str = (
@@ -50,10 +67,12 @@ def process_all_con_files(base_folder):
                 )
                 results.append(
                     {
-                        "Status": status,
-                        "File Name": file,
+                        "File Name": file.split("_")[0],
+                        "Status for average values": status,
                         "Average": avg,
                         "Variance": var,
+                        "Status for max values": status_max,
+                        "Maximum": max_val,
                         "Date": date_str,
                         "Details": details,
                     }
@@ -177,6 +196,42 @@ def plot_data_var(csv_file, output_html):
     print(f"Plot saved to {output_html}")
 
 
+def plot_data_max(csv_file, output_html):
+    # Load data from CSV
+    df = pd.read_csv(csv_file)
+
+    # Ensure 'Date' column is in datetime format
+    df["Date"] = pd.to_datetime(df["Date"], format="%d-%m-%y %H:%M:%S", errors="coerce")
+    df = df.sort_values(by="Date")
+
+    # Create figure
+    fig = go.Figure()
+
+    # Add line plot for Average
+    fig.add_trace(
+        go.Scatter(
+            x=df["Date"],
+            y=df["Maximum"],
+            mode="markers",
+            line=dict(color="blue"),
+            marker=dict(color="blue", size=8),
+            name="Maximum",
+        )
+    )
+
+    # Update layout
+    fig.update_layout(
+        title="Maximum Over Time",
+        xaxis_title="Date",
+        yaxis_title="Maximum Value",
+        legend_title="Metrics",
+    )
+
+    # Save plot as HTML
+    fig.write_html(output_html)
+    print(f"Plot saved to {output_html}")
+
+
 def compute_fft(data, sfreq):
     fft_data = np.fft.rfft(data, axis=-1)
     freqs = np.fft.rfftfreq(data.shape[-1], d=1 / sfreq)
@@ -211,6 +266,8 @@ os.makedirs(os.path.dirname(output_variance_html), exist_ok=True)
 
 # Create and save the plot
 plot_data_var(csv_file, output_variance_html)
+output_variance_html = "_static/max_plot.html"
+plot_data_max(csv_file, output_variance_html)
 ########################################################################
 import glob
 import plotly.graph_objs as go
@@ -302,4 +359,4 @@ def process_fifo_files(base_folder, output_file):
 
 base_folder = r"data/meg-opm"
 output_file = r"docs/source/_static/average_plot_opm_data.html"
-# process_fifo_files(base_folder, output_file)
+process_fifo_files(base_folder, output_file)

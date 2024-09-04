@@ -22,6 +22,7 @@ Several metrics are defined in the below table and will serve as basis to asess 
 
     <iframe src="../_static/average_plot.html" width="100%" height="600px" frameborder="0"></iframe>
     <iframe src="../_static/variance_plot.html" width="100%" height="600px" frameborder="0"></iframe>
+    <iframe src="../_static/max_plot.html" width="100%" height="600px" frameborder="0"></iframe>
     <iframe src="../_static/fft_plots_combined.html" width="100%" height="600px" frameborder="0"></iframe>
     
 

@@ -54,31 +54,33 @@ def get_folder_id_by_path(path):
 
 
 def download_con_files_from_folder(folder_id, path, last_date):
-
     try:
         folder = client.folder(folder_id).get()
         items = folder.get_items(limit=10000, offset=0)
 
         for item in items:
             try:
-                if item.type == "file" and item.name.endswith(".con"):
+                if item.type == "file" and item.name.endswith((".con", ".fif")):
                     file_id = item.id
                     file = client.file(file_id).get()
+
+                    # Get the content creation date
                     created_at = datetime.strptime(
                         file.content_created_at, "%Y-%m-%dT%H:%M:%S%z"
                     )
+
+                    # Check if the file's created date is after the last date or if no last date is provided
                     if last_date is None or created_at > last_date:
-                        created_at = file.content_created_at
-                        formatted_date = datetime.strptime(
-                            created_at, "%Y-%m-%dT%H:%M:%S%z"
-                        ).strftime("%d-%m-%y-%H-%M-%S")
+                        # Format the creation date for the filename
+                        formatted_date = created_at.strftime("%d-%m-%y-%H-%M-%S")
                         filename = f"{formatted_date}_{file.name}"
-                        file_path = f"{path}/{filename}"
                         file_path = os.path.join(path, filename)
+
+                        # Download the file
                         with open(file_path, "wb") as open_file:
                             file.download_to(open_file)
-                        print(f"Downloaded {filename} to {file_path}")
 
+                        print(f"Downloaded {filename} to {file_path}")
                 elif item.type == "folder":
                     new_folder_path = os.path.join(path, item.name)
                     os.makedirs(new_folder_path, exist_ok=True)
