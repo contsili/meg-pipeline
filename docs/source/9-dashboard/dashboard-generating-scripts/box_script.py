@@ -65,10 +65,10 @@ def download_con_files_from_folder(folder_id, path, last_date):
                     file_id = item.id
                     file = client.file(file_id).get()
                     created_at = datetime.strptime(
-                        file.created_at, "%Y-%m-%dT%H:%M:%S%z"
+                        file.content_created_at, "%Y-%m-%dT%H:%M:%S%z"
                     )
                     if last_date is None or created_at > last_date:
-                        created_at = file.created_at
+                        created_at = file.content_created_at
                         formatted_date = datetime.strptime(
                             created_at, "%Y-%m-%dT%H:%M:%S%z"
                         ).strftime("%d-%m-%y-%H-%M-%S")
