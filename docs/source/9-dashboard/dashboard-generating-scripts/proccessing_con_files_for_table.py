@@ -14,37 +14,40 @@ def threshold(threshold, value_data):
 
 
 def process_con_file(file_path):
-    # Load the .con file using MNE
-    # 3 set to be the Threshold
-    s_avg = 3
-    # add other matrixs here
-    s_fft = 10
-    raw = mne.io.read_raw_kit(file_path, preload=True)
-    raw.pick_types(meg=True, eeg=False)
-    raw = remove_zero_channels(raw)
+    try:
+        # Load the .con file using MNE
+        # 3 set to be the Threshold
+        s_avg = 3
+        # add other matrixs here
+        s_fft = 10
+        raw = mne.io.read_raw_kit(file_path, preload=True)
+        raw.pick_types(meg=True, eeg=False)
+        raw = remove_zero_channels(raw)
 
-    # Get data for all channels
-    data, times = raw.get_data(return_times=True)
-    sfreq = raw.info["sfreq"]
-    freqs, fft_data = compute_fft(data, sfreq)
-    print(f"Processing file: {file_path}")
-    print(f"Data shape: {data.shape}")
-    # Calculate average and variance across all channels
-    # TODO: check correction of this
-    avg = (np.mean(data)) * 1e15
-    var = np.var(data)
-    max_val = np.max(data)
-    status_avg = [
-        (f"🟢 In the threshold" if avg < s_avg else f"🔴 Above the threshold")
-    ]
-    status_fft = [
-        (f"🟢 In the threshold" if var < s_avg else f"🔴 Above the threshold")
-    ]
-    status_max = [
-        (f"🟢 In the threshold" if max_val < s_avg else f"🔴 Above the threshold")
-    ]
+        # Get data for all channels
+        data, times = raw.get_data(return_times=True)
+        sfreq = raw.info["sfreq"]
+        freqs, fft_data = compute_fft(data, sfreq)
+        print(f"Processing file: {file_path}")
+        print(f"Data shape: {data.shape}")
+        # Calculate average and variance across all channels
+        avg = (np.mean(data)) * 1e15
+        var = np.var(data)
+        max_val = np.max(data)
+        status_avg = [
+            (f"🟢 In the threshold" if avg < s_avg else f"🔴 Above the threshold")
+        ]
+        status_fft = [
+            (f"🟢 In the threshold" if var < s_avg else f"🔴 Above the threshold")
+        ]
+        status_max = [
+            (f"🟢 In the threshold" if max_val < s_avg else f"🔴 Above the threshold")
+        ]
 
-    return avg, var, max_val, status_avg, freqs, fft_data, status_fft, status_max
+        return avg, var, max_val, status_avg, freqs, fft_data, status_fft, status_max
+    except Exception as e:
+        print(f"Error processing {file_path}: {e}")
+        return None
 
 
 # for negative values: tried looking at the channels of the files that give negative  values found some of them provide negative values
@@ -53,41 +56,48 @@ def process_con_file(file_path):
 def process_all_con_files(base_folder):
     results = []
 
-    for root, _, files in os.walk(base_folder):
-        for file in files:
-            if file.endswith(".con"):
-                file_path = os.path.join(root, file)
-                avg, var, max_val, status, freqs, fft_data, status_fft, status_max = (
-                    process_con_file(file_path)
-                )
-                date = extract_date(file)
-                details = "Nothing added yet"
-                date_str = (
-                    date.strftime("%d-%m-%y %H:%M:%S") if date else "Unknown Date"
-                )
-                results.append(
-                    {
-                        "File Name": file.split("_")[1],
-                        "Status for average values": status,
-                        "Average": avg,
-                        "Variance": var,
-                        "Status for max values": status_max,
-                        "Maximum": max_val,
-                        "Date": date_str,
-                        "Details": details,
-                    }
-                )
+    try
+        for root, _, files in os.walk(base_folder):
+            for file in files:
+                if file.endswith(".con"):
+                    file_path = os.path.join(root, file)
+                    avg, var, max_val, status, freqs, fft_data, status_fft, status_max = (
+                        process_con_file(file_path)
+                    )
+                    date = extract_date(file)
+                    details = "Nothing added yet"
+                    date_str = (
+                        date.strftime("%d-%m-%y %H:%M:%S") if date else "Unknown Date"
+                    )
+                    results.append(
+                        {
+                            "File Name": file.split("_")[1],
+                            "Status for average values": status,
+                            "Average": avg,
+                            "Variance": var,
+                            "Status for max values": status_max,
+                            "Maximum": max_val,
+                            "Date": date_str,
+                            "Details": details,
+                        }
+                    )
 
-    return results
+        return results
+    except Exception as e:
+        print(f"Error processing {file_path}: {e}")
+        return None
 
 
 def save_results_to_csv(results, output_file):
-    # Ensure the directory exists
-    os.makedirs(os.path.dirname(output_file), exist_ok=True)
+    try:
+        # Ensure the directory exists
+        os.makedirs(os.path.dirname(output_file), exist_ok=True)
 
-    # Save results to CSV
-    df = pd.DataFrame(results)
-    df.to_csv(output_file, index=False)
+        # Save results to CSV
+        df = pd.DataFrame(results)
+        df.to_csv(output_file, index=False)
+    except Exception as e:
+        print(f"Error processing: {e}")
 
 
 def extract_date(filename):
@@ -115,39 +125,43 @@ def extract_date(filename):
 
 
 def plot_data_avg(csv_file, output_html):
-    # Load data from CSV
-    df = pd.read_csv(csv_file)
+    try:
+        # Load data from CSV
+        df = pd.read_csv(csv_file)
 
-    # Ensure 'Date' column is in datetime format
-    df["Date"] = pd.to_datetime(df["Date"], format="%d-%m-%y %H:%M:%S", errors="coerce")
-    df = df.sort_values(by="Date")
+        # Ensure 'Date' column is in datetime format
+        df["Date"] = pd.to_datetime(df["Date"], format="%d-%m-%y %H:%M:%S", errors="coerce")
+        df = df.sort_values(by="Date")
 
-    # Create figure
-    fig = go.Figure()
+        # Create figure
+        fig = go.Figure()
 
-    # Add line plot for Average
-    fig.add_trace(
-        go.Scatter(
-            x=df["Date"],
-            y=df["Average"],
-            mode="markers",
-            line=dict(color="blue"),
-            marker=dict(color="blue", size=8),
-            name="Average",
+        # Add line plot for Average
+        fig.add_trace(
+            go.Scatter(
+                x=df["Date"],
+                y=df["Average"],
+                mode="markers",
+                line=dict(color="blue"),
+                marker=dict(color="blue", size=8),
+                name="Average",
+            )
         )
-    )
 
-    # Update layout
-    fig.update_layout(
-        title="Average Over Time",
-        xaxis_title="Date",
-        yaxis_title="Average Value(fT)",
-        legend_title="Metrics",
-    )
+        # Update layout
+        fig.update_layout(
+            title="Average Over Time",
+            xaxis_title="Date",
+            yaxis_title="Average Value(fT)",
+            legend_title="Metrics",
+        )
 
-    # Save plot as HTML
-    fig.write_html(output_html)
-    print(f"Plot saved to {output_html}")
+        # Save plot as HTML
+        fig.write_html(output_html)
+        print(f"Plot saved to {output_html}")
+    except Exception as e:
+        print(f"Error processing: {e}")
+      
 
 
 def remove_zero_channels(raw):
@@ -237,37 +251,39 @@ def compute_fft(data, sfreq):
     freqs = np.fft.rfftfreq(data.shape[-1], d=1 / sfreq)
     return freqs, np.abs(fft_data)
 
+try:
+    # Set the base folder containing .con files and subfolders
+    base_folder = r"data"
+    # Set the output CSV file path
+    output_file = "9-dashboard/data/con_files_statistics.csv"
 
-# Set the base folder containing .con files and subfolders
-base_folder = r"data"
-# Set the output CSV file path
-output_file = "9-dashboard/data/con_files_statistics.csv"
+    # Process all .con files and save the results
+    results = process_all_con_files(base_folder)
+    save_results_to_csv(results, output_file)
 
-# Process all .con files and save the results
-results = process_all_con_files(base_folder)
-save_results_to_csv(results, output_file)
+    print(f"Results saved to {output_file}")
+    # print(results)
 
-print(f"Results saved to {output_file}")
-# print(results)
+    csv_file = output_file  # Path to the CSV file
+    output_avg_html = "_static/average_plot.html"  # Path to save the HTML file
 
-csv_file = output_file  # Path to the CSV file
-output_avg_html = "_static/average_plot.html"  # Path to save the HTML file
+    # Ensure output directory exists
+    os.makedirs(os.path.dirname(output_avg_html), exist_ok=True)
 
-# Ensure output directory exists
-os.makedirs(os.path.dirname(output_avg_html), exist_ok=True)
+    # Create and save the plot
+    plot_data_avg(csv_file, output_avg_html)
 
-# Create and save the plot
-plot_data_avg(csv_file, output_avg_html)
+    output_variance_html = "_static/variance_plot.html"  # Path to save the HTML file
 
-output_variance_html = "_static/variance_plot.html"  # Path to save the HTML file
+    # Ensure output directory exists
+    os.makedirs(os.path.dirname(output_variance_html), exist_ok=True)
 
-# Ensure output directory exists
-os.makedirs(os.path.dirname(output_variance_html), exist_ok=True)
-
-# Create and save the plot
-plot_data_var(csv_file, output_variance_html)
-output_variance_html = "_static/max_plot.html"
-plot_data_max(csv_file, output_variance_html)
+    # Create and save the plot
+    plot_data_var(csv_file, output_variance_html)
+    output_variance_html = "_static/max_plot.html"
+    plot_data_max(csv_file, output_variance_html)
+except Exception as e:
+        print(f"Error processing: {e}")
 ########################################################################
 import glob
 import plotly.graph_objs as go
