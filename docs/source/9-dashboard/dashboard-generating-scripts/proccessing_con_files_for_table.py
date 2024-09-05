@@ -56,14 +56,21 @@ def process_con_file(file_path):
 def process_all_con_files(base_folder):
     results = []
 
-    try
+    try:
         for root, _, files in os.walk(base_folder):
             for file in files:
                 if file.endswith(".con"):
                     file_path = os.path.join(root, file)
-                    avg, var, max_val, status, freqs, fft_data, status_fft, status_max = (
-                        process_con_file(file_path)
-                    )
+                    (
+                        avg,
+                        var,
+                        max_val,
+                        status,
+                        freqs,
+                        fft_data,
+                        status_fft,
+                        status_max,
+                    ) = process_con_file(file_path)
                     date = extract_date(file)
                     details = "Nothing added yet"
                     date_str = (
@@ -130,7 +137,9 @@ def plot_data_avg(csv_file, output_html):
         df = pd.read_csv(csv_file)
 
         # Ensure 'Date' column is in datetime format
-        df["Date"] = pd.to_datetime(df["Date"], format="%d-%m-%y %H:%M:%S", errors="coerce")
+        df["Date"] = pd.to_datetime(
+            df["Date"], format="%d-%m-%y %H:%M:%S", errors="coerce"
+        )
         df = df.sort_values(by="Date")
 
         # Create figure
@@ -161,7 +170,6 @@ def plot_data_avg(csv_file, output_html):
         print(f"Plot saved to {output_html}")
     except Exception as e:
         print(f"Error processing: {e}")
-      
 
 
 def remove_zero_channels(raw):
@@ -251,6 +259,7 @@ def compute_fft(data, sfreq):
     freqs = np.fft.rfftfreq(data.shape[-1], d=1 / sfreq)
     return freqs, np.abs(fft_data)
 
+
 try:
     # Set the base folder containing .con files and subfolders
     base_folder = r"data"
@@ -283,7 +292,7 @@ try:
     output_variance_html = "_static/max_plot.html"
     plot_data_max(csv_file, output_variance_html)
 except Exception as e:
-        print(f"Error processing: {e}")
+    print(f"Error processing: {e}")
 ########################################################################
 import glob
 import plotly.graph_objs as go
