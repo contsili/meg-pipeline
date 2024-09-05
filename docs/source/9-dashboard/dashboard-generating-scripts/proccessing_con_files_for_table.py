@@ -307,7 +307,7 @@ try:
     output_variance_html = "_static/max_plot.html"
     plot_data_max(csv_file, output_variance_html)
 except:
-    print(f"Error processing: {e}")
+    print(f"Error processing")
 ########################################################################
 import glob
 import plotly.graph_objs as go

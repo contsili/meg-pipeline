@@ -12,6 +12,7 @@ import os
 import subprocess
 import logging
 from sphinx.application import Sphinx
+import subprocess
 
 
 project = "MEG Pipeline"
@@ -137,29 +138,42 @@ def run_proccessing_files(app):
     )
 
     if os.path.exists(script_path):
-        logger.info(
-            f"Found proccessing_con_files_for_table.py at {script_path}, running it now."
-        )
+        logger.info(f"Found {script_path}, running it now.")
 
-        result = subprocess.run(
-            ["python", script_path], check=True, capture_output=True, text=True
-        )
-
-        if result.returncode == 0:
-            logger.info("proccessing_con_files_for_table.py ran successfully.")
-
-        else:
-            logger.error(
-                f"proccessing_con_files_for_table.py failed with return code {result.returncode}"
+        try:
+            result = subprocess.run(
+                ["python", script_path], check=True, capture_output=True, text=True
             )
+
+            if result.returncode == 0:
+                logger.info(f"{script_path} ran successfully.")
+            else:
+                logger.error(
+                    f"{script_path} failed with return code {result.returncode}"
+                )
+                raise RuntimeError(f"Script failed with exit code {result.returncode}")
+
+            # Log both stdout and stderr
+            if result.stdout:
+                logger.info(f"Script output: {result.stdout}")
+            if result.stderr:
+                logger.error(f"Script errors: {result.stderr}")
+
+        except subprocess.CalledProcessError as e:
+            logger.error(f"Error running {script_path}: {e}")
+            logger.error(f"Stdout: {e.stdout}")
+            logger.error(f"Stderr: {e.stderr}")
             raise RuntimeError(
-                f"CSV to RST conversion script failed with exit code {result.returncode}"
-            )
-        logger.info(result.stdout)
-        logger.error(result.stderr)
+                f"Error while running script: {script_path}. Exit code: {e.returncode}"
+            ) from e
+
+        except Exception as e:
+            logger.exception(f"Unexpected error while running {script_path}: {e}")
+            raise
 
     else:
         logger.error(f"The script {script_path} does not exist.")
+        raise FileNotFoundError(f"Script {script_path} not found.")
 
 
 def setup(app: Sphinx):
