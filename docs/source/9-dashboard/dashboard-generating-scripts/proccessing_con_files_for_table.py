@@ -33,7 +33,7 @@ def process_con_file(file_path):
     # TODO: check correction of this
     avg = (np.mean(data)) * 1e15
     var = np.var(data)
-    max_val = max(data)
+    max_val = np.max(data)
     status_avg = [
         (f"🟢 In the threshold" if avg < s_avg else f"🔴 Above the threshold")
     ]
@@ -67,7 +67,7 @@ def process_all_con_files(base_folder):
                 )
                 results.append(
                     {
-                        "File Name": file.split("_")[0],
+                        "File Name": file.split("_")[1],
                         "Status for average values": status,
                         "Average": avg,
                         "Variance": var,
@@ -141,7 +141,7 @@ def plot_data_avg(csv_file, output_html):
     fig.update_layout(
         title="Average Over Time",
         xaxis_title="Date",
-        yaxis_title="Average Value",
+        yaxis_title="Average Value(fT)",
         legend_title="Metrics",
     )
 
@@ -223,7 +223,7 @@ def plot_data_max(csv_file, output_html):
     fig.update_layout(
         title="Maximum Over Time",
         xaxis_title="Date",
-        yaxis_title="Maximum Value",
+        yaxis_title="Maximum Value(fT)",
         legend_title="Metrics",
     )
 
