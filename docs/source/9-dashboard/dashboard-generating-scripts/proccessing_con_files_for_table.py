@@ -7,6 +7,8 @@ import mne
 import re
 from datetime import datetime
 import plotly.graph_objects as go
+import traceback
+import sys
 
 
 def threshold(threshold, value_data):
@@ -15,11 +17,12 @@ def threshold(threshold, value_data):
 
 def process_con_file(file_path):
     try:
-        # Load the .con file using MNE
         # 3 set to be the Threshold
         s_avg = 3
         # add other matrixs here
         s_fft = 10
+
+        # Load the .con file using MNE
         raw = mne.io.read_raw_kit(file_path, preload=True)
         raw.pick_types(meg=True, eeg=False)
         raw = remove_zero_channels(raw)
@@ -30,23 +33,29 @@ def process_con_file(file_path):
         freqs, fft_data = compute_fft(data, sfreq)
         print(f"Processing file: {file_path}")
         print(f"Data shape: {data.shape}")
-        # Calculate average and variance across all channels
+        # Calculate average, variance and find the maximum across all channels
         avg = (np.mean(data)) * 1e15
         var = np.var(data)
-        max_val = np.max(data)
+        max_val = np.max(data) * 1e15
+        # Status for avg
         status_avg = [
             (f"🟢 In the threshold" if avg < s_avg else f"🔴 Above the threshold")
         ]
+        # Status for fft
         status_fft = [
             (f"🟢 In the threshold" if var < s_avg else f"🔴 Above the threshold")
         ]
+        # status for max
         status_max = [
             (f"🟢 In the threshold" if max_val < s_avg else f"🔴 Above the threshold")
         ]
 
         return avg, var, max_val, status_avg, freqs, fft_data, status_fft, status_max
     except Exception as e:
-        print(f"Error processing {file_path}: {e}")
+        tb = traceback.format_exc()
+        failed_function_name = traceback.extract_tb(sys.exc_info()[2])[-1].name
+        print(f"Error in function '{failed_function_name}': {e}")
+        print(f"Traceback: {tb}")
         return None
 
 
@@ -91,7 +100,10 @@ def process_all_con_files(base_folder):
 
         return results
     except Exception as e:
-        print(f"Error processing {file_path}: {e}")
+        tb = traceback.format_exc()
+        failed_function_name = traceback.extract_tb(sys.exc_info()[2])[-1].name
+        print(f"Error in function '{failed_function_name}': {e}")
+        print(f"Traceback: {tb}")
         return None
 
 
@@ -104,7 +116,10 @@ def save_results_to_csv(results, output_file):
         df = pd.DataFrame(results)
         df.to_csv(output_file, index=False)
     except Exception as e:
-        print(f"Error processing: {e}")
+        tb = traceback.format_exc()
+        failed_function_name = traceback.extract_tb(sys.exc_info()[2])[-1].name
+        print(f"Error in function '{failed_function_name}': {e}")
+        print(f"Traceback: {tb}")
 
 
 def extract_date(filename):
@@ -291,7 +306,7 @@ try:
     plot_data_var(csv_file, output_variance_html)
     output_variance_html = "_static/max_plot.html"
     plot_data_max(csv_file, output_variance_html)
-except Exception as e:
+except:
     print(f"Error processing: {e}")
 ########################################################################
 import glob
