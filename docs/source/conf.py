@@ -74,6 +74,29 @@ html_static_path = ["_static"]
 epub_show_urls = "footnote"
 
 
+
+def run_generate_system_status_dashboards_script(app: Sphinx):
+    """Run the dashboard generation script."""
+    logger = logging.getLogger(__name__)
+    script_path = os.path.join(
+        app.confdir, "9-dashboard", "dashboard-generating-scripts", "generate_system_status_dashboards.py"
+    )
+
+    if os.path.exists(script_path):
+        logger.info(f"Found generate_system_status_dashboards.py at {script_path}, running it now.")
+        result = subprocess.run(["python", script_path], capture_output=True, text=True)
+        if result.returncode == 0:
+            logger.info("generate_system_status_dashboards.py ran successfully.")
+
+        else:
+            logger.error(f"generate_system_status_dashboards.py failed with return code {result.returncode}")
+
+        logger.info(result.stdout)
+        logger.error(result.stderr)
+
+    else:
+        logger.error(f"The script {script_path} does not exist.")
+
 def run_box_script(app: Sphinx):
     """Run the dashboard generation script."""
     logger = logging.getLogger(__name__)
@@ -95,6 +118,8 @@ def run_box_script(app: Sphinx):
 
     else:
         logger.error(f"The script {script_path} does not exist.")
+
+
 
 
 def run_csv_conversion(app):
@@ -178,6 +203,7 @@ def run_proccessing_files(app):
 
 def setup(app: Sphinx):
     logging.basicConfig(level=logging.INFO)
+    app.connect("builder-inited", run_generate_system_status_dashboards_script)
     app.connect("builder-inited", run_box_script)
     app.connect("builder-inited", run_proccessing_files)
     app.connect("builder-inited", run_csv_conversion)
