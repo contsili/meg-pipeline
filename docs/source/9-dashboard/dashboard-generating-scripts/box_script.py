@@ -60,7 +60,8 @@ def download_con_files_from_folder(folder_id, path, last_date):
 
         for item in items:
             try:
-                if item.type == "file" and item.name.endswith((".con", ".fif")):
+                if item.type == "file" and item.name.endswith((".con")):
+                    # , ".fif"
                     file_id = item.id
                     file = client.file(file_id).get()
 

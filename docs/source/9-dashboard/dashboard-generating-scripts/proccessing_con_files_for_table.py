@@ -399,4 +399,4 @@ def process_fifo_files(base_folder, output_file):
 
 base_folder = r"data/meg-opm"
 output_file = r"_static/average_plot_opm_data.html"
-process_fifo_files(base_folder, output_file)
+# process_fifo_files(base_folder, output_file)
