@@ -32,9 +32,9 @@ Check out the :doc:`1-systems/megsystem` section for further information.
    :maxdepth: 2
    :caption: Performance Dashboards
 
-   9-dashboard/systems-dashboard
-   9-dashboard/data_quality_dashboards
-
+   9-dashboard/1-systems-dashboard
+   9-dashboard/2-data-quality-dashboards
+   9-dashboard/3-documentation-dashboards
 
 .. toctree::
    :maxdepth: 2

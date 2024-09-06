@@ -26,7 +26,13 @@ Several metrics are defined in the below table and will serve as basis to asess 
     <iframe src="../_static/fft_plots_combined.html" width="100%" height="600px" frameborder="0"></iframe>
     
 
-.. include:: OPM_data_quality_dashboard.rst
+OPM Data Quality dashboard
+==========================
+
+.. raw:: html
+
+    <iframe src="../_static/average_plot_opm_data.html" width="100%" height="600px"></iframe>
+
 
 Documentation for the following dashboard
 ##########################################
