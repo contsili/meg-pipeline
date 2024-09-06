@@ -4,15 +4,17 @@ one of them, the metrics and saves them in a .csv
 """
 
 import os
+import sys
+from datetime import datetime
+
+import logging
+import traceback
+
 import numpy as np
 import pandas as pd
 import mne
 import re
-from datetime import datetime
 import plotly.graph_objects as go
-import traceback
-import sys
-
 
 def threshold(threshold, value_data):
     return "🟢 In the threshold" if value_data < threshold else "🔴 Above the threshold"
@@ -25,7 +27,7 @@ def process_con_file(file_path):
         # add other matrices here
         s_fft = 10
 
-        print(f"Processing file: {file_path}")
+        logging.info(f"Processing file: {file_path}")
         # Load the .con file using MNE
         raw = mne.io.read_raw_kit(file_path, preload=True, verbose=False)
         raw.pick(picks = "meg")
@@ -33,7 +35,7 @@ def process_con_file(file_path):
 
         # Get data for all channels
         data, times = raw.get_data(return_times=True)
-        print(f"Processing file: {file_path}, Data shape: {data.shape}")
+        logging.info(f"Processing file: {file_path}, Data shape: {data.shape}")
         sfreq = raw.info["sfreq"]
         freqs, fft_data = compute_fft(data, sfreq)
 
@@ -60,8 +62,8 @@ def process_con_file(file_path):
     except Exception as e:
         tb = traceback.format_exc()
         failed_function_name = traceback.extract_tb(sys.exc_info()[2])[-1].name
-        print(f"Error in function '{failed_function_name}': {e}")
-        print(f"Traceback: {tb}")
+        logging.info(f"Error in function '{failed_function_name}': {e}")
+        logging.info(f"Traceback: {tb}")
         return None
 
 
@@ -83,7 +85,7 @@ def process_all_con_files(base_folder, file_limit=None):
 
                     result = process_con_file(file_path)
                     if result is None:
-                        print(f"Processing failed for {file_path}")
+                        logging.info(f"Processing failed for {file_path}")
                     else:
                         # Process the file
                         (
@@ -131,8 +133,8 @@ def process_all_con_files(base_folder, file_limit=None):
     except Exception as e:
         tb = traceback.format_exc()
         failed_function_name = traceback.extract_tb(sys.exc_info()[2])[-1].name
-        print(f"Error in function '{failed_function_name}': {e}")
-        print(f"Traceback: {tb}")
+        logging.info(f"Error in function '{failed_function_name}': {e}")
+        logging.info(f"Traceback: {tb}")
         return None
 
 
@@ -147,8 +149,8 @@ def save_results_to_csv(results, output_file):
     except Exception as e:
         tb = traceback.format_exc()
         failed_function_name = traceback.extract_tb(sys.exc_info()[2])[-1].name
-        print(f"Error in function '{failed_function_name}': {e}")
-        print(f"Traceback: {tb}")
+        logging.info(f"Error in function '{failed_function_name}': {e}")
+        logging.info(f"Traceback: {tb}")
 
 
 def extract_date(filename):
@@ -211,9 +213,9 @@ def plot_data_avg(csv_file, output_html):
 
         # Save plot as HTML
         fig.write_html(output_html)
-        print(f"Plot saved to {output_html}")
+        logging.info(f"Plot saved to {output_html}")
     except Exception as e:
-        print(f"Error processing: {e}")
+        logging.info(f"Error processing: {e}")
 
 
 def remove_zero_channels(raw):
@@ -259,7 +261,7 @@ def plot_data_var(csv_file, output_html):
 
     # Save plot as HTML
     fig.write_html(output_html)
-    print(f"Plot saved to {output_html}")
+    logging.info(f"Plot saved to {output_html}")
 
 
 def plot_data_max(csv_file, output_html):
@@ -295,7 +297,7 @@ def plot_data_max(csv_file, output_html):
 
     # Save plot as HTML
     fig.write_html(output_html)
-    print(f"Plot saved to {output_html}")
+    logging.info(f"Plot saved to {output_html}")
 
 
 def compute_fft(data, sfreq):
@@ -306,6 +308,8 @@ def compute_fft(data, sfreq):
 
 #### Main begin #####
 
+logging.basicConfig(level=logging.INFO)
+
 try:
     # Set the base folder containing .con files and subfolders
     base_folder = r"data"
@@ -313,10 +317,10 @@ try:
     output_file = "9-dashboard/data/con_files_statistics.csv"
 
     # Process all .con files and save the results
-    results = process_all_con_files(base_folder, file_limit=10)
+    results = process_all_con_files(base_folder, file_limit=None)
     save_results_to_csv(results, output_file)
 
-    print(f"Results saved to {output_file}")
+    logging.info(f"Results saved to {output_file}")
     # print(results)
 
     csv_file = output_file  # Path to the CSV file
@@ -338,7 +342,7 @@ try:
     output_variance_html = "_static/max_plot.html"
     plot_data_max(csv_file, output_variance_html)
 except:
-    print(f"Error processing")
+    logging.info(f"Error processing")
 ########################################################################
 """
 import glob

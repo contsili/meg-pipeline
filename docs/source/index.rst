@@ -35,10 +35,6 @@ Check out the :doc:`1-systems/megsystem` section for further information.
    9-dashboard/1-systems-dashboard
    9-dashboard/2-data-quality-dashboards
    9-dashboard/3-documentation-dashboards
-   9-dashboard/kit-system-status
-   9-dashboard/opm-system-status
-   9-dashboard/qd-helium-system-status
-   9-dashboard/vpixx-system-status
 
 .. toctree::
    :maxdepth: 2
