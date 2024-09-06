@@ -109,12 +109,6 @@ def get_folder():
         traceback.print_exc()
 
 
-def get_file_metadata(file_id):
-    box_file = client.file(file_id).get()
-    modified_at = box_file.modified_at
-    return modified_at
-
-
 def download_file(file_path, download_path):
     path_parts = file_path.split("/")
     file_name = path_parts[-1]
@@ -227,10 +221,22 @@ try:
     download_directory = r"data"
     os.makedirs(download_directory, exist_ok=True)
 
+    last_date = None
+    logging.info("Downloading con files")
+    # Start the recursive download from the starting folder
+    download_con_files_from_folder(start_folder_id, download_directory, last_date)
+
+except Exception as e:
+    logging.error(f"Error during Box authentication setup: {e}")
+    logging.info("Skipping Box script and continuing with the Sphinx build.")
+    traceback.print_exc()
+
+
+"""
     # Function to get last modification: files
     try:
 
-        csv_file = r"9-dashboard/data/con_files_statistics.csv"
+        csv_file = "9-dashboard/data/con_files_statistics.csv"
 
         if os.path.isfile(csv_file):
 
@@ -246,16 +252,4 @@ try:
         else:
             logging.info(f"File {csv_file} does not exist")
             last_date = None
-
-        logging.info("Downloading con files")
-        # Start the recursive download from the starting folder
-        download_con_files_from_folder(start_folder_id, download_directory, last_date)
-
-    except Exception as e:
-        logging.error(f"An error occurred in the main script: {str(e)}")
-        traceback.print_exc()
-
-except Exception as e:
-    logging.error(f"Error during Box authentication setup: {e}")
-    logging.info("Skipping Box script and continuing with the Sphinx build.")
-    traceback.print_exc()
+"""
