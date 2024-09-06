@@ -6,5 +6,5 @@ plotly>=5.0.0
 sphinx-gallery
 mne
 pandas
-boxsdk
+boxsdk[jwt]
 python-dotenv

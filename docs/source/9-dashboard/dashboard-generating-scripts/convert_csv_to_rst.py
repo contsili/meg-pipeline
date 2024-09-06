@@ -93,11 +93,11 @@ if __name__ == "__main__":
     # base_folder = os.path.abspath(
     #     os.path.join(os.path.dirname(__file__), "../9-dashboard/data")
     # )
-    base_folder = r"9-dashboard/data"
+    base_folder = r"docs/source/9-dashboard/data"
 
     # Set the output folder where .rst files will be saved
 
-    output_folder = r"9-dashboard"
+    output_folder = r"docs/source/9-dashboard"
 
     # output_folder = os.path.abspath(
     #     os.path.join(os.path.dirname(__file__), "../9-dashboard")

@@ -12,6 +12,7 @@ import os
 import subprocess
 import logging
 from sphinx.application import Sphinx
+import subprocess
 
 
 project = "MEG Pipeline"
@@ -33,7 +34,6 @@ extensions = [
     "sphinx_gallery.load_style",
     "sphinx.ext.mathjax",
 ]
-
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3/", None),
     "sphinx": ("https://www.sphinx-doc.org/en/master/", None),
@@ -80,43 +80,38 @@ def run_box_script(app: Sphinx):
     script_path = os.path.join(
         app.confdir, "9-dashboard", "dashboard-generating-scripts", "box_script.py"
     )
-    client_id = os.getenv("BOX_CLIENT_ID")
-    logger.info(f"Client id {client_id}")
-    client_secret = os.getenv("BOX_CLIENT_SECRET")
-    logger.info(f"BOX_CLIENT_SECRET {client_secret}")
-    enterprise_id = os.getenv("BOX_ENTERPRISE_ID")
-    logger.info(f"{enterprise_id}")
-    public_key_id = os.getenv("BOX_PUBLIC_KEY_ID")
-    logger.info(f"{public_key_id}")
 
     if os.path.exists(script_path):
         logger.info(f"Found box_script.py at {script_path}, running it now.")
         result = subprocess.run(["python", script_path], capture_output=True, text=True)
         if result.returncode == 0:
             logger.info("box_script.py ran successfully.")
+
         else:
             logger.error(f"box_script.py failed with return code {result.returncode}")
-            logger.error(result.stdout)
-            logger.error(result.stderr)
+
+        logger.info(result.stdout)
+        logger.error(result.stderr)
+
     else:
         logger.error(f"The script {script_path} does not exist.")
 
 
 def run_csv_conversion(app):
     logger = logging.getLogger(__name__)
-    script_path = os.path.abspath(
-        os.path.join(
-            app.confdir,
-            "9-dashboard",
-            "dashboard-generating-scripts",
-            "convert_csv_to_rst.py",
-        )
+    script_path = os.path.join(
+        app.confdir,
+        "9-dashboard",
+        "dashboard-generating-scripts",
+        "convert_csv_to_rst.py",
     )
 
     if os.path.exists(script_path):
         logger.info(f"Found convert_csv_to_rst.py at {script_path}, running it now.")
 
-        result = subprocess.run(["python", script_path], check=True)
+        result = subprocess.run(
+            ["python", script_path], check=True, capture_output=True, text=True
+        )
 
         if result.returncode == 0:
             logger.info("convert_csv_to_rst.py ran successfully.")
@@ -135,35 +130,50 @@ def run_csv_conversion(app):
 
 def run_proccessing_files(app):
     logger = logging.getLogger(__name__)
-    script_path = os.path.abspath(
-        os.path.join(
-            app.confdir,
-            "9-dashboard",
-            "dashboard-generating-scripts",
-            "proccessing_con_files_for_table.py",
-        )
+    script_path = os.path.join(
+        app.confdir,
+        "9-dashboard",
+        "dashboard-generating-scripts",
+        "proccessing_con_files_for_table.py",
     )
 
     if os.path.exists(script_path):
-        logger.info(
-            f"Found proccessing_con_files_for_table.py at {script_path}, running it now."
-        )
+        logger.info(f"Found {script_path}, running it now.")
 
-        result = subprocess.run(["python", script_path], check=True)
-
-        if result.returncode == 0:
-            logger.info("proccessing_con_files_for_table.py ran successfully.")
-        else:
-            logger.error(
-                f"proccessing_con_files_for_table.py failed with return code {result.returncode}"
+        try:
+            result = subprocess.run(
+                ["python", script_path], check=True, capture_output=True, text=True
             )
-            logger.error(result.stdout)
-            logger.error(result.stderr)
+
+            if result.returncode == 0:
+                logger.info(f"{script_path} ran successfully.")
+            else:
+                logger.error(
+                    f"{script_path} failed with return code {result.returncode}"
+                )
+                raise RuntimeError(f"Script failed with exit code {result.returncode}")
+
+            # Log both stdout and stderr
+            if result.stdout:
+                logger.info(f"Script output: {result.stdout}")
+            if result.stderr:
+                logger.error(f"Script errors: {result.stderr}")
+
+        except subprocess.CalledProcessError as e:
+            logger.error(f"Error running {script_path}: {e}")
+            logger.error(f"Stdout: {e.stdout}")
+            logger.error(f"Stderr: {e.stderr}")
             raise RuntimeError(
-                f"CSV to RST conversion script failed with exit code {result.returncode}"
-            )
+                f"Error while running script: {script_path}. Exit code: {e.returncode}"
+            ) from e
+
+        except Exception as e:
+            logger.exception(f"Unexpected error while running {script_path}: {e}")
+            raise
+
     else:
         logger.error(f"The script {script_path} does not exist.")
+        raise FileNotFoundError(f"Script {script_path} not found.")
 
 
 def setup(app: Sphinx):
@@ -171,3 +181,4 @@ def setup(app: Sphinx):
     app.connect("builder-inited", run_box_script)
     app.connect("builder-inited", run_proccessing_files)
     app.connect("builder-inited", run_csv_conversion)
+    # app.add_css_file('custom.css')
