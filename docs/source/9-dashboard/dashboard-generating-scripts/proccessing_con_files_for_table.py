@@ -22,20 +22,21 @@ def process_con_file(file_path):
     try:
         # 3 set to be the Threshold
         s_avg = 3
-        # add other matrixs here
+        # add other matrices here
         s_fft = 10
 
+        print(f"Processing file: {file_path}")
         # Load the .con file using MNE
-        raw = mne.io.read_raw_kit(file_path, preload=True)
-        raw.pick_types(meg=True, eeg=False)
+        raw = mne.io.read_raw_kit(file_path, preload=True, verbose=False)
+        raw.pick(picks = "meg")
         raw = remove_zero_channels(raw)
 
         # Get data for all channels
         data, times = raw.get_data(return_times=True)
+        print(f"Processing file: {file_path}, Data shape: {data.shape}")
         sfreq = raw.info["sfreq"]
         freqs, fft_data = compute_fft(data, sfreq)
-        print(f"Processing file: {file_path}")
-        print(f"Data shape: {data.shape}")
+
         # Calculate average, variance and find the maximum across all channels
         avg = (np.mean(data)) * 1e15
         var = np.var(data)
@@ -65,7 +66,7 @@ def process_con_file(file_path):
 # for negative values: tried looking at the channels of the files that give negative  values found some of them provide negative values
 
 
-def process_all_con_files(base_folder, file_limit=20):
+def process_all_con_files(base_folder, file_limit=None):
     """
 
     """
@@ -78,45 +79,51 @@ def process_all_con_files(base_folder, file_limit=20):
                 if file.endswith(".con"):
                     file_path = os.path.join(root, file)
 
-                    # Process the file
-                    (
-                        avg,
-                        var,
-                        max_val,
-                        status,
-                        freqs,
-                        fft_data,
-                        status_fft,
-                        status_max,
-                    ) = process_con_file(file_path)
+                    result = process_con_file(file_path)
+                    if result is None:
+                        print(f"Processing failed for {file_path}")
+                    else:
+                        # Process the file
+                        (
+                            avg,
+                            var,
+                            max_val,
+                            status,
+                            freqs,
+                            fft_data,
+                            status_fft,
+                            status_max,
+                        ) = process_con_file(file_path)
 
-                    # Extract date
-                    date = extract_date(file)
-                    details = "Nothing added yet"
-                    date_str = (
-                        date.strftime("%d-%m-%y %H:%M:%S") if date else "Unknown Date"
-                    )
+                        # Extract date
+                        date = extract_date(file)
+                        details = "Nothing added yet"
+                        date_str = (
+                            date.strftime("%d-%m-%y %H:%M:%S") if date else "Unknown Date"
+                        )
 
-                    # Append the result
-                    results.append(
-                        {
-                            "File Name": file.split("_")[1],
-                            "Status for average values": status,
-                            "Average": avg,
-                            "Variance": var,
-                            "Status for max values": status_max,
-                            "Maximum": max_val,
-                            "Date": date_str,
-                            "Details": details,
-                        }
-                    )
+                        # Append the result
+                        results.append(
+                            {
+                                "File Name": file.split("_")[1],
+                                "Status for average values": status,
+                                "Average": avg,
+                                "Variance": var,
+                                "Status for max values": status_max,
+                                "Maximum": max_val,
+                                "Date": date_str,
+                                "Details": details,
+                            }
+                        )
 
                     file_count += 1  # Increment the counter
-                    if file_count >= file_limit:
-                        break  # Stop processing after reaching the limit
+                    if file_limit != None:
+                        if file_count >= file_limit:
+                            break  # Stop processing after reaching the limit
 
-            if file_count >= file_limit:
-                break  # Stop outer loop if limit is reached
+            if file_limit != None:
+                if file_count >= file_limit:
+                    break  # Stop outer loop if limit is reached
 
         return results
     except Exception as e:
@@ -211,7 +218,7 @@ def remove_zero_channels(raw):
     data = raw.get_data()
     non_zero_indices = np.any(data != 0, axis=1)
     # print(non_zero_indices)
-    raw.pick_channels(
+    raw.pick(
         [raw.ch_names[i] for i in range(len(non_zero_indices)) if non_zero_indices[i]]
     )
     return raw
@@ -304,7 +311,7 @@ try:
     output_file = "9-dashboard/data/con_files_statistics.csv"
 
     # Process all .con files and save the results
-    results = process_all_con_files(base_folder)
+    results = process_all_con_files(base_folder, file_limit=None)
     save_results_to_csv(results, output_file)
 
     print(f"Results saved to {output_file}")
