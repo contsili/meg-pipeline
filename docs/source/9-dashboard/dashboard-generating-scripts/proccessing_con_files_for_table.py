@@ -62,14 +62,17 @@ def process_con_file(file_path):
 # for negative values: tried looking at the channels of the files that give negative  values found some of them provide negative values
 
 
-def process_all_con_files(base_folder):
+def process_all_con_files(base_folder, file_limit=20):
     results = []
+    file_count = 0  # Initialize a counter
 
     try:
         for root, _, files in os.walk(base_folder):
             for file in files:
                 if file.endswith(".con"):
                     file_path = os.path.join(root, file)
+
+                    # Process the file
                     (
                         avg,
                         var,
@@ -80,11 +83,15 @@ def process_all_con_files(base_folder):
                         status_fft,
                         status_max,
                     ) = process_con_file(file_path)
+
+                    # Extract date
                     date = extract_date(file)
                     details = "Nothing added yet"
                     date_str = (
                         date.strftime("%d-%m-%y %H:%M:%S") if date else "Unknown Date"
                     )
+
+                    # Append the result
                     results.append(
                         {
                             "File Name": file.split("_")[1],
@@ -97,6 +104,13 @@ def process_all_con_files(base_folder):
                             "Details": details,
                         }
                     )
+
+                    file_count += 1  # Increment the counter
+                    if file_count >= file_limit:
+                        break  # Stop processing after reaching the limit
+
+            if file_count >= file_limit:
+                break  # Stop outer loop if limit is reached
 
         return results
     except Exception as e:
@@ -309,6 +323,7 @@ try:
 except:
     print(f"Error processing")
 ########################################################################
+"""
 import glob
 import plotly.graph_objs as go
 
@@ -332,8 +347,9 @@ fig.update_layout(
 )
 fig.write_html("_static/fft_plots_combined.html")
 print("fft plot saved!")
-
+"""
 ################################################################################
+"""
 import plotly.express as px
 import plotly.graph_objs as go
 from plotly.subplots import make_subplots
@@ -400,3 +416,4 @@ def process_fifo_files(base_folder, output_file):
 base_folder = r"data/meg-opm"
 output_file = r"_static/average_plot_opm_data.html"
 # process_fifo_files(base_folder, output_file)
+"""
