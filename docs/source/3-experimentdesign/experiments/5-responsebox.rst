@@ -5,6 +5,10 @@ The MEG Lab has two response boxes which allow the user to provide their input d
 
 The `Left box` is the grey box and the `Right box` is the blue box.
 
+.. warning::
+
+   Both response boxes (left and right) need to be connected in order to have the below functions `getButton` and `listenButton` working.
+
 
 - To test the response boxes you can run the following script
 

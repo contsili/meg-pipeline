@@ -12,8 +12,7 @@ Status of the documentation build
 .. include:: ../../README.rst
 
 
-Check out the :doc:`1-systems/megsystem` section for further information, including
-how to :ref:`installation` the project.
+Check out the :doc:`1-systems/megsystem` section for further information.
 
 .. note::
 
@@ -28,6 +27,14 @@ how to :ref:`installation` the project.
    1-systems/opmsystem
    1-systems/eegsystem
    1-systems/quizz
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Performance Dashboards
+
+   9-dashboard/systems-dashboard
+   9-dashboard/data_quality_dashboards
+
 
 .. toctree::
    :maxdepth: 2
@@ -52,26 +59,35 @@ how to :ref:`installation` the project.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Pipelines and Data
+   :caption: Data storage and naming
 
-   4-pipeline/1-overview
-   4-pipeline/2-datastorage
-   4-pipeline/3-settingupenvironment
-   4-pipeline/4-0-pipelines
-   4-pipeline/5-notebooks
+   4-data/1-datafiles.rst
+   4-data/2-datastorage.rst
 
+.. toctree::
+   :maxdepth: 2
+   :caption: Processing pipelines
+
+   5-pipeline/4-0-pipelines
+   5-pipeline/5-notebooks
 
 .. toctree::
    :maxdepth: 2
    :caption: Maintenance
 
-   5-maintenance/maintenance
+   6-maintenance/maintenance
 
 .. toctree::
    :maxdepth: 2
    :caption: Emergency and Risk Asessment
 
-   6-emergency/emergency
+   7-emergency/emergency
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contributing to this repository
+
+   8-contributing/contributing
 
 .. toctree::
    :maxdepth: 2

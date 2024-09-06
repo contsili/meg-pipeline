@@ -81,15 +81,20 @@ The hardware components constituting the (legacy) MEG system:
 Vpixx system (New system)
 -------------------------
 
+Screen width 65 cm
+
 
 MEG-Channels
 ############
 
+.. note::
+    The numbering of channels on the KIT data acquisition software called `MEG 160` starts with index 0, however in MATLAB processing, channels start with index 1.
 
-Channels 0 to 207: Gradiometers squids
-
+Channels 0 to 90 and 92 to 207: Gradiometers SQUIDS
+Channel 91: Reference magnetometer
 Channels 208-223: Magnetometers for reference magnetic field (these are used to denoising and to understand the ambiant magnetic field the environment)
 
+Old configuration (no longer used)
 224: Lightsensor 1
 
 225: Lightsensor 2
@@ -101,6 +106,21 @@ Channels 208-223: Magnetometers for reference magnetic field (these are used to 
 230: Event marker bit 1
 
 231: Event marker bit 2
+
+New Vpixx configuration: all these channels are free to be used by the experiment designer, [it can be used as a binary signal of 6 bits
+
+224: Event marker bit 0
+
+225: Event marker bit 1
+
+228: Event marker bit 2
+
+229: Event marker bit 3
+
+230: Event marker bit 4
+
+231: Event marker bit 5
+
 
 
 One of the channels (In the 80's ) displays a digital signal, this is because one of the sensors are shut off and not used.
@@ -142,6 +162,44 @@ The KIT-MEG is located in an MSR built by `VacuumShmelze <https://www.vacuumschm
         - Make sure Low Power Mode is Disabled.
     - In case one/some of the DAQs won’t boot, try turning it on by manually pressing the power button on the unit.
     - Inform other lab members if things like that happen. Chances are, they have encountered similar/same problems.
+
+
+MEG160 Software parameters
+##########################
+
+`MEG160` is the main software for data acquisition from the KIT-MEG system.
+
+Auto-tuning should be performed prior to any data acquisition.
+From the software --> Acquire Measurement
+Sensor check can be performed from this window, this ensures that the sensors circuits are correct when a sinusoidal wave is seen on the channel corresponding to that sensor.
+
+The following table shows the default parameters that should be set in the acquiring window
+
+.. csv-table:: MEG160 parameters
+   :header-rows: 1
+   :file: meg_160_parameters.csv
+
+If we see a strong noise on a specific frequency (for example 50Hz) and would like to filter that, we use the BEF on 50Hz.
+
+
+Frequently asked questions (FAQ)
+################################
+
+- Does locking the SQUID sensors and opening the MSR door can cause harm to the SQUIDs?
+
+When you open the MSR door with SQUIDs locked, the output of some
+sensors may become flat. But they are not dead but just faint away due
+to the excessive magnetic field fluctuation by swinging the door. The
+function of the sensors come back when they are once unlock and lock
+again with the door closed.
+
+
+- How to test trigger channels while opening the MSR?
+
+Avoid locking the sensors, keep the MSR door open and perform all tests with Vpixx response boxes, microphone and other hardware to test your experiment
+
+
+
 
 
 Contact
@@ -204,3 +262,5 @@ The following is a list of references for further understanding on MEG systems
 
 * Books:
     * Hansen, Peter & Kringelbach, Morten & Salmelin, Riitta. (2010). MEG: An introduction to methods. 10.1093/acprof:oso/9780195307238.001.0001.
+    * Knösche, Thomas & Haueisen, Jens. (2022). EEG/MEG Source Reconstruction, Textbook for Electro-and Magnetoencephalography. 10.1007/978-3-030-74918-7.
+    * Hari, MD, PhD, Riitta, and Aina Puce, PhD, MEG-EEG Primer, 1 (New York, 2017; online edn, Oxford Academic, 1 Mar. 2017), accessed 18 July 2024.

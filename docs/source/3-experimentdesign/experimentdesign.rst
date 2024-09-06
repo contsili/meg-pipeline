@@ -9,12 +9,19 @@ What is meant by experiment, is the stimuli involving usually visual and auditor
 The experiment defines the timing of display of the stimuli, tracks responses from the participants and controls the different settings related
 to the content being presented to the participant.
 This section also provides the requirements that should be met to run your experiment in the NYUAD MEG Lab.
+Roughly speaking, the experiment should be designed in a way such that:
 
-There are three tools primarily used for designing the experiment
+- when the participant performs the experiment, a specific behavior in the brain is triggered due to the stimulus from the experiment
+- which you should "beleive" that, when MEG/EEG measurements are obtained, would nicely `highlight` the specific behavior
 
-- Psychotoolbox
-- Presentation
-- Psychopy
+Therefore, the design of an experiment should come after extensive research about the phenomena that we would like to characterize.
+
+
+There are three tools primarily used for designing the experiment used in NYUAD MEG Lab
+
+- Psychtoolbox: a MATLAB based library (all NYUAD affiliated students/employees have access to MATLAB)
+- Presentation: a powerful license based software (a license is available at the NYUAD MEG LAB)
+- Psychopy: an open source Python library with both GUI based design and code based design
 
 
 Definning the hardware needs for your experiment
@@ -60,3 +67,9 @@ If using python library PsychoPy:
 
 
 
+"Presentation" based experiments
+--------------------------------
+
+Experiments coded in "Presentation" do not enable the Vpixx pixel mode by default.
+If your experiment uses Pixel Mode (i.e., you are using the color of the top left pixel of the screen as a condition to send triggers), you must run the `enablepixelmode.m` script.
+Find the script under  `experiments/psychtoolbox/general/enablepixelmode.m <https://github.com/hzaatiti-NYU/meg-pipeline/blob/main/experiments/psychtoolbox/general/enablepixelmode.m>`_

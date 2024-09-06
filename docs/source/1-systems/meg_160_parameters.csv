@@ -1,0 +1,5 @@
+﻿Parameter, Description, Value, Value description
+HPF, High Pass Filter, 0.1Hz, Let pass only above 0.1 Hz (because electronic circuits generate a small noise below 0.1Hz)
+LPF, Low Pass Filter, 500Hz, Let pass only below 500 Hz
+BEF, Bandwith Filter, THRU, Let pass all frequencies (BEF turned off)
+

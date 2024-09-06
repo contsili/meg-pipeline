@@ -11,7 +11,7 @@ raw = mne.io.read_raw_fif(r'C:\Users\hz3752\Box\MEG\Data\resting-state\sub-01\me
 raw.plot_sensors(kind='topomap', show_names=True)
 
 
-
+a =1
 
 
 
