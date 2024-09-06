@@ -311,7 +311,7 @@ try:
     output_file = "9-dashboard/data/con_files_statistics.csv"
 
     # Process all .con files and save the results
-    results = process_all_con_files(base_folder, file_limit=None)
+    results = process_all_con_files(base_folder, file_limit=10)
     save_results_to_csv(results, output_file)
 
     print(f"Results saved to {output_file}")
