@@ -1,40 +1,10 @@
-Data Quality Dashboards
-#######################
-
-An MEG signal is a tiny magnetic fields, in the order of 100 fT, where
-femtotesla  :math:`1fT = 10^{-15} T` and picotesla :math:`1pT = 10^{-12} T`.
-
-EEG scalp signals are about 50 to 100 :math:`\mu\text{V}`
-
-
-Several metrics are defined in the below table and will serve as basis to asess the quality of data.
-
-.. include:: noise_metrics.rst
-
-.. include:: con_files_statistics.rst
-
-.. include:: KIT_data_quality_dashboard.rst
-
-*Plot of Average and Variance Over Time*
-
-
-.. raw:: html
-
-    <iframe src="../_static/average_plot.html" width="100%" height="600px" frameborder="0"></iframe>
-    <iframe src="../_static/variance_plot.html" width="100%" height="600px" frameborder="0"></iframe>
-    <iframe src="../_static/max_plot.html" width="100%" height="600px" frameborder="0"></iframe>
-    <iframe src="../_static/fft_plots_combined.html" width="100%" height="600px" frameborder="0"></iframe>
-    
-
-.. include:: OPM_data_quality_dashboard.rst
-
 Documentation for the following dashboard
 ##########################################
 
 This dashboard's objective is to monitor the quality of the empty-room data with informative labels, for quick access and over all numerical values in a simple format.
 It has graphs showing the average and variance of each empty-room data file, as well as one table listing the current state of each empty-room data file.
 
-*1.* The source of this data is the files generated from each experiment, hosted on the NYU-BOX data drive. This process is done by a Python script that authenticates on BOX-DATA, downloads all the '.con' files that exists inside the empty-room while also getting the date they were last modified. 
+*1.* The source of this data is the files generated from each experiment, hosted on the NYU-BOX data drive. This process is done by a Python script that authenticates on BOX-DATA, downloads all the '.con' files that exists inside the empty-room while also getting the date they were last modified.
 
 
 *2.* Overview of the table:
@@ -73,7 +43,7 @@ It has graphs showing the average and variance of each empty-room data file, as 
    - Get the average of each room's data with variance.
 
 *4.* Future directions:
-    
+
     As more data becomes available, we can build many dashboards to accommodate various needs as we move forward. keeping the processed data online in a database. In relation to the end findings, we can put up a notice system in the unlikely case that any values go above the specified threshold.
 
 Dashboard Generation Developer Guide
@@ -120,7 +90,7 @@ After accessing the Box data correctly, you need to create a function that retri
 
    def get_folder_id_by_path(path):
        # Root folder id is "0"
-       folder_id = "0" 
+       folder_id = "0"
        for folder_name in path.split("/"):
            items = client.folder(folder_id).get_items()
            folder_id = None
