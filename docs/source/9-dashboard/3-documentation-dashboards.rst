@@ -1,5 +1,5 @@
 Documentation for the following dashboard
-##########################################
+#########################################
 
 This dashboard's objective is to monitor the quality of the empty-room data with informative labels, for quick access and over all numerical values in a simple format.
 It has graphs showing the average and variance of each empty-room data file, as well as one table listing the current state of each empty-room data file.
