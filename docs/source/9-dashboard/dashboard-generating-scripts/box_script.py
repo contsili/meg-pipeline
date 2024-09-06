@@ -87,7 +87,7 @@ def download_con_files_from_folder(folder_id, path, last_date):
                         with open(file_path, "wb") as open_file:
                             file.download_to(open_file)
 
-                        print(f"Downloaded {filename} to {file_path}")
+                        logging.info(f"Downloaded {filename} to {file_path}")
                 elif item.type == "folder":
                     new_folder_path = os.path.join(path, item.name)
                     os.makedirs(new_folder_path, exist_ok=True)
@@ -96,7 +96,7 @@ def download_con_files_from_folder(folder_id, path, last_date):
                 logging.error(
                     f"Failed to download file or process folder '{item.name}': {str(e)}"
                 )
-                print(f"Error processing item '{item.name}': {str(e)}")
+                logging.info(f"Error processing item '{item.name}': {str(e)}")
                 traceback.print_exc()
 
     except Exception as e:
@@ -215,8 +215,8 @@ try:
     # Example: Get the details of the current user
     try:
         user = client.user().get()
-        print(f"User ID: {user.id}")
-        print(f"User Login: {user.login}")
+        logging.info(f"User ID: {user.id}")
+        logging.info(f"User Login: {user.login}")
     except BoxAPIException as e:
         logging.info(f"Error getting user details: {e}")
 
