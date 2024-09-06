@@ -101,28 +101,84 @@ def run_box_script(app: Sphinx):
     """Run the dashboard generation script."""
     logger = logging.getLogger(__name__)
     script_path = os.path.join(
-        app.confdir, "9-dashboard", "dashboard-generating-scripts", "box_script.py"
+        app.confdir,
+        "9-dashboard",
+        "dashboard-generating-scripts",
+        "box_script.py"
     )
 
     if os.path.exists(script_path):
+
         logger.info(f"Found box_script.py at {script_path}, running it now.")
+
         result = subprocess.run(["python", script_path], capture_output=True, text=True)
+
         if result.returncode == 0:
             logger.info("box_script.py ran successfully.")
 
         else:
             logger.error(f"box_script.py failed with return code {result.returncode}")
 
-        logger.info(result.stdout)
-        logger.error(result.stderr)
+        if result.stdout:
+            logger.info(result.stdout)
+        if result.stderr:
+            logger.error(result.stderr)
 
     else:
         logger.error(f"The script {script_path} does not exist.")
 
 
+def run_proccessing_con_files(app: Sphinx):
+    logger = logging.getLogger(__name__)
+
+    SCRIPT_NAME = "proccessing_con_files_for_table.py"
+    script_path = os.path.join(
+        app.confdir,
+        "9-dashboard",
+        "dashboard-generating-scripts",
+        SCRIPT_NAME,
+    )
+
+    if os.path.exists(script_path):
+
+        logger.info(f"Found {SCRIPT_NAME}, running it now.")
+
+        try:
+            result = subprocess.run(
+                ["python", script_path], capture_output=True, text=True
+            )
+
+            if result.returncode == 0:
+                logger.info(f"{SCRIPT_NAME} ran successfully.")
+            else:
+                logger.error(
+                    f"{SCRIPT_NAME} failed with return code {result.returncode}"
+                )
+
+            # Log both stdout and stderr
+            if result.stdout:
+                logger.info(f"Script output: {result.stdout}")
+            if result.stderr:
+                logger.error(f"Script errors: {result.stderr}")
+
+        # except subprocess.CalledProcessError as e:
+        #     logger.error(f"Error running {script_path}: {e}")
+        #     logger.error(f"Stdout: {e.stdout}")
+        #     logger.error(f"Stderr: {e.stderr}")
+        #     raise RuntimeError(
+        #         f"Error while running script: {script_path}. Exit code: {e.returncode}"
+        #     ) from e
+
+        except Exception as e:
+            logger.exception(f"Unexpected error while running {script_path}: {e}")
+            raise
+
+    else:
+        logger.error(f"The script {script_path} does not exist.")
+        raise FileNotFoundError(f"Script {script_path} not found.")
 
 
-def run_csv_conversion(app):
+def run_csv_conversion(app: Sphinx):
     logger = logging.getLogger(__name__)
     script_path = os.path.join(
         app.confdir,
@@ -153,52 +209,7 @@ def run_csv_conversion(app):
         logger.error(f"The script {script_path} does not exist.")
 
 
-def run_proccessing_con_files(app):
-    logger = logging.getLogger(__name__)
-    script_path = os.path.join(
-        app.confdir,
-        "9-dashboard",
-        "dashboard-generating-scripts",
-        "proccessing_con_files_for_table.py",
-    )
 
-    if os.path.exists(script_path):
-        logger.info(f"Found {script_path}, running it now.")
-
-        try:
-            result = subprocess.run(
-                ["python", script_path], check=True, capture_output=True, text=True
-            )
-
-            if result.returncode == 0:
-                logger.info(f"{script_path} ran successfully.")
-            else:
-                logger.error(
-                    f"{script_path} failed with return code {result.returncode}"
-                )
-                raise RuntimeError(f"Script failed with exit code {result.returncode}")
-
-            # Log both stdout and stderr
-            if result.stdout:
-                logger.info(f"Script output: {result.stdout}")
-            if result.stderr:
-                logger.error(f"Script errors: {result.stderr}")
-
-        except subprocess.CalledProcessError as e:
-            logger.error(f"Error running {script_path}: {e}")
-            logger.error(f"Stdout: {e.stdout}")
-            logger.error(f"Stderr: {e.stderr}")
-            raise RuntimeError(
-                f"Error while running script: {script_path}. Exit code: {e.returncode}"
-            ) from e
-
-        except Exception as e:
-            logger.exception(f"Unexpected error while running {script_path}: {e}")
-            raise
-
-    else:
-        logger.error(f"The script {script_path} does not exist.")
-        raise FileNotFoundError(f"Script {script_path} not found.")
 
 
 def setup(app: Sphinx):
