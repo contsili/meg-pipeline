@@ -1,3 +1,9 @@
+"""
+Authors: Emna Tayachi, Hadi Zaatiti
+
+Authentication with BOX to access and download empty-room KIT and OPM data.
+"""
+
 import os
 from boxsdk import JWTAuth, Client
 from boxsdk.exception import BoxAPIException

@@ -1,4 +1,7 @@
-""" This script loads already downloaded .con files and then computes for each one of them, the metrics and saves them in a .csv"""
+"""
+This script loads already downloaded .con files and then computes for each
+one of them, the metrics and saves them in a .csv
+"""
 
 import os
 import numpy as np
@@ -63,6 +66,9 @@ def process_con_file(file_path):
 
 
 def process_all_con_files(base_folder, file_limit=20):
+    """
+
+    """
     results = []
     file_count = 0  # Initialize a counter
 
@@ -288,6 +294,8 @@ def compute_fft(data, sfreq):
     freqs = np.fft.rfftfreq(data.shape[-1], d=1 / sfreq)
     return freqs, np.abs(fft_data)
 
+
+#### Main begin #####
 
 try:
     # Set the base folder containing .con files and subfolders

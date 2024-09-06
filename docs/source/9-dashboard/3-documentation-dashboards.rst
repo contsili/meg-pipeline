@@ -58,13 +58,17 @@ Dashboard Generation Developer Guide
 
 *Overview*
 
-The dashboard is generated from empty room data hosted on the NYU-BOX storage drive. The scripts for generating the dashboard are located under `docs/source/9-dashboard/dashboard-generating-scripts`.
+The dashboard is generated from empty room data hosted on the NYU-BOX storage drive.
+The scripts for generating the dashboard are located under `docs/source/9-dashboard/dashboard-generating-scripts`.
+This guide explains how to download empty room data from the NYU-BOX storage using Python scripts.
+It covers setting up the Box SDK, authenticating using JWT, accessing folder data, and downloading `.con` files.
+It also includes information on processing these downloaded files.
 
-This guide explains how to download empty room data from the NYU-BOX storage using Python scripts. It covers setting up the Box SDK, authenticating using JWT, accessing folder data, and downloading `.con` files. It also includes information on processing these downloaded files.
-
-- `box_script.py` connects to NYU-BOX and downloads empty room data to the build server. It uses private keys, which can be provided as an `.env` file on your machine or set as environment variables in your build. This step will vary depending on your setup, so it's important to include error handling.
-
-This process is done by a Python script that authenticates on BOX-DATA, downloads all the '.con' files that exists inside the empty-room while also getting the date they were last modified.
+- `box_script.py` connects to NYU-BOX using the *BOX-SDK* and downloads empty room data to the build server (Read The Docs).
+It uses private keys, which can be provided as an `.env` file on your machine or set as environment variables in your build.
+This step will vary depending on your setup, so it's important to include error handling.
+An NYU Box app has been approved with the permissions required to access and download the files,
+the secrets are generated from the approved app.
 
 *Installation*
 
@@ -90,6 +94,7 @@ Define your private keys, such as `client_id`, `client_secret`, and any other ne
        # Add any additional keys needed
    )
    client = Client(auth)
+
 
 *Accessing Folders*
 

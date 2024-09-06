@@ -153,7 +153,7 @@ def run_csv_conversion(app):
         logger.error(f"The script {script_path} does not exist.")
 
 
-def run_proccessing_files(app):
+def run_proccessing_con_files(app):
     logger = logging.getLogger(__name__)
     script_path = os.path.join(
         app.confdir,
@@ -205,6 +205,6 @@ def setup(app: Sphinx):
     logging.basicConfig(level=logging.INFO)
     app.connect("builder-inited", run_generate_system_status_dashboards_script)
     app.connect("builder-inited", run_box_script)
-    app.connect("builder-inited", run_proccessing_files)
+    app.connect("builder-inited", run_proccessing_con_files)
     app.connect("builder-inited", run_csv_conversion)
     # app.add_css_file('custom.css')
