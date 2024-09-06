@@ -1,13 +1,21 @@
-Documentation for the following dashboard
-#########################################
+Documentation for dashboards
+############################
 
-This dashboard's objective is to monitor the quality of the empty-room data with informative labels, for quick access and over all numerical values in a simple format.
+This section explains the usefulness of the dashboard and provide technical details on their generation.
+This dashboards are meant to monitor the status of the systems and the quality of the data by measuring noise levels in empty-room data while providing informative labels, for quick access and over all numerical values in a simple format.
 It has graphs showing the average and variance of each empty-room data file, as well as one table listing the current state of each empty-room data file.
 
-*1.* The source of this data is the files generated from each experiment, hosted on the NYU-BOX data drive. This process is done by a Python script that authenticates on BOX-DATA, downloads all the '.con' files that exists inside the empty-room while also getting the date they were last modified.
+*1.* The following use cases are enabled by the dashboards:
+
+   - Easily monitor the status of the systems using the table and track periods of time where incidents had happened
+   - Get a summary of several measurements of metrics that evaluates the quality of data
+   - Track down in history any data-quality issues when an experiment has been performed on a specific day
 
 
-*2.* Overview of the table:
+*1.* The source of this data is empty-room data hosted on the NYU-BOX data drive.
+
+
+*1.* Overview of the table:
 
 
   .. list-table:: File Details
@@ -37,14 +45,13 @@ It has graphs showing the average and variance of each empty-room data file, as 
      - Added by the user, default is "Nothing added yet".
 
 
-*3.* Use cases:
 
-   - Easily monitor the status using the table
-   - Get the average of each room's data with variance.
 
-*4.* Future directions:
+*1.* Future directions and perspectives:
+    - build a database to host the data instead of having them as files
+    - identify other metrics to be added to the existing list
+    - get system status values by executing automated system tests
 
-    As more data becomes available, we can build many dashboards to accommodate various needs as we move forward. keeping the processed data online in a database. In relation to the end findings, we can put up a notice system in the unlikely case that any values go above the specified threshold.
 
 Dashboard Generation Developer Guide
 ####################################
@@ -56,6 +63,8 @@ The dashboard is generated from empty room data hosted on the NYU-BOX storage dr
 This guide explains how to download empty room data from the NYU-BOX storage using Python scripts. It covers setting up the Box SDK, authenticating using JWT, accessing folder data, and downloading `.con` files. It also includes information on processing these downloaded files.
 
 - `box_script.py` connects to NYU-BOX and downloads empty room data to the build server. It uses private keys, which can be provided as an `.env` file on your machine or set as environment variables in your build. This step will vary depending on your setup, so it's important to include error handling.
+
+This process is done by a Python script that authenticates on BOX-DATA, downloads all the '.con' files that exists inside the empty-room while also getting the date they were last modified.
 
 *Installation*
 
