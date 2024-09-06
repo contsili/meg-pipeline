@@ -65,6 +65,7 @@ It covers setting up the Box SDK, authenticating using JWT, accessing folder dat
 It also includes information on processing these downloaded files.
 
 - `box_script.py` connects to NYU-BOX using the *BOX-SDK* and downloads empty room data to the build server (Read The Docs).
+
 It uses private keys, which can be provided as an `.env` file on your machine or set as environment variables in your build.
 This step will vary depending on your setup, so it's important to include error handling.
 An NYU Box app has been approved with the permissions required to access and download the files,

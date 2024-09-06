@@ -37,6 +37,8 @@ def process_con_file(file_path):
         sfreq = raw.info["sfreq"]
         freqs, fft_data = compute_fft(data, sfreq)
 
+
+
         # Calculate average, variance and find the maximum across all channels
         avg = (np.mean(data)) * 1e15
         var = np.var(data)
@@ -53,7 +55,7 @@ def process_con_file(file_path):
         status_max = [
             (f"🟢 In the threshold" if max_val < s_avg else f"🔴 Above the threshold")
         ]
-
+        del data, times
         return avg, var, max_val, status_avg, freqs, fft_data, status_fft, status_max
     except Exception as e:
         tb = traceback.format_exc()
