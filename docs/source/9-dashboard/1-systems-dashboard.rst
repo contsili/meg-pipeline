@@ -18,7 +18,7 @@ QD Helium Recovery Dashboard
 
 .. raw:: html
 
-    <iframe src="../_static/1-systems-dashboard/plotly_dashboard_qd_helium_system_status.html" style="border:none; width:100%; height:100%;"></iframe>
+    <iframe src="../_static/1-systems-dashboard/plotly_dashboard_qd_helium_system_status.html" style="border:none; width:100%; height:500px;"></iframe>
 
 
 
@@ -27,19 +27,19 @@ MEG-KIT system status dashboard
 
 .. raw:: html
 
-    <iframe src="../_static/1-systems-dashboard/plotly_dashboard_kit_system_status.html" style="border:none; width:100%; height:100%;"></iframe>
+    <iframe src="../_static/1-systems-dashboard/plotly_dashboard_kit_system_status.html" style="border:none; width:100%; height:500px;"></iframe>
 
 MEG-OPM system status dashboard
 ===============================
 
 .. raw:: html
 
-    <iframe src="../_static/1-systems-dashboard/plotly_dashboard_opm_system_status.html" style="border:none; width:100%; height:100%;"></iframe>
+    <iframe src="../_static/1-systems-dashboard/plotly_dashboard_opm_system_status.html" style="border:none; width:100%; height:500px;"></iframe>
 
 Vpixx devices system status dashboard
 =====================================
 
 .. raw:: html
 
-    <iframe src="../_static/1-systems-dashboard/plotly_dashboard_vpixx_system_status.html" style="border:none; width:100%; height:100%;"></iframe>
+    <iframe src="../_static/1-systems-dashboard/plotly_dashboard_vpixx_system_status.html" style="border:none; width:100%; height:500px;"></iframe>
 
