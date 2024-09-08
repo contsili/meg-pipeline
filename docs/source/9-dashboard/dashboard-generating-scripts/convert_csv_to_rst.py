@@ -1,3 +1,7 @@
+"""
+
+"""
+
 import os
 import csv
 import plotly.graph_objects as go
@@ -31,7 +35,7 @@ def convert_all_csvs_to_rst(base_folder, output_folder):
 
     for root, _, files in os.walk(base_folder):
         for file in files:
-            if file.endswith(".csv"):
+            if file == "noise_metrics.csv" or file == "con_files_statistics.csv":
                 csv_file_path = os.path.join(root, file)
                 # Construct the path for the .rst file in the output folder
                 rst_file_name = os.path.splitext(file)[0] + ".rst"
