@@ -10,11 +10,19 @@ from datetime import datetime
 import logging
 import traceback
 
+import tracemalloc
+
+
+
 import numpy as np
 import pandas as pd
 import mne
 import re
 import plotly.graph_objects as go
+
+
+# Start tracing memory allocation
+tracemalloc.start()
 
 def threshold(threshold, value_data):
     return "🟢 In the threshold" if value_data < threshold else "🔴 Above the threshold"
@@ -29,12 +37,12 @@ def process_con_file(file_path):
 
         logging.info(f"Processing file: {file_path}")
         # Load the .con file using MNE
-        raw = mne.io.read_raw_kit(file_path, preload=True, verbose=False)
+        raw = mne.io.read_raw_kit(file_path, preload=False, verbose=False)
         raw.pick(picks = "meg")
         raw = remove_zero_channels(raw)
 
         # Get data for all channels
-        data, times = raw.get_data(return_times=True)
+        data = raw.get_data()
         logging.info(f"Processing file: {file_path}, Data shape: {data.shape}")
         sfreq = raw.info["sfreq"]
         freqs, fft_data = compute_fft(data, sfreq)
@@ -57,7 +65,8 @@ def process_con_file(file_path):
         status_max = [
             (f"🟢 In the threshold" if max_val < s_avg else f"🔴 Above the threshold")
         ]
-        del data, times
+
+
         return avg, var, max_val, status_avg, freqs, fft_data, status_fft, status_max
     except Exception as e:
         tb = traceback.format_exc()
@@ -341,6 +350,16 @@ try:
     plot_data_var(csv_file, output_variance_html)
     output_variance_html = "_static/max_plot.html"
     plot_data_max(csv_file, output_variance_html)
+
+    # Display memory usage
+    current, peak = tracemalloc.get_traced_memory()
+    print(f"Current memory usage: {current / 1024 / 1024:.2f} MB")
+    print(f"Peak memory usage: {peak / 1024 / 1024:.2f} MB")
+
+    # Stop the trace
+    tracemalloc.stop()
+
+
 except:
     logging.info(f"Error processing")
 ########################################################################
