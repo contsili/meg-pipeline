@@ -17,6 +17,10 @@ Poor SNR can lead to experiments needing more number of trials, or artifact remo
 .. include:: noise_metrics.rst
 
 
+.. csv-table:: Noise Metrics Table
+   :file: data/noise_metrics.csv
+   :header-rows: 1
+
 KIT Data Quality Dashboard
 ==========================
 
@@ -27,6 +31,9 @@ The results are displayed automatically in the following dashboards.
 
 .. include:: con_files_statistics.rst
 
+.. csv-table:: Metric computation for KIT empty-room data
+   :file: data/con_file_statistics.csv
+   :header-rows: 1
 
 *Plot of Average and Variance Over Time*
 

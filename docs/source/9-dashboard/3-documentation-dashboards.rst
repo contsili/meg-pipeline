@@ -83,10 +83,9 @@ we use it to execute the following scripts for dashboard generation:
 
 - Data quality dashboard generation:
     - `box_script.py` connects to NYU-BOX using the *BOX-SDK* and downloads empty room data to the build server (Read The Docs)
-        - It uses private keys, which can be provided as an `.env` file on your machine or set as environment variables in your build.
-This step will vary depending on your setup, so it's important to include error handling.
-An NYU Box app has been approved with the permissions required to access and download the files,
-the secrets are generated from the approved app
+        - uses private keys, which can be provided as an `.env` file on your machine or set as environment variables in your build
+        - step will vary depending on your setup, so it's important to include error handling.
+        - an NYU Box app has been approved with the permissions required to access and download the files, the secrets are generated from the approved app
     - `processing_empty_room_data_files.py`
         - for each downloaded file, computes the data-quality metrics
         - produces a .csv with the results `con_file_statistics.csv`
@@ -94,9 +93,6 @@ the secrets are generated from the approved app
     - `convert_csv_to_rst.py` converts two .csv
         - '9-dashboard/data/noise_metrics.csv' containing the definition of the data quality metrics and acceptable thresholds for each
         - '9-dashboard/data/con_file_statistics.csv' containing the data quality metrics computation for each dataset and whether or not the file is in the thresholds
-
-
-
 
 
 *Installation*
