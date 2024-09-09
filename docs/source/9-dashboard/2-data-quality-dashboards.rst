@@ -32,7 +32,7 @@ The results are displayed automatically in the following dashboards.
 .. include:: con_files_statistics.rst
 
 .. csv-table:: Metric computation for KIT empty-room data
-   :file: data/con_file_statistics.csv
+   :file: data/con_files_statistics.csv
    :header-rows: 1
 
 *Plot of Average and Variance Over Time*
