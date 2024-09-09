@@ -1,9 +1,13 @@
 Documentation for dashboards
 ############################
 
-This section explains the usefulness of the dashboard and provide technical details on their generation.
-This dashboards are meant to monitor the status of the systems and the quality of the data by measuring noise levels in empty-room data while providing informative labels, for quick access and over all numerical values in a simple format.
-It has graphs showing the average and variance of each empty-room data file, as well as one table listing the current state of each empty-room data file.
+This section is a documentation guide targeted to users who would like to understand the current dashboards and some technical details regarding their generation.
+The dashboards are meant to monitor the status of the systems and the quality of the data
+by measuring noise levels in empty-room data while providing informative labels,
+for quick access and over all numerical values in a simple format.
+It has graphs showing the computation of different metrics (e.g., average and variance) of each empty-room data file,
+as well as a table listing the current state of each empty-room data dataset. The state indicates
+whether or not the dataset is within the "good" noise thresholds for each metric.
 
 *1.* The following use cases are enabled by the dashboards:
 
