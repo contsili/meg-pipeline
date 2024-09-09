@@ -51,9 +51,7 @@ The results are displayed automatically in the following dashboards.
 OPM Data Quality dashboard
 ==========================
 
-.. csv-table:: Metric computation for OPM empty-room data
-   :file: data/fif_files_statistics.csv
-   :header-rows: 1
+
 
 .. raw:: html
 
