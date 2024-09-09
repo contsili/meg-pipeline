@@ -14,7 +14,7 @@ The SNR (Signal to Noise Ratio) is a measure that can be qualitatively evaluated
 Poor SNR, can have multiple reasons: new unindentified recurrent noise source, defect in the equipment, specific event causing noise that is usually absent.
 Poor SNR can lead to experiments needing more number of trials, or artifact removal analysis.
 
-.. include:: noise_metrics.rst
+
 
 
 .. csv-table:: Noise Metrics Table
@@ -29,7 +29,7 @@ Empty room data is recorded from the KIT system every couple of days, then for e
 The results are displayed automatically in the following dashboards.
 
 
-.. include:: con_files_statistics.rst
+
 
 .. csv-table:: Metric computation for KIT empty-room data
    :file: data/con_files_statistics.csv
@@ -51,9 +51,15 @@ The results are displayed automatically in the following dashboards.
 OPM Data Quality dashboard
 ==========================
 
+.. csv-table:: Metric computation for OPM empty-room data
+   :file: data/fif_files_statistics.csv
+   :header-rows: 1
+
 .. raw:: html
 
     <iframe src="../_static/average_plot_opm_data.html" width="100%" height="600px"></iframe>
+    <iframe src="../_static/variance_plot_for_opm_data.html" width="100%" height="600px" frameborder="0"></iframe>
+    <iframe src="../_static/max_plot_for_opm_data.html" width="100%" height="600px" frameborder="0"></iframe>
 
 
 Perspectives on Data Quality dashboards
