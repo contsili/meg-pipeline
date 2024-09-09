@@ -54,4 +54,6 @@ Perspectives on Data Quality dashboards
 
 - checkout the lab manual to define new metrics and threshold
 - Whitening the data  compute a noise vector
-- Complex studies, such as in some language studies, much more trials are needed because the activation of the brain regions are more subtle
+- optimise the memory usage of process_con_files_for_table.py by cropping the data to 10 seconds only
+- migrate the dashboard generation to a dedicated server triggered on file adding
+- track dataset files, if one is already processed, avoid redownloading again, unless metrics have been changed
