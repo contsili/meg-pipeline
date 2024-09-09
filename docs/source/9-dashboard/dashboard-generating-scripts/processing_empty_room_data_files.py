@@ -13,7 +13,6 @@ import traceback
 import tracemalloc
 
 
-
 import numpy as np
 import pandas as pd
 import mne
@@ -23,6 +22,7 @@ import plotly.graph_objects as go
 
 # Start tracing memory allocation
 tracemalloc.start()
+
 
 def threshold(threshold, value_data):
     return "🟢 In the threshold" if value_data < threshold else "🔴 Above the threshold"
@@ -38,7 +38,7 @@ def process_con_file(file_path):
         logging.info(f"Processing file: {file_path}")
         # Load the .con file using MNE
         raw = mne.io.read_raw_kit(file_path, preload=False, verbose=False)
-        raw.pick(picks = "meg")
+        raw.pick(picks="meg")
         raw = remove_zero_channels(raw)
 
         # Get data for all channels
@@ -46,8 +46,6 @@ def process_con_file(file_path):
         logging.info(f"Processing file: {file_path}, Data shape: {data.shape}")
         sfreq = raw.info["sfreq"]
         freqs, fft_data = compute_fft(data, sfreq)
-
-
 
         # Calculate average, variance and find the maximum across all channels
         avg = (np.mean(data)) * 1e15
@@ -66,7 +64,6 @@ def process_con_file(file_path):
             (f"🟢 In the threshold" if max_val < s_avg else f"🔴 Above the threshold")
         ]
 
-
         return avg, var, max_val, status_avg, freqs, fft_data, status_fft, status_max
     except Exception as e:
         tb = traceback.format_exc()
@@ -80,9 +77,7 @@ def process_con_file(file_path):
 
 
 def process_all_con_files(base_folder, file_limit=None):
-    """
-
-    """
+    """ """
     results = []
     file_count = 0  # Initialize a counter
 
@@ -112,7 +107,9 @@ def process_all_con_files(base_folder, file_limit=None):
                         date = extract_date(file)
                         details = "Nothing added yet"
                         date_str = (
-                            date.strftime("%d-%m-%y %H:%M:%S") if date else "Unknown Date"
+                            date.strftime("%d-%m-%y %H:%M:%S")
+                            if date
+                            else "Unknown Date"
                         )
 
                         # Append the result
@@ -137,6 +134,124 @@ def process_all_con_files(base_folder, file_limit=None):
             if file_limit != None:
                 if file_count >= file_limit:
                     break  # Stop outer loop if limit is reached
+
+        return results
+    except Exception as e:
+        tb = traceback.format_exc()
+        failed_function_name = traceback.extract_tb(sys.exc_info()[2])[-1].name
+        logging.info(f"Error in function '{failed_function_name}': {e}")
+        logging.info(f"Traceback: {tb}")
+        return None
+
+
+def process_fif_file(file_path):
+    s_avg = 3
+    s_max = 10
+    s_fft = 10
+
+    # Load raw MEG/EEG data from a .fif file
+    raw = mne.io.read_raw_fif(file_path, preload=True)
+
+    # Select channels that start with 'L' or 'R'
+    selected_channels = [
+        ch_name for ch_name in raw.ch_names if ch_name.startswith(("L", "R"))
+    ]
+
+    # Pick only those channels
+    raw.pick_channels(selected_channels)
+
+    # Optional: Remove zero channels (if needed)
+    raw = remove_zero_channels(raw)
+
+    # Get data and calculate statistics
+    data = raw.get_data()  # Get data from the selected channels
+    avg = np.mean(data, axis=1)  # Average over time (axis=1)
+    var = np.var(data, axis=1)  # Variance over time (axis=1)
+    max_val = np.max(data, axis=1)  # Maximum value over time (axis=1)
+
+    # FFT calculation
+    sfreq = raw.info["sfreq"]
+    freqs, fft_data = compute_fft(data, sfreq)
+
+    # Status for avg
+    status_avg = [
+        ("🟢 In the threshold" if np.all(avg < s_avg) else "🔴 Above the threshold")
+    ]
+
+    # Status for fft
+    status_fft = [
+        (
+            "🟢 In the threshold"
+            if np.all(fft_data < s_fft)
+            else "🔴 Above the threshold"
+        )
+    ]
+
+    # Status for max
+    status_max = [
+        ("🟢 In the threshold" if np.all(max_val < s_max) else "🔴 Above the threshold")
+    ]
+
+    # Return the processed values
+    return avg, var, max_val, status_avg, freqs, fft_data, status_fft, status_max
+
+
+def process_all_fif_files(base_folder, file_limit=None):
+    """Process all .fif files in a base folder up to a file limit."""
+    results = []
+    file_count = 0  # Initialize a counter
+
+    try:
+        for root, _, files in os.walk(base_folder):
+            for file in files:
+                if file.endswith(".fif"):
+                    file_path = os.path.join(root, file)
+
+                    result = process_fif_file(file_path)
+                    if result is None:
+                        logging.info(f"Processing failed for {file_path}")
+                    else:
+                        # Process the file
+                        (
+                            avg,
+                            var,
+                            max_val,
+                            status_avg,
+                            freqs,
+                            fft_data,
+                            status_fft,
+                            status_max,
+                        ) = result
+
+                        # Extract date (assuming filename contains a date in the expected format)
+                        date = extract_date(file)
+                        details = "Nothing added yet"
+                        date_str = (
+                            date.strftime("%d-%m-%y %H:%M:%S")
+                            if date
+                            else "Unknown Date"
+                        )
+
+                        # Append the result
+                        results.append(
+                            {
+                                "File Name": file,
+                                "Status for average values": status_avg,
+                                "Average": avg.tolist(),
+                                "Variance": var.tolist(),
+                                "Status for max values": status_max,
+                                "Maximum": max_val.tolist(),
+                                "Date": date_str,
+                                "Details": details,
+                            }
+                        )
+
+                    file_count += 1  # Increment the counter
+                    if file_limit is not None and file_count >= file_limit:
+                        break  # Stop processing after reaching the limit
+
+            if file_limit is not None and file_count >= file_limit:
+                break  # Stop outer loop if limit is reached
 
         return results
     except Exception as e:
@@ -349,6 +464,41 @@ try:
     # Create and save the plot
     plot_data_var(csv_file, output_variance_html)
     output_variance_html = "_static/max_plot.html"
+    plot_data_max(csv_file, output_variance_html)
+
+    ###for fif
+    # Set the base folder containing .con files and subfolders
+    base_folder = r"data/meg-opm"
+    # Set the output CSV file path
+    output_file = "9-dashboard/data/fif_files_statistics.csv"
+    # Process all .con files and save the results
+    results = process_all_fif_files(base_folder, file_limit=None)
+    save_results_to_csv(results, output_file)
+
+    logging.info(f"Results saved to {output_file}")
+    # print(results)
+
+    csv_file = output_file  # Path to the CSV file
+    output_avg_html = (
+        "_static/average_plot_for_opm_data.html"  # Path to save the HTML file
+    )
+
+    # Ensure output directory exists
+    os.makedirs(os.path.dirname(output_avg_html), exist_ok=True)
+
+    # Create and save the plot
+    plot_data_avg(csv_file, output_avg_html)
+
+    output_variance_html = (
+        "_static/variance_plot_for_opm_data.html"  # Path to save the HTML file
+    )
+
+    # Ensure output directory exists
+    os.makedirs(os.path.dirname(output_variance_html), exist_ok=True)
+
+    # Create and save the plot
+    plot_data_var(csv_file, output_variance_html)
+    output_variance_html = "_static/max_plot_for_opm_data.html"
     plot_data_max(csv_file, output_variance_html)
 
     # Display memory usage
