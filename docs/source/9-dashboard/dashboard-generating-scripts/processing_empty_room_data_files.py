@@ -458,15 +458,15 @@ logging.basicConfig(level=logging.INFO)
 try:
 
     PROCESSKIT = True
-    PROCESSOPM = False
+    PROCESSOPM = True
 
-    KIT_FILE_LIMIT = 2
+    KIT_FILE_LIMIT = None
     OPM_FILE_LIMIT = None
 
     TMIN = 10.0
     TMAX = 60.0
 
-    time_window_length = 30 #in seconds, all data will be cropped to this duration
+
 
     #KIT .con metric computation
     if PROCESSKIT:
