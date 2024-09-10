@@ -32,7 +32,7 @@ The results are displayed automatically in the following dashboards.
 
 
 .. csv-table:: Metric computation for KIT empty-room data
-   :file: data/con_files_statistics.csv
+   :file: data/kit-con-files-statistics.csv
    :header-rows: 1
 
 *Plot of Average and Variance Over Time*
@@ -51,7 +51,9 @@ The results are displayed automatically in the following dashboards.
 OPM Data Quality dashboard
 ==========================
 
-
+.. csv-table:: Metric computation for OPM empty-room data
+   :file: data/opm_fif_files_statistics.csv
+   :header-rows: 1
 
 .. raw:: html
 

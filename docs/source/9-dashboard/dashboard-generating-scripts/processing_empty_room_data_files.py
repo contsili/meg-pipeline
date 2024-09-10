@@ -498,7 +498,7 @@ try:
     # Set the base folder containing .con files and subfolders
     base_folder = r"data/meg-opm"
     # Set the output CSV file path
-    output_file = "9-dashboard/data/data-quality-dashboards/opm_fif_files_statistics.csv"
+    output_file = "9-dashboard/data/data-quality-dashboards/opm-fif-files-statistics.csv"
     # Process all .con files and save the results
     results = process_all_fif_files(base_folder, file_limit=None)
     save_results_to_csv(results, output_file)
