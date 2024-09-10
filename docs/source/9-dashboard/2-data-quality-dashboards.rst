@@ -52,7 +52,7 @@ OPM Data Quality dashboard
 ==========================
 
 .. csv-table:: Metric computation for OPM empty-room data
-   :file: data/data-quality-dashboards/opm_fif_files_statistics.csv
+   :file: data/data-quality-dashboards/opm-fif-files-statistics.csv
    :header-rows: 1
 
 .. raw:: html
