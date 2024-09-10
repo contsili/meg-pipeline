@@ -323,7 +323,7 @@ try:
     # Set the base folder containing .con files and subfolders
     base_folder = r"data"
     # Set the output CSV file path
-    output_file = "9-dashboard/data/con_files_statistics.csv"
+    output_file = "9-dashboard/data/con-files-statistics.csv"
 
     # Process all .con files and save the results
     results = process_all_con_files(base_folder, file_limit=None)
