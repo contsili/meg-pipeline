@@ -23,8 +23,7 @@ import plotly.graph_objects as go
 # Start tracing memory allocation
 tracemalloc.start()
 
-TMIN = 10.0
-TMAX = 60.0
+
 
 
 def threshold(threshold, value_data):
@@ -42,7 +41,6 @@ def process_con_file(file_path):
         # Load the .con file using MNE
         raw = mne.io.read_raw_kit(file_path, preload=False, verbose=False)
         raw.pick(picks="meg")
-        raw = remove_zero_channels(raw)
 
         data_duration = raw.times[-1]
 
@@ -51,8 +49,11 @@ def process_con_file(file_path):
             raw = raw.crop(TMIN, TMAX)
             logging.info(f"Cropped data for: {file_path}")
 
+        raw = remove_zero_channels(raw)
+
         # Get data for all channels
         data = raw.get_data()
+
         #logging.info(f"Processing file: {file_path}, Data shape: {data.shape}")
         sfreq = raw.info["sfreq"]
         freqs, fft_data = compute_fft(data, sfreq)
@@ -456,78 +457,90 @@ logging.basicConfig(level=logging.INFO)
 
 try:
 
+    PROCESSKIT = True
+    PROCESSOPM = False
+
+    KIT_FILE_LIMIT = 2
+    OPM_FILE_LIMIT = None
+
+    TMIN = 10.0
+    TMAX = 60.0
+
     time_window_length = 30 #in seconds, all data will be cropped to this duration
 
     #KIT .con metric computation
+    if PROCESSKIT:
+        # Set the base folder containing .con files and subfolders
+        base_folder = r"data"
+        # Set the output CSV file path
+        output_file = "9-dashboard/data/data-quality-dashboards/kit-con-files-statistics.csv"
 
-    # Set the base folder containing .con files and subfolders
-    base_folder = r"data"
-    # Set the output CSV file path
-    output_file = "9-dashboard/data/data-quality-dashboards/kit-con-files-statistics.csv"
+        # Process all .con files and save the results
+        results = process_all_con_files(base_folder, file_limit=KIT_FILE_LIMIT)
+        save_results_to_csv(results, output_file)
 
-    # Process all .con files and save the results
-    results = process_all_con_files(base_folder, file_limit=2)
-    save_results_to_csv(results, output_file)
+        logging.info(f"Results saved to {output_file}")
+        # print(results)
 
-    logging.info(f"Results saved to {output_file}")
-    # print(results)
+        csv_file = output_file  # Path to the CSV file
+        output_avg_html = "_static/2-data-quality-dashboards/kit_average_plot.html"  # Path to save the HTML file
 
-    csv_file = output_file  # Path to the CSV file
-    output_avg_html = "_static/2-data-quality-dashboards/kit_average_plot.html"  # Path to save the HTML file
+        # Ensure output directory exists
+        os.makedirs(os.path.dirname(output_avg_html), exist_ok=True)
 
-    # Ensure output directory exists
-    os.makedirs(os.path.dirname(output_avg_html), exist_ok=True)
+        # Create and save the plot
+        plot_data_avg(csv_file, output_avg_html)
 
-    # Create and save the plot
-    plot_data_avg(csv_file, output_avg_html)
+        output_variance_html = "_static/2-data-quality-dashboards/kit_variance_plot.html"  # Path to save the HTML file
 
-    output_variance_html = "_static/2-data-quality-dashboards/kit_variance_plot.html"  # Path to save the HTML file
+        # Ensure output directory exists
+        os.makedirs(os.path.dirname(output_variance_html), exist_ok=True)
 
-    # Ensure output directory exists
-    os.makedirs(os.path.dirname(output_variance_html), exist_ok=True)
-
-    # Create and save the plot
-    plot_data_var(csv_file, output_variance_html)
-    output_variance_html = "_static/2-data-quality-dashboards/kit_max_plot.html"
-    plot_data_max(csv_file, output_variance_html)
+        # Create and save the plot
+        plot_data_var(csv_file, output_variance_html)
+        output_variance_html = "_static/2-data-quality-dashboards/kit_max_plot.html"
+        plot_data_max(csv_file, output_variance_html)
 
 
+    if PROCESSOPM:
+        # OPM .fif metric computation
 
-    # OPM .fif metric computation
+        # Set the base folder containing .con files and subfolders
+        base_folder = r"data/meg-opm"
+        # Set the output CSV file path
+        output_file = "9-dashboard/data/data-quality-dashboards/opm-fif-files-statistics.csv"
+        # Process all .con files and save the results
+        results = process_all_fif_files(base_folder, file_limit=OPM_FILE_LIMIT)
+        save_results_to_csv(results, output_file)
 
-    # Set the base folder containing .con files and subfolders
-    base_folder = r"data/meg-opm"
-    # Set the output CSV file path
-    output_file = "9-dashboard/data/data-quality-dashboards/opm-fif-files-statistics.csv"
-    # Process all .con files and save the results
-    results = process_all_fif_files(base_folder, file_limit=None)
-    save_results_to_csv(results, output_file)
+        logging.info(f"Results saved to {output_file}")
+        # print(results)
 
-    logging.info(f"Results saved to {output_file}")
-    # print(results)
+        csv_file = output_file  # Path to the CSV file
+        output_avg_html = (
+            "_static/2-data-quality-dashboards/opm_average_plot.html"  # Path to save the HTML file
+        )
 
-    csv_file = output_file  # Path to the CSV file
-    output_avg_html = (
-        "_static/2-data-quality-dashboards/opm_average_plot.html"  # Path to save the HTML file
-    )
+        # Ensure output directory exists
+        os.makedirs(os.path.dirname(output_avg_html), exist_ok=True)
 
-    # Ensure output directory exists
-    os.makedirs(os.path.dirname(output_avg_html), exist_ok=True)
+        # Create and save the plot
+        plot_data_avg(csv_file, output_avg_html)
 
-    # Create and save the plot
-    plot_data_avg(csv_file, output_avg_html)
+        output_variance_html = (
+            "_static/2-data-quality-dashboards/opm_variance_plot.html"  # Path to save the HTML file
+        )
 
-    output_variance_html = (
-        "_static/2-data-quality-dashboards/opm_variance_plot.html"  # Path to save the HTML file
-    )
+        # Ensure output directory exists
+        os.makedirs(os.path.dirname(output_variance_html), exist_ok=True)
 
-    # Ensure output directory exists
-    os.makedirs(os.path.dirname(output_variance_html), exist_ok=True)
+        # Create and save the plot
+        plot_data_var(csv_file, output_variance_html)
+        output_variance_html = "_static/2-data-quality-dashboards/opm_max_plot.html"
+        plot_data_max(csv_file, output_variance_html)
 
-    # Create and save the plot
-    plot_data_var(csv_file, output_variance_html)
-    output_variance_html = "_static/2-data-quality-dashboards/opm_max_plot.html"
-    plot_data_max(csv_file, output_variance_html)
+
+
 
     # Display memory usage
     current, peak = tracemalloc.get_traced_memory()
