@@ -1,0 +1,3 @@
+File Name,Processing State,Status for average values,Average,Variance,Status for max values,Maximum,Date,Details
+sub-0,PROCESSED,['🟢 In the threshold'],-2.4248091763344077,3.9071590057541253e-25,['🔴 Above the threshold'],5332.581492462158,01-02-23 21:15:32,Nothing added yet
+sub-0,PROCESSED,['🟢 In the threshold'],-7.545062557312644,1.4271445616762402e-25,['🔴 Above the threshold'],3185.345502319336,02-02-23 21:22:34,Nothing added yet

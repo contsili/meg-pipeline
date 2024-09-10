@@ -18,6 +18,8 @@ import traceback
 
 EMPTY_ROOM_DATA_PATH = "Data/empty-room/sub-emptyroom"
 
+KIT_CSV_PATH = "9-dashboard/data/data-quality-dashboards/kit-con-files-statistics.csv"
+OPM_CSV_PATH = "9-dashboard/data/data-quality-dashboards/opm-fif-files-statistics.csv"
 
 def upload_file(folder_path):
     # Locate the target folder
@@ -59,15 +61,18 @@ def get_folder_id_by_path(path):
     return folder_id
 
 
-def download_con_fif_files_from_folder(folder_id, path, last_date):
+def download_empty_room_data_from_folder(folder_id, path, last_date):
     try:
         folder = client.folder(folder_id).get()
         items = folder.get_items(limit=10000, offset=0)
 
+        kit_df = pd.read_csv(KIT_CSV_PATH)
+        opm_df = pd.read_csv(OPM_CSV_PATH)
+
         for item in items:
             try:
-                if item.type == "file" and item.name.endswith((".con", ".fif")):
-                    # , ".fif"
+                if item.type == "file":
+
                     file_id = item.id
                     file = client.file(file_id).get()
 
@@ -76,22 +81,62 @@ def download_con_fif_files_from_folder(folder_id, path, last_date):
                         file.content_created_at, "%Y-%m-%dT%H:%M:%S%z"
                     )
 
-                    # Check if the file's created date is after the last date or if no last date is provided
-                    if last_date is None or created_at > last_date:
-                        # Format the creation date for the filename
-                        formatted_date = created_at.strftime("%d-%m-%y-%H-%M-%S")
-                        filename = f"{formatted_date}_{file.name}"
-                        file_path = os.path.join(path, filename)
+                    #formatted_date = created_at.strftime("%d-%m-%y-%H-%M-%S")
+                    #filename = f"{formatted_date}_{file.name}"
 
-                        # Download the file
-                        with open(file_path, "wb") as open_file:
-                            file.download_to(open_file)
+                    filename = file.name
+                    file_path = os.path.join(path, filename)
 
-                        logging.info(f"Downloaded {filename} to {file_path}")
+
+                    if item.name.endswith((".con")):
+                        if filename not in kit_df['File Name']:
+
+                            new_row = pd.DataFrame({'File Name': filename,
+                                                    'Processing State': 'TO BE PROCESSED'})
+
+                            kit_df = kit_df.concat([kit_df, new_row], ignore_index=True)
+
+                            kit_df.to_csv(KIT_CSV_PATH, index = False)
+
+                            # Open the .csv files
+
+                            # Download the file
+                            with open(file_path, "wb") as open_file:
+                                file.download_to(open_file)
+
+                            logging.info(f"Downloaded KIT File {filename} to {file_path}")
+
+                        else:
+                            logging.info(f"File {filename} already processed")
+
+                    elif item.name.endswith((".fif")):
+
+                        if filename not in opm_df['File Name']:
+
+
+
+                            new_row = pd.DataFrame({'File Name': filename,
+                                                    'Processing State': 'TO BE PROCESSED'})
+
+                            opm_df = opm_df.concat([opm_df, new_row], ignore_index=True)
+
+                            opm_df.to_csv(OPM_CSV_PATH, index = False)
+
+                            # Open the .csv files
+
+                            # Download the file
+                            with open(file_path, "wb") as open_file:
+                                file.download_to(open_file)
+
+                            logging.info(f"Downloaded OPM FILE {filename} to {file_path}")
+                        else:
+                            logging.info(f"File {filename} already processed")
+
                 elif item.type == "folder":
                     new_folder_path = os.path.join(path, item.name)
                     os.makedirs(new_folder_path, exist_ok=True)
-                    download_con_fif_files_from_folder(item.id, new_folder_path, last_date)
+                    download_empty_room_data_from_folder(item.id, new_folder_path, last_date)
+
             except Exception as e:
                 logging.error(
                     f"Failed to download file or process folder '{item.name}': {str(e)}"
@@ -231,7 +276,7 @@ try:
     last_date = None
     logging.info("Downloading con files")
     # Start the recursive download from the starting folder
-    download_con_fif_files_from_folder(start_folder_id, download_directory, last_date)
+    download_empty_room_data_from_folder(start_folder_id, download_directory, last_date)
 
 except Exception as e:
     logging.error(f"Error during Box authentication setup: {e}")

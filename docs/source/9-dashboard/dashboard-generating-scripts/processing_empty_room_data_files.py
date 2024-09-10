@@ -179,7 +179,7 @@ def process_fif_file(file_path):
     ]
 
     # Pick only those channels
-    raw.pick_channels(selected_channels)
+    raw.pick(selected_channels)
 
     # Optional: Remove zero channels (if needed)
     raw = remove_zero_channels(raw)
@@ -229,6 +229,9 @@ def process_all_fif_files(base_folder, file_limit=None):
                     file_path = os.path.join(root, file)
 
                     result = process_fif_file(file_path)
+
+                    processing_state = "UNPROCESSED"
+
                     if result is None:
                         logging.info(f"Processing failed for {file_path}")
                     else:
@@ -253,10 +256,13 @@ def process_all_fif_files(base_folder, file_limit=None):
                             else "Unknown Date"
                         )
 
+                        processing_state = "PROCESSED"
+
                         # Append the result
                         results.append(
                             {
                                 "File Name": file,
+                                "Processing State": processing_state,
                                 "Status for average values": status_avg,
                                 "Average": avg.tolist(),
                                 "Variance": var.tolist(),
@@ -460,13 +466,11 @@ try:
     PROCESSKIT = True
     PROCESSOPM = True
 
-    KIT_FILE_LIMIT = None
+    KIT_FILE_LIMIT = 2
     OPM_FILE_LIMIT = None
 
     TMIN = 10.0
     TMAX = 60.0
-
-
 
     #KIT .con metric computation
     if PROCESSKIT:
@@ -538,8 +542,6 @@ try:
         plot_data_var(csv_file, output_variance_html)
         output_variance_html = "_static/2-data-quality-dashboards/opm_max_plot.html"
         plot_data_max(csv_file, output_variance_html)
-
-
 
 
     # Display memory usage
