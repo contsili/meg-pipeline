@@ -59,7 +59,7 @@ def get_folder_id_by_path(path):
     return folder_id
 
 
-def download_con_files_from_folder(folder_id, path, last_date):
+def download_con_fif_files_from_folder(folder_id, path, last_date):
     try:
         folder = client.folder(folder_id).get()
         items = folder.get_items(limit=10000, offset=0)
@@ -91,7 +91,7 @@ def download_con_files_from_folder(folder_id, path, last_date):
                 elif item.type == "folder":
                     new_folder_path = os.path.join(path, item.name)
                     os.makedirs(new_folder_path, exist_ok=True)
-                    download_con_files_from_folder(item.id, new_folder_path, last_date)
+                    download_con_fif_files_from_folder(item.id, new_folder_path, last_date)
             except Exception as e:
                 logging.error(
                     f"Failed to download file or process folder '{item.name}': {str(e)}"
@@ -231,7 +231,7 @@ try:
     last_date = None
     logging.info("Downloading con files")
     # Start the recursive download from the starting folder
-    download_con_files_from_folder(start_folder_id, download_directory, last_date)
+    download_con_fif_files_from_folder(start_folder_id, download_directory, last_date)
 
 except Exception as e:
     logging.error(f"Error during Box authentication setup: {e}")

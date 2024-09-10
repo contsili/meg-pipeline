@@ -46,7 +46,7 @@ def convert_all_csvs_to_rst(base_folder, output_folder):
 
 if __name__ == "__main__":
     # Set the base folder containing CSV files
-    base_folder = "9-dashboard/data"
+    base_folder = "9-dashboard/data/data-quality-dashboards"
     # Set the output folder where .rst files will be saved
     output_folder = "9-dashboard"
     # Convert all CSV files in the base folder to RST format and save them in the output folder

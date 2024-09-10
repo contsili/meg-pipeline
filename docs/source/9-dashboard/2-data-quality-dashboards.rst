@@ -40,10 +40,10 @@ The results are displayed automatically in the following dashboards.
 
 .. raw:: html
 
-    <iframe src="../_static/average_plot.html" width="100%" height="600px" frameborder="0"></iframe>
-    <iframe src="../_static/variance_plot.html" width="100%" height="600px" frameborder="0"></iframe>
-    <iframe src="../_static/max_plot.html" width="100%" height="600px" frameborder="0"></iframe>
-    <iframe src="../_static/fft_plots_combined.html" width="100%" height="600px" frameborder="0"></iframe>
+    <iframe src="../_static/2-data-quality-dashboards/kit_average_plot.html" width="100%" height="600px" frameborder="0"></iframe>
+    <iframe src="../_static/2-data-quality-dashboards/kit_variance_plot.html" width="100%" height="600px" frameborder="0"></iframe>
+    <iframe src="../_static/2-data-quality-dashboards/kit_max_plot.html" width="100%" height="600px" frameborder="0"></iframe>
+    <iframe src="../_static/2-data-quality-dashboards/kit_fft_plot.html" width="100%" height="600px" frameborder="0"></iframe>
     
 
 
@@ -55,9 +55,9 @@ OPM Data Quality dashboard
 
 .. raw:: html
 
-    <iframe src="../_static/average_plot_opm_data.html" width="100%" height="600px"></iframe>
-    <iframe src="../_static/variance_plot_for_opm_data.html" width="100%" height="600px" frameborder="0"></iframe>
-    <iframe src="../_static/max_plot_for_opm_data.html" width="100%" height="600px" frameborder="0"></iframe>
+    <iframe src="../_static/opm_average_plot.html" width="100%" height="600px"></iframe>
+    <iframe src="../_static/opm_variance_plot.html" width="100%" height="600px" frameborder="0"></iframe>
+    <iframe src="../_static/opm_max_plot.html" width="100%" height="600px" frameborder="0"></iframe>
 
 
 Perspectives on Data Quality dashboards
@@ -68,3 +68,4 @@ Perspectives on Data Quality dashboards
 - optimise the memory usage of process_con_files_for_table.py by cropping the data to 10 seconds only
 - migrate the dashboard generation to a dedicated server triggered on file adding
 - track dataset files, if one is already processed, avoid redownloading again, unless metrics have been changed
+- create the .csv statistics table dynamically, everytime a file is processed, the entry in the csv is added (and not after processing all the files)

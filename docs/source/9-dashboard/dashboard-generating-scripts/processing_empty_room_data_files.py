@@ -23,6 +23,9 @@ import plotly.graph_objects as go
 # Start tracing memory allocation
 tracemalloc.start()
 
+TMIN = 10.0
+TMAX = 60.0
+
 
 def threshold(threshold, value_data):
     return "🟢 In the threshold" if value_data < threshold else "🔴 Above the threshold"
@@ -41,9 +44,16 @@ def process_con_file(file_path):
         raw.pick(picks="meg")
         raw = remove_zero_channels(raw)
 
+        data_duration = raw.times[-1]
+
+        if TMAX <= data_duration and TMIN <= data_duration:
+            # Crop data:
+            raw = raw.crop(TMIN, TMAX)
+            logging.info(f"Cropped data for: {file_path}")
+
         # Get data for all channels
         data = raw.get_data()
-        logging.info(f"Processing file: {file_path}, Data shape: {data.shape}")
+        #logging.info(f"Processing file: {file_path}, Data shape: {data.shape}")
         sfreq = raw.info["sfreq"]
         freqs, fft_data = compute_fft(data, sfreq)
 
@@ -85,6 +95,7 @@ def process_all_con_files(base_folder, file_limit=None):
         for root, _, files in os.walk(base_folder):
             for file in files:
                 if file.endswith(".con"):
+                    processing_state = "UNPROCESSED"
                     file_path = os.path.join(root, file)
 
                     result = process_con_file(file_path)
@@ -101,7 +112,7 @@ def process_all_con_files(base_folder, file_limit=None):
                             fft_data,
                             status_fft,
                             status_max,
-                        ) = process_con_file(file_path)
+                        ) = result
 
                         # Extract date
                         date = extract_date(file)
@@ -111,11 +122,13 @@ def process_all_con_files(base_folder, file_limit=None):
                             if date
                             else "Unknown Date"
                         )
+                        processing_state = "PROCESSED"
 
                         # Append the result
                         results.append(
                             {
                                 "File Name": file.split("_")[1],
+                                "Processing State": processing_state,
                                 "Status for average values": status,
                                 "Average": avg,
                                 "Variance": var,
@@ -150,7 +163,14 @@ def process_fif_file(file_path):
     s_fft = 10
 
     # Load raw MEG/EEG data from a .fif file
-    raw = mne.io.read_raw_fif(file_path, preload=True)
+    raw = mne.io.read_raw_fif(file_path, preload=False)
+
+    data_duration = raw.times[-1]
+
+    if TMAX <= data_duration and TMIN <= data_duration:
+        # Crop data:
+        raw = raw.crop(TMIN, TMAX)
+        logging.info(f"Cropped data for: {file_path}")
 
     # Select channels that start with 'L' or 'R'
     selected_channels = [
@@ -435,20 +455,25 @@ def compute_fft(data, sfreq):
 logging.basicConfig(level=logging.INFO)
 
 try:
+
+    time_window_length = 30 #in seconds, all data will be cropped to this duration
+
+    #KIT .con metric computation
+
     # Set the base folder containing .con files and subfolders
     base_folder = r"data"
     # Set the output CSV file path
-    output_file = "9-dashboard/data/con-files-statistics.csv"
+    output_file = "9-dashboard/data/data-quality-dashboards/kit-con-files-statistics.csv"
 
     # Process all .con files and save the results
-    results = process_all_con_files(base_folder, file_limit=None)
+    results = process_all_con_files(base_folder, file_limit=2)
     save_results_to_csv(results, output_file)
 
     logging.info(f"Results saved to {output_file}")
     # print(results)
 
     csv_file = output_file  # Path to the CSV file
-    output_avg_html = "_static/average_plot.html"  # Path to save the HTML file
+    output_avg_html = "_static/2-data-quality-dashboards/kit_average_plot.html"  # Path to save the HTML file
 
     # Ensure output directory exists
     os.makedirs(os.path.dirname(output_avg_html), exist_ok=True)
@@ -456,21 +481,24 @@ try:
     # Create and save the plot
     plot_data_avg(csv_file, output_avg_html)
 
-    output_variance_html = "_static/variance_plot.html"  # Path to save the HTML file
+    output_variance_html = "_static/2-data-quality-dashboards/kit_variance_plot.html"  # Path to save the HTML file
 
     # Ensure output directory exists
     os.makedirs(os.path.dirname(output_variance_html), exist_ok=True)
 
     # Create and save the plot
     plot_data_var(csv_file, output_variance_html)
-    output_variance_html = "_static/max_plot.html"
+    output_variance_html = "_static/2-data-quality-dashboards/kit_max_plot.html"
     plot_data_max(csv_file, output_variance_html)
 
-    ###for fif
+
+
+    # OPM .fif metric computation
+
     # Set the base folder containing .con files and subfolders
     base_folder = r"data/meg-opm"
     # Set the output CSV file path
-    output_file = "9-dashboard/data/fif_files_statistics.csv"
+    output_file = "9-dashboard/data/data-quality-dashboards/opm_fif_files_statistics.csv"
     # Process all .con files and save the results
     results = process_all_fif_files(base_folder, file_limit=None)
     save_results_to_csv(results, output_file)
@@ -480,7 +508,7 @@ try:
 
     csv_file = output_file  # Path to the CSV file
     output_avg_html = (
-        "_static/average_plot_for_opm_data.html"  # Path to save the HTML file
+        "_static/2-data-quality-dashboards/opm_average_plot.html"  # Path to save the HTML file
     )
 
     # Ensure output directory exists
@@ -490,7 +518,7 @@ try:
     plot_data_avg(csv_file, output_avg_html)
 
     output_variance_html = (
-        "_static/variance_plot_for_opm_data.html"  # Path to save the HTML file
+        "_static/2-data-quality-dashboards/opm_variance_plot.html"  # Path to save the HTML file
     )
 
     # Ensure output directory exists
@@ -498,7 +526,7 @@ try:
 
     # Create and save the plot
     plot_data_var(csv_file, output_variance_html)
-    output_variance_html = "_static/max_plot_for_opm_data.html"
+    output_variance_html = "_static/2-data-quality-dashboards/opm_max_plot.html"
     plot_data_max(csv_file, output_variance_html)
 
     # Display memory usage
