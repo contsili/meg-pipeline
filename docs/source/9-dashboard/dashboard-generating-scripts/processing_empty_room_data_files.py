@@ -604,7 +604,7 @@ try:
     PROCESSKIT = True
     PROCESSOPM = True
 
-    KIT_FILE_LIMIT = 2
+    KIT_FILE_LIMIT = None
     OPM_FILE_LIMIT = None
 
     TMIN = 10.0       # Length of empty room data segment to compute the metrics for
