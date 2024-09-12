@@ -71,3 +71,4 @@ Perspectives on Data Quality dashboards
 - migrate the dashboard generation to a dedicated server triggered on file adding
 - track dataset files, if one is already processed, avoid redownloading again, unless metrics have been changed
 - create the .csv statistics table dynamically, everytime a file is processed, the entry in the csv is added (and not after processing all the files)
+- currently metrics are computed over all the channels, it would be ideal to have other views showing a per channel computation, this can help detect faulty sensors and troubleshoot any channel based issue

@@ -20,6 +20,12 @@ import re
 import plotly.graph_objects as go
 
 
+
+
+
+KIT_CSV_PATH = "9-dashboard/data/data-quality-dashboards/kit-con-files-statistics.csv"
+OPM_CSV_PATH = "9-dashboard/data/data-quality-dashboards/opm-fif-files-statistics.csv"
+
 # Start tracing memory allocation
 tracemalloc.start()
 
@@ -87,75 +93,102 @@ def process_con_file(file_path):
 # for negative values: tried looking at the channels of the files that give negative  values found some of them provide negative values
 
 
+
+
 def process_all_con_files(base_folder, file_limit=None):
     """ """
     results = []
     file_count = 0  # Initialize a counter
 
     try:
+
+        kit_csv = pd.read_csv(KIT_CSV_PATH)
         for root, _, files in os.walk(base_folder):
             for file in files:
                 if file.endswith(".con"):
-                    processing_state = "UNPROCESSED"
-                    file_path = os.path.join(root, file)
 
-                    result = process_con_file(file_path)
-                    if result is None:
-                        logging.info(f"Processing failed for {file_path}")
+                    if file in kit_csv['File Name'].values:
+                        logging.info("File found in CSV")
+
+                        if kit_csv.loc[kit_csv['File Name'] == file, 'Processing State'].values[0] == 'TO BE PROCESSED':
+
+                            processing_state = "UNPROCESSED"
+                            file_path = os.path.join(root, file)
+
+                            result = process_con_file(file_path)
+
+                            if result is None:
+                                logging.info(f"Processing failed for {file_path}")
+                            else:
+                                # Process the file
+                                (
+                                    avg,
+                                    var,
+                                    max_val,
+                                    status,
+                                    freqs,
+                                    fft_data,
+                                    status_fft,
+                                    status_max,
+                                ) = result
+
+                                # Extract date
+                                date = extract_date(file)
+                                details = "Nothing added yet"
+                                date_str = (
+                                    date.strftime("%d-%m-%y %H:%M:%S")
+                                    if date
+                                    else "Unknown Date"
+                                )
+                                processing_state = "PROCESSED"
+
+                                # Append the result
+                                new_values_dic = {
+                                        "Processing State": processing_state,
+                                        "Status for average values": status,
+                                        "Average": avg,
+                                        "Variance": var,
+                                        "Status for max values": status_max,
+                                        "Maximum": max_val,
+                                        "Date": date_str,
+                                        "Details": details,
+                                    }
+
+                                for key in new_values_dic.keys():
+                                    # Cast each column to 'object' dtype
+                                    kit_csv[key] = kit_csv[key].astype('object')
+
+                                kit_csv.loc[kit_csv['File Name'] == file, new_values_dic.keys()] = (
+                                    new_values_dic.values())
+
+
+                                os.makedirs(os.path.dirname(output_file), exist_ok=True)
+
+                                kit_csv.to_csv(output_file, index=False)
+
+
+                            file_count += 1  # Increment the counter
+                            if file_limit != None:
+                                if file_count >= file_limit:
+                                    break  # Stop processing after reaching the limit
+                        else:
+                            logging.info(f"File {file} already processed")
+
                     else:
-                        # Process the file
-                        (
-                            avg,
-                            var,
-                            max_val,
-                            status,
-                            freqs,
-                            fft_data,
-                            status_fft,
-                            status_max,
-                        ) = result
+                        logging.info(f"File {file} downloaded but not found in KIT CSV")
 
-                        # Extract date
-                        date = extract_date(file)
-                        details = "Nothing added yet"
-                        date_str = (
-                            date.strftime("%d-%m-%y %H:%M:%S")
-                            if date
-                            else "Unknown Date"
-                        )
-                        processing_state = "PROCESSED"
-
-                        # Append the result
-                        results.append(
-                            {
-                                "File Name": file.split("_")[1],
-                                "Processing State": processing_state,
-                                "Status for average values": status,
-                                "Average": avg,
-                                "Variance": var,
-                                "Status for max values": status_max,
-                                "Maximum": max_val,
-                                "Date": date_str,
-                                "Details": details,
-                            }
-                        )
-
-                    file_count += 1  # Increment the counter
-                    if file_limit != None:
-                        if file_count >= file_limit:
-                            break  # Stop processing after reaching the limit
 
             if file_limit != None:
                 if file_count >= file_limit:
                     break  # Stop outer loop if limit is reached
 
-        return results
+
     except Exception as e:
         tb = traceback.format_exc()
         failed_function_name = traceback.extract_tb(sys.exc_info()[2])[-1].name
         logging.info(f"Error in function '{failed_function_name}': {e}")
         logging.info(f"Traceback: {tb}")
-        return None
+
 
 
 def process_fif_file(file_path):
@@ -186,9 +219,9 @@ def process_fif_file(file_path):
 
     # Get data and calculate statistics
     data = raw.get_data()  # Get data from the selected channels
-    avg = np.mean(data, axis=1)  # Average over time (axis=1)
-    var = np.var(data, axis=1)  # Variance over time (axis=1)
-    max_val = np.max(data, axis=1)  # Maximum value over time (axis=1)
+    avg = np.mean(data)  # Average over time (axis=1)
+    var = np.var(data)  # Variance over time (axis=1)
+    max_val = np.max(data)  # Maximum value over time (axis=1)
 
     # FFT calculation
     sfreq = raw.info["sfreq"]
@@ -218,6 +251,99 @@ def process_fif_file(file_path):
 
 
 def process_all_fif_files(base_folder, file_limit=None):
+    """ """
+    results = []
+    file_count = 0  # Initialize a counter
+
+    try:
+
+        opm_csv = pd.read_csv(OPM_CSV_PATH)
+        for root, _, files in os.walk(base_folder):
+            for file in files:
+                if file.endswith(".fif"):
+
+                    if file in opm_csv['File Name'].values:
+                        logging.info("File found in CSV")
+
+                        if opm_csv.loc[opm_csv['File Name'] == file, 'Processing State'].values[0] == 'TO BE PROCESSED':
+
+                            processing_state = "UNPROCESSED"
+                            file_path = os.path.join(root, file)
+
+                            result = process_fif_file(file_path)
+
+                            if result is None:
+                                logging.info(f"Processing failed for {file_path}")
+                            else:
+                                # Process the file
+                                (
+                                    avg,
+                                    var,
+                                    max_val,
+                                    status,
+                                    freqs,
+                                    fft_data,
+                                    status_fft,
+                                    status_max,
+                                ) = result
+
+                                # Extract date
+                                date = extract_date(file)
+                                details = "Nothing added yet"
+                                date_str = (
+                                    date.strftime("%d-%m-%y %H:%M:%S")
+                                    if date
+                                    else "Unknown Date"
+                                )
+                                processing_state = "PROCESSED"
+
+                                # Append the result
+                                new_values_dic = {
+                                        "Processing State": processing_state,
+                                        "Status for average values": status,
+                                        "Average": avg,
+                                        "Variance": var,
+                                        "Status for max values": status_max,
+                                        "Maximum": max_val,
+                                        "Date": date_str,
+                                        "Details": details,
+                                    }
+
+                                for key in new_values_dic.keys():
+                                    # Cast each column to 'object' dtype
+                                    opm_csv[key] = opm_csv[key].astype('object')
+
+                                opm_csv.loc[opm_csv['File Name'] == file, new_values_dic.keys()] = (
+                                    new_values_dic.values())
+
+
+                                os.makedirs(os.path.dirname(output_file), exist_ok=True)
+
+                                opm_csv.to_csv(output_file, index=False)
+
+
+                            file_count += 1  # Increment the counter
+                            if file_limit != None:
+                                if file_count >= file_limit:
+                                    break  # Stop processing after reaching the limit
+                        else:
+                            logging.info(f"File {file} already processed")
+
+                    else:
+                        logging.info(f"File {file} downloaded but not found in OPM CSV")
+
+
+            if file_limit != None:
+                if file_count >= file_limit:
+                    break  # Stop outer loop if limit is reached
+
+
+    except Exception as e:
+        tb = traceback.format_exc()
+        failed_function_name = traceback.extract_tb(sys.exc_info()[2])[-1].name
+        logging.info(f"Error in function '{failed_function_name}': {e}")
+        logging.info(f"Traceback: {tb}")
+def process_all_fif1_files(base_folder, file_limit=None):
     """Process all .fif files in a base folder up to a file limit."""
     results = []
     file_count = 0  # Initialize a counter
@@ -247,6 +373,7 @@ def process_all_fif_files(base_folder, file_limit=None):
                             status_max,
                         ) = result
 
+
                         # Extract date (assuming filename contains a date in the expected format)
                         date = extract_date(file)
                         details = "Nothing added yet"
@@ -259,8 +386,7 @@ def process_all_fif_files(base_folder, file_limit=None):
                         processing_state = "PROCESSED"
 
                         # Append the result
-                        results.append(
-                            {
+                        new_values_dic = {
                                 "File Name": file,
                                 "Processing State": processing_state,
                                 "Status for average values": status_avg,
@@ -271,7 +397,24 @@ def process_all_fif_files(base_folder, file_limit=None):
                                 "Date": date_str,
                                 "Details": details,
                             }
-                        )
+
+                        try:
+                            # Ensure the directory exists
+                            os.makedirs(os.path.dirname(output_file), exist_ok=True)
+
+
+
+                            # Save results to CSV
+                            df = pd.DataFrame(results)
+                            df.to_csv(output_file, mode='a', header=False, index=False)
+
+                        except Exception as e:
+                            tb = traceback.format_exc()
+                            failed_function_name = traceback.extract_tb(sys.exc_info()[2])[-1].name
+                            logging.info(f"Error in function '{failed_function_name}': {e}")
+                            logging.info(f"Traceback: {tb}")
+
+
 
                     file_count += 1  # Increment the counter
                     if file_limit is not None and file_count >= file_limit:
@@ -296,7 +439,8 @@ def save_results_to_csv(results, output_file):
 
         # Save results to CSV
         df = pd.DataFrame(results)
-        df.to_csv(output_file, index=False)
+        df.to_csv(output_file, mode='a', header=False, index=False)
+
     except Exception as e:
         tb = traceback.format_exc()
         failed_function_name = traceback.extract_tb(sys.exc_info()[2])[-1].name
@@ -463,13 +607,13 @@ logging.basicConfig(level=logging.INFO)
 
 try:
 
-    PROCESSKIT = True
+    PROCESSKIT = False
     PROCESSOPM = True
 
     KIT_FILE_LIMIT = 2
     OPM_FILE_LIMIT = None
 
-    TMIN = 10.0
+    TMIN = 10.0       # Length of empty room data segment to compute the metrics for
     TMAX = 60.0
 
     #KIT .con metric computation
@@ -480,8 +624,9 @@ try:
         output_file = "9-dashboard/data/data-quality-dashboards/kit-con-files-statistics.csv"
 
         # Process all .con files and save the results
-        results = process_all_con_files(base_folder, file_limit=KIT_FILE_LIMIT)
-        save_results_to_csv(results, output_file)
+        process_all_con_files(base_folder, file_limit=KIT_FILE_LIMIT)
+
+        #save_results_to_csv(results, output_file)
 
         logging.info(f"Results saved to {output_file}")
         # print(results)
@@ -513,9 +658,11 @@ try:
         base_folder = r"data/meg-opm"
         # Set the output CSV file path
         output_file = "9-dashboard/data/data-quality-dashboards/opm-fif-files-statistics.csv"
-        # Process all .con files and save the results
-        results = process_all_fif_files(base_folder, file_limit=OPM_FILE_LIMIT)
-        save_results_to_csv(results, output_file)
+
+        # Process all .fif files and save the results
+        process_all_fif_files(base_folder, file_limit=OPM_FILE_LIMIT)
+
+        #save_results_to_csv(results, output_file)
 
         logging.info(f"Results saved to {output_file}")
         # print(results)
