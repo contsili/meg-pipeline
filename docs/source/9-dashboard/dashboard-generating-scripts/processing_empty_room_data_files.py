@@ -108,7 +108,7 @@ def process_all_con_files(base_folder, file_limit=None):
                 if file.endswith(".con"):
 
                     if file in kit_csv['File Name'].values:
-                        logging.info("File found in CSV")
+                        logging.info(f"File {file} found in KIT CSV")
 
                         if kit_csv.loc[kit_csv['File Name'] == file, 'Processing State'].values[0] == 'TO BE PROCESSED':
 
@@ -133,13 +133,13 @@ def process_all_con_files(base_folder, file_limit=None):
                                 ) = result
 
                                 # Extract date
-                                date = extract_date(file)
+                                #date = extract_date(file)
                                 details = "Nothing added yet"
-                                date_str = (
-                                    date.strftime("%d-%m-%y %H:%M:%S")
-                                    if date
-                                    else "Unknown Date"
-                                )
+                                # date_str = (
+                                #     date.strftime("%d-%m-%y %H:%M:%S")
+                                #     if date
+                                #     else "Unknown Date"
+                                # )
                                 processing_state = "PROCESSED"
 
                                 # Append the result
@@ -150,7 +150,6 @@ def process_all_con_files(base_folder, file_limit=None):
                                         "Variance": var,
                                         "Status for max values": status_max,
                                         "Maximum": max_val,
-                                        "Date": date_str,
                                         "Details": details,
                                     }
 
@@ -263,7 +262,7 @@ def process_all_fif_files(base_folder, file_limit=None):
                 if file.endswith(".fif"):
 
                     if file in opm_csv['File Name'].values:
-                        logging.info("File found in CSV")
+                        logging.info(f"File {file} found in OPM CSV")
 
                         if opm_csv.loc[opm_csv['File Name'] == file, 'Processing State'].values[0] == 'TO BE PROCESSED':
 
@@ -288,13 +287,13 @@ def process_all_fif_files(base_folder, file_limit=None):
                                 ) = result
 
                                 # Extract date
-                                date = extract_date(file)
+                                #date = extract_date(file)
                                 details = "Nothing added yet"
-                                date_str = (
-                                    date.strftime("%d-%m-%y %H:%M:%S")
-                                    if date
-                                    else "Unknown Date"
-                                )
+                                # date_str = (
+                                #     date.strftime("%d-%m-%y %H:%M:%S")
+                                #     if date
+                                #     else "Unknown Date"
+                                # )
                                 processing_state = "PROCESSED"
 
                                 # Append the result
@@ -305,7 +304,6 @@ def process_all_fif_files(base_folder, file_limit=None):
                                         "Variance": var,
                                         "Status for max values": status_max,
                                         "Maximum": max_val,
-                                        "Date": date_str,
                                         "Details": details,
                                     }
 
@@ -477,10 +475,6 @@ def plot_data_avg(csv_file, output_html):
         # Load data from CSV
         df = pd.read_csv(csv_file)
 
-        # Ensure 'Date' column is in datetime format
-        df["Date"] = pd.to_datetime(
-            df["Date"], format="%d-%m-%y %H:%M:%S", errors="coerce"
-        )
         df = df.sort_values(by="Date")
 
         # Create figure
@@ -528,7 +522,7 @@ def plot_data_var(csv_file, output_html):
     df = pd.read_csv(csv_file)
 
     # Ensure 'Date' column is in datetime format
-    df["Date"] = pd.to_datetime(df["Date"], format="%d-%m-%y %H:%M:%S", errors="coerce")
+
     df = df.sort_values(by="Date")
 
     # Create figure
@@ -564,7 +558,7 @@ def plot_data_max(csv_file, output_html):
     df = pd.read_csv(csv_file)
 
     # Ensure 'Date' column is in datetime format
-    df["Date"] = pd.to_datetime(df["Date"], format="%d-%m-%y %H:%M:%S", errors="coerce")
+
     df = df.sort_values(by="Date")
 
     # Create figure
@@ -607,7 +601,7 @@ logging.basicConfig(level=logging.INFO)
 
 try:
 
-    PROCESSKIT = False
+    PROCESSKIT = True
     PROCESSOPM = True
 
     KIT_FILE_LIMIT = 2

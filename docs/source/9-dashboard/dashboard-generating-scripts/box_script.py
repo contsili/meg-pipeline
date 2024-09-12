@@ -24,8 +24,8 @@ OPM_EMPTY_ROOM_DATA_PATH = EMPTY_ROOM_DATA_PATH+"/meg-opm"
 KIT_CSV_PATH = "9-dashboard/data/data-quality-dashboards/kit-con-files-statistics.csv"
 OPM_CSV_PATH = "9-dashboard/data/data-quality-dashboards/opm-fif-files-statistics.csv"
 
-KIT_CON_FILE_DOWNLOAD_LIMIT = 2
-OPM_FIF_FILE_DOWNLOAD_LIMIT = 2
+KIT_CON_FILE_DOWNLOAD_LIMIT = 10000
+OPM_FIF_FILE_DOWNLOAD_LIMIT = 10000
 
 def upload_file(folder_path):
     # Locate the target folder
@@ -194,9 +194,11 @@ def download_kit_empty_room_data_from_folder(folder_id, path):
                         file = client.file(file_id).get()
 
                         # Get the content creation date
-                        created_at = datetime.strptime(
-                            file.content_created_at, "%Y-%m-%dT%H:%M:%S%z"
-                        )
+                        # modified_at = datetime.strptime(
+                        #     file.content_modified_at, "%Y-%m-%dT%H:%M:%S%z"
+                        # )
+
+                        modified_at = pd.to_datetime(file.content_modified_at, errors="coerce")
 
                         #formatted_date = created_at.strftime("%d-%m-%y-%H-%M-%S")
                         #filename = f"{formatted_date}_{file.name}"
@@ -207,6 +209,7 @@ def download_kit_empty_room_data_from_folder(folder_id, path):
                         if (filename not in kit_df['File Name'].values):
 
                             new_row = pd.DataFrame({'File Name': filename,
+                                                    'Date': modified_at,
                                                     'Processing State': ['TO BE PROCESSED']})
 
                             kit_df = pd.concat([kit_df, new_row], ignore_index=True)
@@ -264,19 +267,22 @@ def download_opm_empty_room_data_from_folder(folder_id, path):
                         file = client.file(file_id).get()
 
                         # Get the content creation date
-                        created_at = datetime.strptime(
-                            file.content_created_at, "%Y-%m-%dT%H:%M:%S%z"
-                        )
+                        # created_at = datetime.strptime(
+                        #     file.content_created_at, "%Y-%m-%dT%H:%M:%S%z"
+                        # )
 
                         #formatted_date = created_at.strftime("%d-%m-%y-%H-%M-%S")
                         #filename = f"{formatted_date}_{file.name}"
 
                         filename = file.name
                         file_path = os.path.join(path, filename)
+                        modified_at = pd.to_datetime(file.content_modified_at, errors="coerce")
+
 
                         if (filename not in opm_df['File Name'].values):
 
                             new_row = pd.DataFrame({'File Name': filename,
+                                                    'Date': modified_at,
                                                     'Processing State': ['TO BE PROCESSED']})
 
                             opm_df = pd.concat([opm_df, new_row], ignore_index=True)
