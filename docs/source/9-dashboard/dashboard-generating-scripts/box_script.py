@@ -18,6 +18,14 @@ import traceback
 
 EMPTY_ROOM_DATA_PATH = "Data/empty-room/sub-emptyroom"
 
+KIT_EMPTY_ROOM_DATA_PATH = EMPTY_ROOM_DATA_PATH+"/meg-kit"
+OPM_EMPTY_ROOM_DATA_PATH = EMPTY_ROOM_DATA_PATH+"/meg-opm"
+
+KIT_CSV_PATH = "9-dashboard/data/data-quality-dashboards/kit-con-files-statistics.csv"
+OPM_CSV_PATH = "9-dashboard/data/data-quality-dashboards/opm-fif-files-statistics.csv"
+
+KIT_CON_FILE_DOWNLOAD_LIMIT = 10000
+OPM_FIF_FILE_DOWNLOAD_LIMIT = 10000
 
 def upload_file(folder_path):
     # Locate the target folder
@@ -59,15 +67,21 @@ def get_folder_id_by_path(path):
     return folder_id
 
 
-def download_con_files_from_folder(folder_id, path, last_date):
+
+
+
+def download_empty_room_data_from_folder(folder_id, path, last_date, kit_con_files_download_counter=0, opm_fif_files_download_counter=0):
     try:
         folder = client.folder(folder_id).get()
         items = folder.get_items(limit=10000, offset=0)
 
+        kit_df = pd.read_csv(KIT_CSV_PATH)
+        opm_df = pd.read_csv(OPM_CSV_PATH)
+
         for item in items:
             try:
-                if item.type == "file" and item.name.endswith((".con")):
-                    # , ".fif"
+                if item.type == "file":
+
                     file_id = item.id
                     file = client.file(file_id).get()
 
@@ -76,22 +90,70 @@ def download_con_files_from_folder(folder_id, path, last_date):
                         file.content_created_at, "%Y-%m-%dT%H:%M:%S%z"
                     )
 
-                    # Check if the file's created date is after the last date or if no last date is provided
-                    if last_date is None or created_at > last_date:
-                        # Format the creation date for the filename
-                        formatted_date = created_at.strftime("%d-%m-%y-%H-%M-%S")
-                        filename = f"{formatted_date}_{file.name}"
-                        file_path = os.path.join(path, filename)
+                    #formatted_date = created_at.strftime("%d-%m-%y-%H-%M-%S")
+                    #filename = f"{formatted_date}_{file.name}"
 
-                        # Download the file
-                        with open(file_path, "wb") as open_file:
-                            file.download_to(open_file)
+                    filename = file.name
+                    file_path = os.path.join(path, filename)
 
-                        logging.info(f"Downloaded {filename} to {file_path}")
+                    if item.name.endswith((".con")):
+                        if (filename not in kit_df['File Name']
+                                and kit_con_files_download_counter<KIT_CON_FILE_DOWNLOAD_LIMIT):
+
+                            new_row = pd.DataFrame({'File Name': filename,
+                                                    'Processing State': ['TO BE PROCESSED']})
+
+                            kit_df = pd.concat([kit_df, new_row], ignore_index=True)
+
+                            # Open the .csv files
+
+                            # Download the file
+                            with open(file_path, "wb") as open_file:
+                                file.download_to(open_file)
+
+                            kit_df.to_csv(KIT_CSV_PATH, index=False)
+
+                            kit_con_files_download_counter +=1
+
+                            logging.info(f"Downloaded KIT File {filename} to {file_path}")
+
+                        else:
+                            logging.info(f"File {filename} already processed")
+
+                    elif item.name.endswith((".fif")):
+
+                        if (filename not in opm_df['File Name']
+                                and opm_fif_files_download_counter<OPM_FIF_FILE_DOWNLOAD_LIMIT):
+
+
+
+                            new_row = pd.DataFrame({'File Name': filename,
+                                                    'Processing State': ['TO BE PROCESSED']})
+
+                            opm_df = pd.concat([opm_df, new_row], ignore_index=True)
+
+
+                            # Open the .csv files
+
+                            # Download the file
+                            with open(file_path, "wb") as open_file:
+                                file.download_to(open_file)
+
+                            opm_df.to_csv(OPM_CSV_PATH, index=False)
+
+                            opm_fif_files_download_counter+=1
+
+                            logging.info(f"Downloaded OPM FILE {filename} to {file_path}")
+                        else:
+                            logging.info(f"File {filename} already processed")
+
                 elif item.type == "folder":
                     new_folder_path = os.path.join(path, item.name)
                     os.makedirs(new_folder_path, exist_ok=True)
-                    download_con_files_from_folder(item.id, new_folder_path, last_date)
+                    download_empty_room_data_from_folder(item.id, new_folder_path, last_date, kit_con_files_download_counter, opm_fif_files_download_counter)
+
+
+
             except Exception as e:
                 logging.error(
                     f"Failed to download file or process folder '{item.name}': {str(e)}"
@@ -99,11 +161,160 @@ def download_con_files_from_folder(folder_id, path, last_date):
                 logging.info(f"Error processing item '{item.name}': {str(e)}")
                 traceback.print_exc()
 
+        return kit_con_files_download_counter, opm_fif_files_download_counter
+
     except Exception as e:
         logging.error(f"Failed to access folder with ID {folder_id}: {str(e)}")
         print(f"Error accessing folder with ID {folder_id}: {str(e)}")
         traceback.print_exc()
 
+
+
+def download_kit_empty_room_data_from_folder(folder_id, path):
+    try:
+        folder = client.folder(folder_id).get()
+        items = folder.get_items(limit=10000, offset=0)
+
+        kit_df = pd.read_csv(KIT_CSV_PATH)
+
+        kit_con_files_download_counter = 0
+
+        for item in items:
+            try:
+
+                if item.type == "file" and item.name.endswith((".con")):
+
+                    if kit_con_files_download_counter >= KIT_CON_FILE_DOWNLOAD_LIMIT:
+                        logging.info("Download Limit for KIT reached")
+                        break
+
+                    else:
+
+                        file_id = item.id
+                        file = client.file(file_id).get()
+
+                        # Get the content creation date
+                        # modified_at = datetime.strptime(
+                        #     file.content_modified_at, "%Y-%m-%dT%H:%M:%S%z"
+                        # )
+
+                        modified_at = pd.to_datetime(file.content_modified_at, errors="coerce")
+
+                        #formatted_date = created_at.strftime("%d-%m-%y-%H-%M-%S")
+                        #filename = f"{formatted_date}_{file.name}"
+
+                        filename = file.name
+                        file_path = os.path.join(path, filename)
+
+                        if (filename not in kit_df['File Name'].values):
+
+                            new_row = pd.DataFrame({'File Name': filename,
+                                                    'Date': modified_at,
+                                                    'Processing State': ['TO BE PROCESSED']})
+
+                            kit_df = pd.concat([kit_df, new_row], ignore_index=True)
+
+                            # Open the .csv files
+
+                            # Download the file
+                            with open(file_path, "wb") as open_file:
+                                file.download_to(open_file)
+
+                            kit_df.to_csv(KIT_CSV_PATH, index=False)
+
+                            kit_con_files_download_counter +=1
+
+                            logging.info(f"Downloaded KIT File {filename} to {file_path}")
+
+                        else:
+                            logging.info(f"File {filename} already processed")
+
+            except Exception as e:
+                logging.error(
+                    f"Failed to download file or process folder '{item.name}': {str(e)}"
+                )
+                logging.info(f"Error processing item '{item.name}': {str(e)}")
+                traceback.print_exc()
+
+        logging.info(f"Downloaded {kit_con_files_download_counter} KIT files")
+
+    except Exception as e:
+        logging.error(f"Failed to access folder with ID {folder_id}: {str(e)}")
+        print(f"Error accessing folder with ID {folder_id}: {str(e)}")
+        traceback.print_exc()
+
+def download_opm_empty_room_data_from_folder(folder_id, path):
+    try:
+        folder = client.folder(folder_id).get()
+        items = folder.get_items(limit=10000, offset=0)
+
+        opm_df = pd.read_csv(OPM_CSV_PATH)
+
+        opm_fif_files_download_counter = 0
+
+        for item in items:
+            try:
+
+                if item.type == "file" and item.name.endswith((".fif")):
+
+                    if opm_fif_files_download_counter >= OPM_FIF_FILE_DOWNLOAD_LIMIT:
+                        logging.info("Download Limit for OPM reached")
+                        break
+
+                    else:
+
+                        file_id = item.id
+                        file = client.file(file_id).get()
+
+                        # Get the content creation date
+                        # created_at = datetime.strptime(
+                        #     file.content_created_at, "%Y-%m-%dT%H:%M:%S%z"
+                        # )
+
+                        #formatted_date = created_at.strftime("%d-%m-%y-%H-%M-%S")
+                        #filename = f"{formatted_date}_{file.name}"
+
+                        filename = file.name
+                        file_path = os.path.join(path, filename)
+                        modified_at = pd.to_datetime(file.content_modified_at, errors="coerce")
+
+
+                        if (filename not in opm_df['File Name'].values):
+
+                            new_row = pd.DataFrame({'File Name': filename,
+                                                    'Date': modified_at,
+                                                    'Processing State': ['TO BE PROCESSED']})
+
+                            opm_df = pd.concat([opm_df, new_row], ignore_index=True)
+
+                            # Open the .csv files
+
+                            # Download the file
+                            with open(file_path, "wb") as open_file:
+                                file.download_to(open_file)
+
+                            opm_df.to_csv(OPM_CSV_PATH, index=False)
+
+                            opm_fif_files_download_counter +=1
+
+                            logging.info(f"Downloaded OPM File {filename} to {file_path}")
+
+                        else:
+                            logging.info(f"File {filename} already processed")
+
+            except Exception as e:
+                logging.error(
+                    f"Failed to download file or process folder '{item.name}': {str(e)}"
+                )
+                logging.info(f"Error processing item '{item.name}': {str(e)}")
+                traceback.print_exc()
+
+        logging.info(f"Downloaded {opm_fif_files_download_counter} OPM files")
+
+    except Exception as e:
+        logging.error(f"Failed to access folder with ID {folder_id}: {str(e)}")
+        print(f"Error accessing folder with ID {folder_id}: {str(e)}")
+        traceback.print_exc()
 
 def get_folder():
     try:
@@ -222,16 +433,28 @@ try:
 
     # Replace with your actual starting folder ID
 
-    start_folder_id = get_folder_id_by_path(EMPTY_ROOM_DATA_PATH)
+    # Process KIT empty room data
+
+    kit_start_folder_id = get_folder_id_by_path(KIT_EMPTY_ROOM_DATA_PATH)
 
     # Define the local download directory
-    download_directory = r"data"
-    os.makedirs(download_directory, exist_ok=True)
+    kit_download_directory = r"data/meg-kit"
+    os.makedirs(kit_download_directory, exist_ok=True)
 
-    last_date = None
-    logging.info("Downloading con files")
-    # Start the recursive download from the starting folder
-    download_con_files_from_folder(start_folder_id, download_directory, last_date)
+    logging.info(f"Downloading empty room files for KIT with limit {KIT_CON_FILE_DOWNLOAD_LIMIT} for .con files")
+
+    download_kit_empty_room_data_from_folder(kit_start_folder_id, kit_download_directory)
+
+    # Process OPM empty room data
+
+    opm_start_folder_id = get_folder_id_by_path(OPM_EMPTY_ROOM_DATA_PATH)
+    opm_download_directory = r"data/meg-opm"
+    os.makedirs(opm_download_directory, exist_ok=True)
+
+    logging.info(f"Downloading empty room files for OPM with limit {OPM_FIF_FILE_DOWNLOAD_LIMIT} for .fif files")
+
+    download_opm_empty_room_data_from_folder(opm_start_folder_id, opm_download_directory)
+
 
 except Exception as e:
     logging.error(f"Error during Box authentication setup: {e}")

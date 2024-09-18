@@ -5,10 +5,10 @@ import pandas as pd
 
 # List of CSV file paths, one for each system
 csv_files = [
-    os.path.abspath(os.path.join("9-dashboard", "data", "vpixx-system-status.csv")),
-    os.path.abspath(os.path.join( "9-dashboard",  "data", "qd-helium-system-status.csv")),
-    os.path.abspath(os.path.join("9-dashboard",  "data", "opm-system-status.csv")),
-    os.path.abspath(os.path.join("9-dashboard", "data", "kit-system-status.csv")),
+    os.path.abspath(os.path.join("9-dashboard", "data", "system-status-dashboards", "vpixx-system-status.csv")),
+    os.path.abspath(os.path.join( "9-dashboard",  "data", "system-status-dashboards", "qd-helium-system-status.csv")),
+    os.path.abspath(os.path.join("9-dashboard",  "data", "system-status-dashboards", "opm-system-status.csv")),
+    os.path.abspath(os.path.join("9-dashboard", "data","system-status-dashboards", "kit-system-status.csv")),
 ]
 
 # Ensure the output directory exists

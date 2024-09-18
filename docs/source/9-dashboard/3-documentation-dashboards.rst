@@ -1,9 +1,13 @@
 Documentation for dashboards
 ############################
 
-This section explains the usefulness of the dashboard and provide technical details on their generation.
-This dashboards are meant to monitor the status of the systems and the quality of the data by measuring noise levels in empty-room data while providing informative labels, for quick access and over all numerical values in a simple format.
-It has graphs showing the average and variance of each empty-room data file, as well as one table listing the current state of each empty-room data file.
+This section is a documentation guide targeted to users who would like to understand the current dashboards and some technical details regarding their generation.
+The dashboards are meant to monitor the status of the systems and the quality of the data
+by measuring noise levels in empty-room data while providing informative labels,
+for quick access and over all numerical values in a simple format.
+It has graphs showing the computation of different metrics (e.g., average and variance) of each empty-room data file,
+as well as a table listing the current state of each empty-room data dataset. The state indicates
+whether or not the dataset is within the "good" noise thresholds for each metric.
 
 *1.* The following use cases are enabled by the dashboards:
 
@@ -15,7 +19,7 @@ It has graphs showing the average and variance of each empty-room data file, as 
 *1.* The source of this data is empty-room data hosted on the NYU-BOX data drive.
 
 
-*1.* Overview of the table:
+*1.* Overview of the table: the used data quality metrics are present in `9-dashboard/data/noise_metrics.csv`
 
 
   .. list-table:: File Details
@@ -64,12 +68,32 @@ This guide explains how to download empty room data from the NYU-BOX storage usi
 It covers setting up the Box SDK, authenticating using JWT, accessing folder data, and downloading `.con` files.
 It also includes information on processing these downloaded files.
 
-- `box_script.py` connects to NYU-BOX using the *BOX-SDK* and downloads empty room data to the build server (Read The Docs).
+The stack being used comprises:
 
-It uses private keys, which can be provided as an `.env` file on your machine or set as environment variables in your build.
-This step will vary depending on your setup, so it's important to include error handling.
-An NYU Box app has been approved with the permissions required to access and download the files,
-the secrets are generated from the approved app.
+- backend: boxsdk, readthedocs
+- frontend: sphinx documentation, plotly
+
+The `conf.py` is a sphinx documentation backend script that executes several operation necessary for building the documentation website,
+we use it to execute the following scripts for dashboard generation:
+
+- System dashboard generation: `generate_system_status_dashboards.py`
+    - takes a .csv file as input, that contains the data of the status of a system (timestamp, status, sub-system name)
+    - computes the weekly status activities from the timestamp
+    - generates the .html files for the display of the system status dashboards
+
+- Data quality dashboard generation:
+    - `box_script.py` connects to NYU-BOX using the *BOX-SDK* and downloads empty room data to the build server (Read The Docs)
+        - uses private keys, which can be provided as an `.env` file on your machine or set as environment variables in your build
+        - step will vary depending on your setup, so it's important to include error handling.
+        - an NYU Box app has been approved with the permissions required to access and download the files, the secrets are generated from the approved app
+    - `processing_empty_room_data_files.py`
+        - for each downloaded file, computes the data-quality metrics
+        - produces a .csv with the results `con_file_statistics.csv`
+        - generates the .html files to plot the dashboards
+    - `convert_csv_to_rst.py` converts two .csv
+        - '9-dashboard/data/noise_metrics.csv' containing the definition of the data quality metrics and acceptable thresholds for each
+        - '9-dashboard/data/con_file_statistics.csv' containing the data quality metrics computation for each dataset and whether or not the file is in the thresholds
+
 
 *Installation*
 

@@ -128,10 +128,10 @@ def run_box_script(app: Sphinx):
         logger.error(f"The script {script_path} does not exist.")
 
 
-def run_proccessing_con_files(app: Sphinx):
+def run_processing_empty_room_data_files(app: Sphinx):
     logger = logging.getLogger(__name__)
 
-    SCRIPT_NAME = "proccessing_con_files_for_table.py"
+    SCRIPT_NAME = "processing_empty_room_data_files.py"
     script_path = os.path.join(
         app.confdir,
         "9-dashboard",
@@ -216,6 +216,6 @@ def setup(app: Sphinx):
     logging.basicConfig(level=logging.INFO)
     app.connect("builder-inited", run_generate_system_status_dashboards_script)
     app.connect("builder-inited", run_box_script)
-    app.connect("builder-inited", run_proccessing_con_files)
-    app.connect("builder-inited", run_csv_conversion)
+    app.connect("builder-inited", run_processing_empty_room_data_files)
+    #app.connect("builder-inited", run_csv_conversion)
     # app.add_css_file('custom.css')
