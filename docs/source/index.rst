@@ -23,9 +23,9 @@ Check out the :doc:`1-systems/megsystem` section for further information.
    :maxdepth: 2
    :caption: Systems Overview
 
-   1-systems/megsystem
-   1-systems/opmsystem
-   1-systems/eegsystem
+   1-systems/1-meg-kit-system
+   1-systems/2-meg-opm-system
+   1-systems/3-eeg-system
    1-systems/quizz
 
 .. toctree::
