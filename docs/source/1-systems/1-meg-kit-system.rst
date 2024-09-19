@@ -36,8 +36,8 @@ The MEG-KIT system has:
 
 - 208 axial gradiometers used to measure brain activity
 - 8 orthogonally-oriented (reference) magnetometers located in the dewar but away from the brain area, used to measure and reduce external noise offline
-and
-- 32 open positions, of which we currently use 8 to record stimulus triggers and the other 24 channels to record Eye Tracker data directly, auditory signals from our mixer and vocalization information from our optoacoustic fiber-optic microphone.
+- 32 open positions, of which we currently use 8 to record stimulus triggers
+- 24 channels to record Eye Tracker data directly, auditory signals from our mixer and vocalization information from our optoacoustic fiber-optic microphone
 
 NYUAD MEG system uses liquid helium to keep our SQUID sensors cold (-269°C, -452°F).
 If the helium tank leaks, the liquid helium will immediately boil off.
