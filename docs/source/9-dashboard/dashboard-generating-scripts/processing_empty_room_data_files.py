@@ -594,6 +594,10 @@ def compute_fft(data, sfreq):
     freqs = np.fft.rfftfreq(data.shape[-1], d=1 / sfreq)
     return freqs, np.abs(fft_data)
 
+def download_kit_csv_file():
+
+
+
 
 #### Main begin #####
 
@@ -617,6 +621,11 @@ try:
         # Set the output CSV file path
         output_file = "9-dashboard/data/data-quality-dashboards/kit-con-files-statistics.csv"
 
+
+
+
+        download_kit_csv_file()
+
         # Process all .con files and save the results
         process_all_con_files(base_folder, file_limit=KIT_FILE_LIMIT)
 
@@ -626,6 +635,9 @@ try:
         # print(results)
 
         csv_file = output_file  # Path to the CSV file
+
+
+
         output_avg_html = "_static/2-data-quality-dashboards/kit_average_plot.html"  # Path to save the HTML file
 
         # Ensure output directory exists
