@@ -332,6 +332,200 @@ def process_kit_empty_room_files(client):
         output_variance_html = "_static/2-data-quality-dashboards/kit_max_plot.html"
         plot_data_max(csv_file, output_variance_html)
 
+def process_opm_empty_room_files(client):
+
+    if PROCESSOPM:
+        # OPM .fif metric computation
+
+        # Set the base folder containing .con files and subfolders
+        base_folder = r"data/meg-opm"
+        # Set the output CSV file path
+        output_file = "9-dashboard/data/data-quality-dashboards/opm-fif-files-statistics.csv"
+
+        # Process all .fif files and save the results
+        process_all_fif_files(base_folder, file_limit=OPM_FILE_LIMIT)
+
+        #save_results_to_csv(results, output_file)
+
+        logging.info(f"Results saved to {output_file}")
+        # print(results)
+
+        csv_file = output_file  # Path to the CSV file
+        output_avg_html = (
+            "_static/2-data-quality-dashboards/opm_average_plot.html"  # Path to save the HTML file
+        )
+
+        # Ensure output directory exists
+        os.makedirs(os.path.dirname(output_avg_html), exist_ok=True)
+
+        # Create and save the plot
+        plot_data_avg(csv_file, output_avg_html)
+
+        output_variance_html = (
+            "_static/2-data-quality-dashboards/opm_variance_plot.html"  # Path to save the HTML file
+        )
+
+        # Ensure output directory exists
+        os.makedirs(os.path.dirname(output_variance_html), exist_ok=True)
+
+        # Create and save the plot
+        plot_data_var(csv_file, output_variance_html)
+        output_variance_html = "_static/2-data-quality-dashboards/opm_max_plot.html"
+        plot_data_max(csv_file, output_variance_html)
+
+
+def process_fif_file(file_path):
+    s_avg = 3
+    s_max = 10
+    s_fft = 10
+
+    # Load raw MEG/EEG data from a .fif file
+    raw = mne.io.read_raw_fif(file_path, preload=False)
+
+    data_duration = raw.times[-1]
+
+    if TMAX <= data_duration and TMIN <= data_duration:
+        # Crop data:
+        raw = raw.crop(TMIN, TMAX)
+        logging.info(f"Cropped data for: {file_path}")
+
+    # Select channels that start with 'L' or 'R'
+    selected_channels = [
+        ch_name for ch_name in raw.ch_names if ch_name.startswith(("L", "R"))
+    ]
+
+    # Pick only those channels
+    raw.pick(selected_channels)
+
+    # Optional: Remove zero channels (if needed)
+    raw = remove_zero_channels(raw)
+
+    # Get data and calculate statistics
+    data = raw.get_data()  # Get data from the selected channels
+    avg = np.mean(data)  # Average over time (axis=1)
+    var = np.var(data)  # Variance over time (axis=1)
+    max_val = np.max(data)  # Maximum value over time (axis=1)
+
+    # FFT calculation
+    sfreq = raw.info["sfreq"]
+    freqs, fft_data = compute_fft(data, sfreq)
+
+    # Status for avg
+    status_avg = [
+        ("🟢 In the threshold" if np.all(avg < s_avg) else "🔴 Above the threshold")
+    ]
+
+    # Status for fft
+    status_fft = [
+        (
+            "🟢 In the threshold"
+            if np.all(fft_data < s_fft)
+            else "🔴 Above the threshold"
+        )
+    ]
+
+    # Status for max
+    status_max = [
+        ("🟢 In the threshold" if np.all(max_val < s_max) else "🔴 Above the threshold")
+    ]
+
+    # Return the processed values
+    return avg, var, max_val, status_avg, freqs, fft_data, status_fft, status_max
+
+
+def process_all_fif_files(base_folder, file_limit=None):
+    """ """
+    results = []
+    file_count = 0  # Initialize a counter
+
+    try:
+
+        opm_csv = pd.read_csv(OPM_CSV_LOCAL_SAVE_PATH)
+        for root, _, files in os.walk(base_folder):
+            for file in files:
+                if file.endswith(".fif"):
+
+                    if file in opm_csv['File Name'].values:
+                        logging.info(f"File {file} found in OPM CSV")
+
+                        if opm_csv.loc[opm_csv['File Name'] == file, 'Processing State'].values[0] == 'TO BE PROCESSED':
+
+                            processing_state = "UNPROCESSED"
+                            file_path = os.path.join(root, file)
+
+                            result = process_fif_file(file_path)
+
+                            if result is None:
+                                logging.info(f"Processing failed for {file_path}")
+                            else:
+                                # Process the file
+                                (
+                                    avg,
+                                    var,
+                                    max_val,
+                                    status,
+                                    freqs,
+                                    fft_data,
+                                    status_fft,
+                                    status_max,
+                                ) = result
+
+                                # Extract date
+                                #date = extract_date(file)
+                                details = "Nothing added yet"
+                                # date_str = (
+                                #     date.strftime("%d-%m-%y %H:%M:%S")
+                                #     if date
+                                #     else "Unknown Date"
+                                # )
+                                processing_state = "PROCESSED"
+
+                                # Append the result
+                                new_values_dic = {
+                                        "Processing State": processing_state,
+                                        "Status for average values": status,
+                                        "Average": avg,
+                                        "Variance": var,
+                                        "Status for max values": status_max,
+                                        "Maximum": max_val,
+                                        "Details": details,
+                                    }
+
+                                for key in new_values_dic.keys():
+                                    # Cast each column to 'object' dtype
+                                    opm_csv[key] = opm_csv[key].astype('object')
+
+                                opm_csv.loc[opm_csv['File Name'] == file, new_values_dic.keys()] = (
+                                    new_values_dic.values())
+
+
+                                os.makedirs(os.path.dirname(OPM_CSV_LOCAL_SAVE_PATH), exist_ok=True)
+
+                                opm_csv.to_csv(OPM_CSV_LOCAL_SAVE_PATH, index=False)
+
+
+                            file_count += 1  # Increment the counter
+                            if file_limit != None:
+                                if file_count >= file_limit:
+                                    break  # Stop processing after reaching the limit
+                        else:
+                            logging.info(f"File {file} already processed")
+
+                    else:
+                        logging.info(f"File {file} downloaded but not found in OPM CSV")
+
+
+            if file_limit != None:
+                if file_count >= file_limit:
+                    break  # Stop outer loop if limit is reached
+
+
+    except Exception as e:
+        tb = traceback.format_exc()
+        failed_function_name = traceback.extract_tb(sys.exc_info()[2])[-1].name
+        logging.info(f"Error in function '{failed_function_name}': {e}")
+        logging.info(f"Traceback: {tb}")
+
 def download_kit_empty_room_data_from_folder(folder_id, path, client):
     try:
         folder = client.folder(folder_id).get()
@@ -411,7 +605,7 @@ def download_opm_empty_room_data_from_folder(folder_id, path, client):
         folder = client.folder(folder_id).get()
         items = folder.get_items(limit=10000, offset=0)
 
-        opm_df = pd.read_csv(OPM_CSV_PATH)
+        opm_df = pd.read_csv(OPM_CSV_LOCAL_SAVE_PATH)
 
         opm_fif_files_download_counter = 0
 
@@ -456,7 +650,7 @@ def download_opm_empty_room_data_from_folder(folder_id, path, client):
                             with open(file_path, "wb") as open_file:
                                 file.download_to(open_file)
 
-                            opm_df.to_csv(OPM_CSV_PATH, index=False)
+                            opm_df.to_csv(OPM_CSV_LOCAL_SAVE_PATH, index=False)
 
                             opm_fif_files_download_counter +=1
 
