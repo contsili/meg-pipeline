@@ -178,6 +178,56 @@ def run_processing_empty_room_data_files(app: Sphinx):
         raise FileNotFoundError(f"Script {script_path} not found.")
 
 
+def run_update_dashboards(app: Sphinx):
+    logger = logging.getLogger(__name__)
+
+    SCRIPT_NAME = "update_dashboards.py"
+    script_path = os.path.join(
+        app.confdir,
+        "9-dashboard",
+        "dashboard-generating-scripts",
+        SCRIPT_NAME,
+    )
+
+    if os.path.exists(script_path):
+
+        logger.info(f"Found {SCRIPT_NAME}, running it now.")
+
+        try:
+            result = subprocess.run(
+                ["python", script_path], capture_output=True, text=True
+            )
+
+            if result.returncode == 0:
+                logger.info(f"{SCRIPT_NAME} ran successfully.")
+            else:
+                logger.error(
+                    f"{SCRIPT_NAME} failed with return code {result.returncode}"
+                )
+
+            # Log both stdout and stderr
+            if result.stdout:
+                logger.info(f"Script output: {result.stdout}")
+            if result.stderr:
+                logger.error(f"Script errors: {result.stderr}")
+
+        # except subprocess.CalledProcessError as e:
+        #     logger.error(f"Error running {script_path}: {e}")
+        #     logger.error(f"Stdout: {e.stdout}")
+        #     logger.error(f"Stderr: {e.stderr}")
+        #     raise RuntimeError(
+        #         f"Error while running script: {script_path}. Exit code: {e.returncode}"
+        #     ) from e
+
+        except Exception as e:
+            logger.exception(f"Unexpected error while running {script_path}: {e}")
+            raise
+
+    else:
+        logger.error(f"The script {script_path} does not exist.")
+        raise FileNotFoundError(f"Script {script_path} not found.")
+
+
 def run_csv_conversion(app: Sphinx):
     logger = logging.getLogger(__name__)
     script_path = os.path.join(
@@ -210,12 +260,11 @@ def run_csv_conversion(app: Sphinx):
 
 
 
-
-
 def setup(app: Sphinx):
     logging.basicConfig(level=logging.INFO)
     app.connect("builder-inited", run_generate_system_status_dashboards_script)
-    app.connect("builder-inited", run_box_script)
-    app.connect("builder-inited", run_processing_empty_room_data_files)
+    app.connect("builder-inited", run_update_dashboards)
+    # app.connect("builder-inited", run_box_script)
+    # app.connect("builder-inited", run_processing_empty_room_data_files)
     #app.connect("builder-inited", run_csv_conversion)
     # app.add_css_file('custom.css')
