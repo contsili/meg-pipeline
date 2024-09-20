@@ -300,27 +300,24 @@ def process_kit_empty_room_files(client):
 
     # KIT .con metric computation
     if PROCESSKIT:
-        # Set the base folder containing .con files and subfolders
-        base_folder = r"data"
+
         # Set the output CSV file path
-        output_file = "9-dashboard/data/data-quality-dashboards/kit-con-files-statistics.csv"
 
         # Process all .con files and save the results
-        process_all_con_files(base_folder, file_limit=KIT_FILE_LIMIT)
+        process_all_con_files(BASE_FOLDER, file_limit=KIT_FILE_LIMIT)
 
         #save_results_to_csv(results, output_file)
 
-        logging.info(f"Results saved to {output_file}")
+        logging.info(f"Results saved to {KIT_CSV_LOCAL_SAVE_PATH}")
         # print(results)
 
-        csv_file = output_file  # Path to the CSV file
         output_avg_html = "_static/2-data-quality-dashboards/kit_average_plot.html"  # Path to save the HTML file
 
         # Ensure output directory exists
         os.makedirs(os.path.dirname(output_avg_html), exist_ok=True)
 
         # Create and save the plot
-        plot_data_avg(csv_file, output_avg_html)
+        plot_data_avg(KIT_CSV_LOCAL_SAVE_PATH, output_avg_html)
 
         output_variance_html = "_static/2-data-quality-dashboards/kit_variance_plot.html"  # Path to save the HTML file
 
@@ -328,29 +325,23 @@ def process_kit_empty_room_files(client):
         os.makedirs(os.path.dirname(output_variance_html), exist_ok=True)
 
         # Create and save the plot
-        plot_data_var(csv_file, output_variance_html)
+        plot_data_var(KIT_CSV_LOCAL_SAVE_PATH, output_variance_html)
         output_variance_html = "_static/2-data-quality-dashboards/kit_max_plot.html"
-        plot_data_max(csv_file, output_variance_html)
+        plot_data_max(KIT_CSV_LOCAL_SAVE_PATH, output_variance_html)
 
 def process_opm_empty_room_files(client):
 
     if PROCESSOPM:
         # OPM .fif metric computation
 
-        # Set the base folder containing .con files and subfolders
-        base_folder = r"data/meg-opm"
-        # Set the output CSV file path
-        output_file = "9-dashboard/data/data-quality-dashboards/opm-fif-files-statistics.csv"
-
         # Process all .fif files and save the results
-        process_all_fif_files(base_folder, file_limit=OPM_FILE_LIMIT)
+        process_all_fif_files(BASE_FOLDER, file_limit=OPM_FILE_LIMIT)
 
         #save_results_to_csv(results, output_file)
 
-        logging.info(f"Results saved to {output_file}")
+        logging.info(f"Results saved to {OPM_CSV_LOCAL_SAVE_PATH}")
         # print(results)
 
-        csv_file = output_file  # Path to the CSV file
         output_avg_html = (
             "_static/2-data-quality-dashboards/opm_average_plot.html"  # Path to save the HTML file
         )
@@ -359,7 +350,7 @@ def process_opm_empty_room_files(client):
         os.makedirs(os.path.dirname(output_avg_html), exist_ok=True)
 
         # Create and save the plot
-        plot_data_avg(csv_file, output_avg_html)
+        plot_data_avg(OPM_CSV_LOCAL_SAVE_PATH, output_avg_html)
 
         output_variance_html = (
             "_static/2-data-quality-dashboards/opm_variance_plot.html"  # Path to save the HTML file
@@ -369,9 +360,9 @@ def process_opm_empty_room_files(client):
         os.makedirs(os.path.dirname(output_variance_html), exist_ok=True)
 
         # Create and save the plot
-        plot_data_var(csv_file, output_variance_html)
+        plot_data_var(OPM_CSV_LOCAL_SAVE_PATH, output_variance_html)
         output_variance_html = "_static/2-data-quality-dashboards/opm_max_plot.html"
-        plot_data_max(csv_file, output_variance_html)
+        plot_data_max(OPM_CSV_LOCAL_SAVE_PATH, output_variance_html)
 
 
 def process_fif_file(file_path):

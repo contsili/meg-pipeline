@@ -1,3 +1,6 @@
+
+BASE_FOLDER = r"data"
+
 EMPTY_ROOM_DATA_PATH = "Data/empty-room/sub-emptyroom"
 
 KIT_EMPTY_ROOM_DATA_PATH = EMPTY_ROOM_DATA_PATH+"/meg-kit"
