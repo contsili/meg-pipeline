@@ -1,4 +1,4 @@
-name: Trigger Read the Docs Build
+name: ReadTheDocs Manual Build Trigger
 
 # This allows you to trigger the workflow manually via the "Actions" tab
 on:
