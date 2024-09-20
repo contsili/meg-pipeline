@@ -1,8 +1,8 @@
-name: Trigger ReadTheDocs Build
+name: ReadTheDocs Daily Build Trigger
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # This cron expression triggers the action daily at midnight UTC
+   - cron: '0 6 * * *'  # This triggers the action daily at 6 AM UTC (10 AM UAE time)
   workflow_dispatch:  # Allows manual triggering via GitHub Actions UI
 
 jobs:
