@@ -6,6 +6,12 @@ femtotesla  :math:`1fT = 10^{-15} T` and picotesla :math:`1pT = 10^{-12} T`.
 
 EEG scalp signals are about 50 to 100 :math:`\mu\text{V}`
 
+
+.. note::
+
+   The dashboards are automatically updated every day at 10:00 am UAE time check the `github actions` for more information
+
+
 Data Quality metrics
 ====================
 
