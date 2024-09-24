@@ -89,7 +89,7 @@ process_opm_empty_room_files(client)
 
         # Update the KIT csv file on NYU BOX
 
-opm_updated_file = client.file(kit_csv_file_id).update_contents(KIT_CSV_LOCAL_SAVE_PATH)
+opm_updated_file = client.file(opm_csv_file_id).update_contents(OPM_CSV_LOCAL_SAVE_PATH)
 
 logging.info(f'OPM dashboard tracking file "{opm_updated_file.name}" has been updated on Box.')
 
