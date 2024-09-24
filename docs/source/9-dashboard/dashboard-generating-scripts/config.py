@@ -19,7 +19,7 @@ KIT_CSV_LOCAL_SAVE_PATH = 'data/kit-con-files-statistics.csv'
 OPM_CSV_LOCAL_SAVE_PATH = 'data/opm-fif-files-statistics.csv'
 
 
-KIT_CON_FILE_DOWNLOAD_LIMIT = 2
+KIT_CON_FILE_DOWNLOAD_LIMIT = 5
 OPM_FIF_FILE_DOWNLOAD_LIMIT = 10000
 
 
