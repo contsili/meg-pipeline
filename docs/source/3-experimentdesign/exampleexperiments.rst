@@ -11,3 +11,13 @@ Example Experiments
    experiments/4-face-inversion-psychopy
    experiments/5-responsebox
    experiments/6-exp-sound
+
+
+MEG Lab demonstrations
+----------------------
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Demonstrations
+
+   demonstration/1-meg-class-demo
