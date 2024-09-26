@@ -7,12 +7,12 @@ Date and place: MEG lab in A2-008 at the 9th of October 2024
 Agenda
 ------
 
-.. toggle:: Lab tour and general equipment information `10min`
+.. toggle:: Lab tour and general equipment presentation `10min`
 
-    - Explain the MSR (Magnetically Shielded Room)
     - Explain the dewar, SQUIDs sensors, liquid Helium system
+    - Explain the MSR (Magnetically Shielded Room)
     - Show the computers layout and the different capabilities of the lab (eyetracker, vpixx triggers, response box, audio stimulus)
-
+    - Present what experiments we will run on this day and the outline of the demonstration
 
 .. toggle:: Prepare the participant for an MEG experiment `20min`
 
@@ -20,14 +20,13 @@ Agenda
     - Place participant in MSR, explain the headcoils placed on participant head
     - Perform auditory check for safety
 
-
 .. toggle:: SQUID sensors demonstration `5min`
 
     - Show sensitivity to noise, rapid eyeblinks, teeth pressure, phone in airplane mode on and off
+    - Show marker measurement and explain their importance for source localization
     - Show reference magnetometers and explain denoising for external noise
 
-
-.. toggle:: Two demonstrations: Resting state :ref:`resting_state_exp` and attention (contra-lateral) :ref:`attention_exp`
+.. toggle:: Two demonstrations: Resting state :ref:`resting_state_exp` and attention (contra-lateral) :ref:`attention_exp` `50min`
 
     - Experiment 1: Resting state: `25min` :ref:`resting_state_exp`
         - Two blocks: a block of 10min eyes open and 10min eyes closed
@@ -37,7 +36,7 @@ Agenda
         - the experiment repeats itself for the right side
 
 
-.. toggle:: Show analysis results
+.. toggle:: Show analysis results `15min`
 
     - Experiment 1: Resting state
         - Show higher alpha power in eyes closed than in eyes open in the alpha band (8-12Hz)
