@@ -1,5 +1,9 @@
+.. _resting_state_exp:
+
 Experiments example 1 (Psychtoolbox): Resting state
 ---------------------------------------------------
+
+
 
 - Resting state experiment: Using PsychToolBox the following script executes a resting state experiment.
 
