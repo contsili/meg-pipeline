@@ -34,6 +34,7 @@ extensions = [
     "sphinx_gallery.load_style",
     "sphinx.ext.mathjax",
     "sphinx_togglebutton",
+    "sphinx_panels"
 ]
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3/", None),
