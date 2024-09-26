@@ -11,6 +11,7 @@ Example Experiments
    experiments/4-face-inversion-psychopy
    experiments/5-responsebox
    experiments/6-exp-sound
+   experiments/7-attention-experiment.rst
 
 
 MEG Lab demonstrations
