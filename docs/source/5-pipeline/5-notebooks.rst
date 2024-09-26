@@ -12,7 +12,7 @@ MNE-Python Pipeline Notebooks
    notebooks/mne/coregistration.ipynb
    notebooks/mne/computing_bem_model.ipynb
    notebooks/mne/closeup_forward_solutions.ipynb
-
+   notebooks/mne/attention_experiment.ipynb
 
 FieldTrip MATLAB Pipeline Notebooks
 -----------------------------------
