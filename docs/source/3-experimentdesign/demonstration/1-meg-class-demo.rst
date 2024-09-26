@@ -41,9 +41,9 @@ Agenda 105min total
 
 .. dropdown:: Show and discuss analysis results `15min`
 
-    - Experiment 1: `Resting state: Access link to Analysis Notebook <../../5-pipeline/notebooks/resting_state_pipeline.ipynb>`_
+    - Experiment 1: `Resting state: Access link to Analysis Notebook <../../5-pipeline/notebooks/mne/resting_state_pipeline.ipynb>`_
         - Show higher alpha power in eyes closed than in eyes open in the alpha band (8-12Hz)
         - Show that this difference is better seen in the occipital region
-    - Experiment 2: `Attention: Access link to Analysis Notebook <../../5-pipeline/notebooks/attention_experiment.ipynb>`_
+    - Experiment 2: `Attention: Access link to Analysis Notebook <../../5-pipeline/notebooks/mne/attention_experiment.ipynb>`_
         - NA
         - NA
