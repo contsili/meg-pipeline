@@ -14,3 +14,11 @@ The code for the experiment can be found here: Source file link
 
 .. literalinclude:: ../../../../experiments/psychtoolbox/general/resting_state_meg.m
   :language: matlab
+
+
+Analysis results
+^^^^^^^^^^^^^^^^
+
+The notebook provides analysis results after running the experiment on a participant (Sub-01).
+
+`Link to my notebook <../../5-pipeline/notebooks/resting_state_pipeline.ipynb>`_
