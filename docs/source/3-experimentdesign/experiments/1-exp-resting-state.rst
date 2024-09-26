@@ -12,8 +12,10 @@ Two triggers are sent from the 'Datapixx3' to the KIT-MEG on channels 224 (closi
 The code for the experiment can be found here: Source file link
 `resting_state_meg.m <https://github.com/hzaatiti-NYU/meg-pipeline/blob/main/experiments/psychtoolbox/general/resting_state_meg.m>`_.
 
-.. literalinclude:: ../../../../experiments/psychtoolbox/general/resting_state_meg.m
-  :language: matlab
+.. dropdown:: Resting state task code
+
+    .. literalinclude:: ../../../../experiments/psychtoolbox/general/resting_state_meg.m
+      :language: matlab
 
 
 Analysis results
