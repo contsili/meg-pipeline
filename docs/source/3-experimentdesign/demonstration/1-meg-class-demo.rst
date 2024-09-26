@@ -31,9 +31,10 @@ Agenda
     - Experiment 1: Resting state: `25min` :ref:`resting_state_exp`
         - Two blocks: a block of 10min eyes open and 10min eyes closed
     - Experiment 2: Attention with different field of view points `25min`
-        - participant looking to a point in the far left of the visual field for 10 minutes
-        - when the duration is over, a stimulus will flash, the participant must press a button when they see the flash
-        - the experiment repeats itself for the right side
+        - the participant is asked to focus on a centered point for some duration of time
+        - at some instant, a flash to a point in the far left of the visual field will appear
+        - the participant must press a button when they see the flash
+        - the experiment repeats itself for the right side.
 
 
 .. toggle:: Show analysis results `15min`
