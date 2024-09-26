@@ -2,7 +2,7 @@ Example Experiments
 -------------------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Experiments
 
    experiments/1-exp-resting-state
@@ -18,7 +18,7 @@ MEG Lab demonstrations
 ----------------------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Demonstrations
 
    demonstration/1-meg-class-demo

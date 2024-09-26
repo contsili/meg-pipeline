@@ -30,9 +30,9 @@ Agenda 105min total
 
 .. dropdown:: Two demonstrations: Resting state and Attention (contra-lateral) `50min`
 
-    - Experiment 1: `Resting state: Access link to code and description <resting_state_exp>`_ `25min`
+    - Experiment 1: `Resting state: Access link to code and description <../../3-experimentdesign/experiments/1-exp-resting-state.rst>`_ `25min`
         - Two blocks: a block of 10min eyes open and a second block of 10min eyes closed
-    - Experiment 2: `Attention: Access link to code and description <attention_exp>`_ `25min`
+    - Experiment 2: `Attention: Access link to code and description <../../3-experimentdesign/experiments/7-attention-experiment.rst>`_ `25min`
         - the participant is asked to focus on a centered point for some duration of time
         - at some instant, a flash to a point in the far left of the visual field will appear
         - the participant must press a button when they see the flash
@@ -41,9 +41,9 @@ Agenda 105min total
 
 .. dropdown:: Show and discuss analysis results `15min`
 
-    - Experiment 1: `Resting state: Access link to Analysis Notebook <../../5-pipeline/notebooks/resting_state_pipeline.ipynb>`_
+    - Experiment 1: `Resting state: Access link to Analysis Notebook <../../5-pipeline/notebooks/mne/resting_state_pipeline.ipynb>`_
         - Show higher alpha power in eyes closed than in eyes open in the alpha band (8-12Hz)
         - Show that this difference is better seen in the occipital region
-    - Experiment 2: `Attention: Access link to Analysis Notebook <../../5-pipeline/notebooks/attention_experiment.ipynb>`_
+    - Experiment 2: `Attention: Access link to Analysis Notebook <../../5-pipeline/notebooks/mne/attention_experiment.ipynb>`_
         - NA
         - NA

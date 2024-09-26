@@ -8,5 +8,7 @@ At some instant, a flash to a point in the far left of the visual field will app
 the participant must press a button when they see the flash.
 The experiment repeats itself for the right side.
 
-.. literalinclude:: ../../../../experiments/psychtoolbox/attention/meg_attention_task.m
-  :language: matlab
+.. dropdown:: Attention task code
+
+    .. literalinclude:: ../../../../experiments/psychtoolbox/attention/meg_attention_task.m
+      :language: matlab
