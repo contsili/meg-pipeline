@@ -3,8 +3,9 @@
 
 %% initialize variables 
 clearvars; clc
-mainDir = '/Users/kar618/Box Sync/MEG_Demo'; addpath(genpath(mainDir))
-addpath(genpath('/Applications/Psychtoolbox')); sca
+mainDir = '/MEG_Demo'; 
+%addpath(genpath(mainDir))
+%addpath(genpath('/Applications/Psychtoolbox')); sca
 PsychDebugWindowConfiguration(0, 1); % 1 for running exp; 0.5 for debugging
 PsychDefaultSetup(2);
 Screen('Preference', 'SkipSyncTests', 2);
