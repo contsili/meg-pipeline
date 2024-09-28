@@ -1,11 +1,45 @@
+%% script to generate simple attention task - adjusted for MEG
+% written September 2024, by Karima Raafat (kar618@nyu.edu) & Hadi Zaatiti (hz3752@nyu.edu)
+
+%% initialize variables 
+clearvars; clc
+
 
 % Vpixx BOOLS
 
-VPIXX_USE = 0; % 0 if vpixx is not conected
+VPIXX_USE = 1; % 0 if vpixx is not conected
 TRIGGER_TEST = 1;
 
+mainDir = '/MEG_Demo'; 
+%addpath(genpath(mainDir))
+%addpath(genpath('/Applications/Psychtoolbox')); sca
+PsychDebugWindowConfiguration(0, 1); % 1 for running exp; 0.5 for debugging
+PsychDefaultSetup(2);
+Screen('Preference', 'SkipSyncTests', 2);
+screenNum = max(Screen('Screens'));
 
-%Trigger header
+% define some keys for keyboard input 
+KbName('UnifyKeyNames'); % this command switches keyboard mappings to the OSX naming scheme, regardless of computer.
+space = KbName('space'); % to start & respond 
+escape = KbName('ESCAPE'); 
+textSize = 25; 
+
+% define screen parameters
+white = [255 255 255];
+gray = (white/2)/255;
+red = [255 0 0];
+black = [0 0 0];
+alpha = 0.03; % transparency
+targetColor = [black, alpha]; % combine color with alpha
+
+% for saving later
+subject = input('subject number: '); subject = int2strz(subject,2);  
+session = input('session number: '); session = int2strz(session,2);
+
+[window, windowRect] = PsychImaging('OpenWindow', screenNum, gray); % open a gray window
+Screen('BlendFunction', window, 'GL_SRC_ALPHA', 'GL_ONE_MINUS_SRC_ALPHA');
+[xCenter, yCenter] = RectCenter(windowRect); % get the center of the screen
+
 
 if VPIXX_USE == 1
     %VIEW PIXX SETUP
@@ -32,11 +66,6 @@ if VPIXX_USE == 1
     trig.ch229 = [0 16 0]; % 229 meg channel
     trig.ch230 = [0 64 0]; % 230 meg channel
     trig.ch231 = [0 0  1]; % 231 meg channel
-    
-
-
-
-
 
 
     % Trigger example
@@ -59,41 +88,8 @@ end
 
 
 
-%% script to generate simple attention task - adjusted for MEG
-% written September 2024, by Karima Raafat (kar618@nyu.edu) & Hadi Zaatiti (hz3752@nyu.edu)
 
-%% initialize variables 
-clearvars; clc
-mainDir = '/MEG_Demo'; 
-%addpath(genpath(mainDir))
-%addpath(genpath('/Applications/Psychtoolbox')); sca
-PsychDebugWindowConfiguration(0, 1); % 1 for running exp; 0.5 for debugging
-PsychDefaultSetup(2);
-Screen('Preference', 'SkipSyncTests', 2);
-screenNum = max(Screen('Screens'));
-
-% define some keys for keyboard input 
-KbName('UnifyKeyNames'); % this command switches keyboard mappings to the OSX naming scheme, regardless of computer.
-space = KbName('space'); % to start & respond 
-escape = KbName('ESCAPE'); 
-textSize = 25; 
-
-% define screen parameters
-white = [255 255 255];
-gray = (white/2)/255;
-red = [255 0 0];
-black = [0 0 0];
-alpha = 0.03; % transparency
-targetColor = [gray, alpha]; % combine color with alpha
-
-% for saving later
-subject = input('subject number: '); subject = int2strz(subject,2);  
-session = input('session number: '); session = int2strz(session,2);
-
-[window, windowRect] = PsychImaging('OpenWindow', screenNum, gray); % open a gray window
-Screen('BlendFunction', window, 'GL_SRC_ALPHA', 'GL_ONE_MINUS_SRC_ALPHA');
-[xCenter, yCenter] = RectCenter(windowRect); % get the center of the screen
-
+%%
 % define attention target parameters 
 targetEccentricity = xCenter/2; % to the left or right 
 targetSize = 30; 
@@ -119,11 +115,16 @@ cueRect = CenterRectOnPointd(cueRect, xCenter, yCenter);
 initialCenterFixation = 1.5; % duration to fixate on the center at first and in between
 cueDuration = .5; % 35ms in paper 
 delay = 1; %1000ms in paper
-targetDuration = 1; % 85ms; time they have to respond 
-delayInBetween = 2; % between target appearing on each side within block
-blockDuration = 30;
+targetDuration = .1; % 85ms; time they have to respond 
+delayInBetween = 5; % between target appearing on each side within block
+blockDuration = 10*60;
+
 % work out how many times targets appear in total based on above timings
-timesTargetsAppear = blockDuration/sum([targetDuration,delayInBetween]); % per block 
+%timesTargetsAppear = 20
+timesTargetsAppear = floor(blockDuration/sum([targetDuration,delayInBetween])); % per block 
+if mod(timesTargetsAppear,2)~=0
+    timesTargetsAppear = timesTargetsAppear+1;
+end
 totalTaskDuration = blockDuration*2; % total duration of the experiment in seconds
 blockITI = 2;
 
@@ -157,6 +158,9 @@ while ~continueKeyPressed
         end
     end
 end 
+
+
+%%
  
 for b = 1:length(blockAttentionCondition) % 2 blocks, one side each
     % initial central fixation
@@ -165,10 +169,7 @@ for b = 1:length(blockAttentionCondition) % 2 blocks, one side each
     Screen('Flip', window)
     WaitSecs(initialCenterFixation) % wait for fixation duration
     
-
-    
     % attend left. leave on screen for 35ms
-
     Screen('DrawTexture', window, cell2mat(cueType(b)), [], cueRect);
     Screen('FillRect', window, black, trigRect);
     Screen('Flip', window)
@@ -186,68 +187,94 @@ for b = 1:length(blockAttentionCondition) % 2 blocks, one side each
             
             targetSide = conditionSet{b,:}; 
             % peripheral target with central fixation
-            DrawFixation()
-            Screen('FillOval', window, targetColor, targetPosition(targetSide(t),:))
-             if b == leftID
+            disp(['b', num2str(b)])
+            if b == leftID
+               
                 % Trigger either 224 or 225
-       
                 if targetSide(t) == rightID
+                    DrawFixation()
+                    %Screen('FillOval', window, targetColor, targetPosition(targetSide(t),:))
                     Screen('FillRect', window, trig.ch224, trigRect);
                     Screen('Flip', window)
-                elseif targetSide(t) == leftID
-                    Screen('FillRect', window, trig.ch225, trigRect);
+                    DrawFixation()
+                    Screen('FillOval', window, targetColor, targetPosition(targetSide(t),:))
+                    Screen('FillRect', window, black, trigRect);
                     Screen('Flip', window)
+                    WaitSecs(targetDuration)
                 end
-             elseif b == rightID
-                 % Trigger either 226 or 227
-                 if targetSide(t) == rightID
-                    Screen('FillRect', window, trig.ch226, trigRect);
-                    Screen('Flip', window)
-                 elseif targetSide(t) == leftID
-                    Screen('FillRect', window, trig.ch227, trigRect);
-                    Screen('Flip', window)
-                 end
-             end
-        
-            
-             Screen('FillRect', window, black, trigRect);
-
-             Screen('Flip', window)
-             % WaitSecs(targetDuration)
-
-             startResponse = GetSecs();
-
-             keypresses = 0;
-             responseKeyPressed = 0;
-             while GetSecs()-startResponse < targetDuration
-
-                 % record button press (here, space)
-                 [keyIsPressed,secs,keyCode,deltaSecs]=KbCheck;
-                 if keyIsPressed && keyCode(space)
-                     responseKeyPressed = 1;
-                     % check if target side matches attention cue side
-                     % if conditionSet(t) == leftID ...
-                     %         && blockAttentionCondition(b) == leftID
-                     if targetSide(t) == blockAttentionCondition(b)
-                         R = 1;
-                     else
-                         R = 0;
-                     end
-
-                 end
-
-             end
-             % if no response is made
-             if responseKeyPressed == 0
-                 R = nan;
-             end
-             responses{b,1} = [responses{b,1} R];
-
-             DrawFixation()
-             Screen('FillRect', window, black, trigRect);
-             Screen('Flip', window)
-             WaitSecs(delayInBetween)
+%                 elseif targetSide(t) == leftID
+%                     DrawFixation()
+%                     %Screen('FillOval', window, targetColor, targetPosition(targetSide(t),:))
+%                     Screen('FillRect', window, trig.ch225, trigRect);
+%                     Screen('Flip', window)
+%                     DrawFixation()
+%                     Screen('FillOval', window, targetColor, targetPosition(targetSide(t),:))
+%                     Screen('FillRect', window, black, trigRect);
+%                     Screen('Flip', window)
+%                     WaitSecs(targetDuration)
+%                 end
+%             elseif b == rightID
+%                  % Trigger either 226 or 227
+%                  if targetSide(t) == rightID
+%                     DrawFixation()
+%                     %Screen('FillOval', window, targetColor, targetPosition(targetSide(t),:))
+%                     Screen('FillRect', window, trig.ch226, trigRect);
+%                     Screen('Flip', window)
+%                     DrawFixation()
+%                     Screen('FillOval', window, targetColor, targetPosition(targetSide(t),:))
+%                     Screen('FillRect', window, black, trigRect);
+%                     Screen('Flip', window)
+%                     WaitSecs(targetDuration)
+%                  elseif targetSide(t) == leftID
+%                     DrawFixation()
+%                     %Screen('FillOval', window, targetColor, targetPosition(targetSide(t),:))
+%                     Screen('FillRect', window, trig.ch227, trigRect);
+%                     Screen('Flip', window)
+%                     DrawFixation()
+%                     Screen('FillOval', window, targetColor, targetPosition(targetSide(t),:))
+%                     Screen('FillRect', window, black, trigRect);
+%                     Screen('Flip', window)
+%                     WaitSecs(targetDuration)
+%                  end
+            end
+            DrawFixation()
+            Screen('FillRect', window, black, trigRect);
+            Screen('Flip', window)
+            WaitSecs(delayInBetween)
         end
+%              startResponse = GetSecs();
+% 
+%              keypresses = 0;
+%              responseKeyPressed = 0;
+%              while GetSecs()-startResponse < targetDuration
+% 
+%                  % record button press (here, space)
+%                  [keyIsPressed,secs,keyCode,deltaSecs]=KbCheck;
+%                  if keyIsPressed && keyCode(space)
+%                      responseKeyPressed = 1;
+%                      % check if target side matches attention cue side
+%                      % if conditionSet(t) == leftID ...
+%                      %         && blockAttentionCondition(b) == leftID
+%                      if targetSide(t) == blockAttentionCondition(b)
+%                          R = 1;
+%                      else
+%                          R = 0;
+%                      end
+% 
+%                  end
+% 
+%              end
+%              % if no response is made
+%              if responseKeyPressed == 0
+%                  R = nan;
+%              end
+%              responses{b,1} = [responses{b,1} R];
+% 
+%              DrawFixation()
+%              Screen('FillRect', window, black, trigRect);
+%              Screen('Flip', window)
+%              WaitSecs(delayInBetween)
+%         end
     end
     if b < length(blockAttentionCondition)
         endBlockText = sprintf('End of block %s \n Press the spacebar to proceed to the next block. \n\n', num2str(b));

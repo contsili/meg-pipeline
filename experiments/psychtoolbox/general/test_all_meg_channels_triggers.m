@@ -1,6 +1,6 @@
 %% This script should send a trigger to each MEG channel, with a 1 second delay between each trigger
 
-clearvars
+clearvars; clc
 %Screen('Preference', 'SkipSyncTests', 1);
 %AssertOpenGL;  
 
@@ -13,10 +13,11 @@ trigger_test = 1;
 % if 1 trigger is bigger (to be able to see it)
 
 % SCREEN SETUP
-
+PsychDebugWindowConfiguration(0, 1); % 1 for running exp; 0.5 for debugging
+PsychDefaultSetup(2);
 s = Screen('Screens');
-
-s = max(s);
+s = max(Screen('Screens'));
+%s = max(s);
 
 
 %Colors definition in RGB
