@@ -12,16 +12,32 @@ if VPIXX_USE == 1
     Datapixx('Open');
     Datapixx('EnablePixelMode');  % to use topleft pixel to code trigger information, see https://vpixx.com/vocal/pixelmode/
     Datapixx('RegWr');
-
+    
     % Define trigger pixels for all usable MEG channels
+
+    
+    %For this experimetn we will need 4 different types of events
+
+    % Block left and target appearing right 
     trig.ch224 = [4  0  0]; %224 meg channel
+    % Block left and target appearing left
     trig.ch225 = [16  0  0];  %225 meg channel
+    % Block right and target appearing right
     trig.ch226 = [64 0 0]; % 226 meg channel
+    % Block right and target appearing left
     trig.ch227 = [0  1 0]; % 227 meg channel
+    
+    %Will not be used for this experiment
     trig.ch228 = [0  4 0]; % 228 meg channel
     trig.ch229 = [0 16 0]; % 229 meg channel
     trig.ch230 = [0 64 0]; % 230 meg channel
     trig.ch231 = [0 0  1]; % 231 meg channel
+    
+
+
+
+
+
 
     % Trigger example
 
@@ -111,7 +127,7 @@ timesTargetsAppear = blockDuration/sum([targetDuration,delayInBetween]); % per b
 totalTaskDuration = blockDuration*2; % total duration of the experiment in seconds
 blockITI = 2;
 
-% create attendion condition matrix to use within each block 
+% create attentionon condition matrix to use within each block 
 leftVector = repmat(leftID, 1, timesTargetsAppear/numOfConditions);
 rightVector = repmat(rightID, 1, timesTargetsAppear/numOfConditions);
 blockAttentionCondition = [leftID rightID]; 
@@ -148,10 +164,11 @@ for b = 1:length(blockAttentionCondition) % 2 blocks, one side each
     Screen('FillRect', window, black, trigRect);
     Screen('Flip', window)
     WaitSecs(initialCenterFixation) % wait for fixation duration
+    
 
+    
     % attend left. leave on screen for 35ms
-    % Screen('TextSize', window, cueSize);
-    % DrawFormattedText(window, cell2mat(cueType(b)), xCenter-cueSize/2, yCenter+cueSize/2, cueColor);
+
     Screen('DrawTexture', window, cell2mat(cueType(b)), [], cueRect);
     Screen('FillRect', window, black, trigRect);
     Screen('Flip', window)
@@ -171,42 +188,65 @@ for b = 1:length(blockAttentionCondition) % 2 blocks, one side each
             % peripheral target with central fixation
             DrawFixation()
             Screen('FillOval', window, targetColor, targetPosition(targetSide(t),:))
-            Screen('FillRect', window, black, trigRect);
-            Screen('Flip', window)
-            % WaitSecs(targetDuration)
-
-            startResponse = GetSecs();
-            
-            keypresses = 0;
-            responseKeyPressed = 0; 
-            while GetSecs()-startResponse < targetDuration
-
-                % record button press (here, space)
-                [keyIsPressed,secs,keyCode,deltaSecs]=KbCheck;
-                if keyIsPressed && keyCode(space)
-                    responseKeyPressed = 1; 
-                    % check if target side matches attention cue side
-                    % if conditionSet(t) == leftID ...
-                    %         && blockAttentionCondition(b) == leftID
-                    if targetSide(t) == blockAttentionCondition(b)
-                        R = 1;
-                    else
-                        R = 0;
-                    end
-
+             if b == leftID
+                % Trigger either 224 or 225
+       
+                if targetSide(t) == rightID
+                    Screen('FillRect', window, trig.ch224, trigRect);
+                    Screen('Flip', window)
+                elseif targetSide(t) == leftID
+                    Screen('FillRect', window, trig.ch225, trigRect);
+                    Screen('Flip', window)
                 end
+             elseif b == rightID
+                 % Trigger either 226 or 227
+                 if targetSide(t) == rightID
+                    Screen('FillRect', window, trig.ch226, trigRect);
+                    Screen('Flip', window)
+                 elseif targetSide(t) == leftID
+                    Screen('FillRect', window, trig.ch227, trigRect);
+                    Screen('Flip', window)
+                 end
+             end
+        
+            
+             Screen('FillRect', window, black, trigRect);
 
-            end
-            % if no response is made
-            if responseKeyPressed == 0
-                R = nan;
-            end
-            responses{b,1} = [responses{b,1} R];
+             Screen('Flip', window)
+             % WaitSecs(targetDuration)
 
-            DrawFixation()
-            Screen('FillRect', window, black, trigRect);
-            Screen('Flip', window)
-            WaitSecs(delayInBetween)
+             startResponse = GetSecs();
+
+             keypresses = 0;
+             responseKeyPressed = 0;
+             while GetSecs()-startResponse < targetDuration
+
+                 % record button press (here, space)
+                 [keyIsPressed,secs,keyCode,deltaSecs]=KbCheck;
+                 if keyIsPressed && keyCode(space)
+                     responseKeyPressed = 1;
+                     % check if target side matches attention cue side
+                     % if conditionSet(t) == leftID ...
+                     %         && blockAttentionCondition(b) == leftID
+                     if targetSide(t) == blockAttentionCondition(b)
+                         R = 1;
+                     else
+                         R = 0;
+                     end
+
+                 end
+
+             end
+             % if no response is made
+             if responseKeyPressed == 0
+                 R = nan;
+             end
+             responses{b,1} = [responses{b,1} R];
+
+             DrawFixation()
+             Screen('FillRect', window, black, trigRect);
+             Screen('Flip', window)
+             WaitSecs(delayInBetween)
         end
     end
     if b < length(blockAttentionCondition)
