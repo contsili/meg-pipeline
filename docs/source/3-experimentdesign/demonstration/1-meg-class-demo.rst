@@ -3,10 +3,8 @@ Cognitive Neuroscience class MEG demonstration
 
 Place and time: MEG lab in A2-008 at the 9th of October 2024, from 12:15 to 2pm
 
-
 Agenda 105min total
 -------------------
-
 
 .. dropdown:: Lab tour and general equipment presentation `10min`
 
@@ -38,7 +36,6 @@ Agenda 105min total
         - the participant must press a button when they see the flash
         - the experiment repeats itself for the right side.
 
-
 .. dropdown:: Show and discuss analysis results `15min`
 
     - Experiment 1: `Resting state: Access link to Analysis Notebook <../../5-pipeline/notebooks/mne/resting_state_pipeline.ipynb>`_
@@ -47,3 +44,13 @@ Agenda 105min total
     - Experiment 2: `Attention: Access link to Analysis Notebook <../../5-pipeline/notebooks/mne/attention_experiment.ipynb>`_
         - NA
         - NA
+
+Notes: MEG DEMO:
+
+Let us reduce the preparation of the 20min
+
+Attention experiment analysis:
+
+-	Compute alpha power first then average on trials
+-	Button box not really needed as triggers
+-	Contra-lateral effect, with attention should see less alpha power
