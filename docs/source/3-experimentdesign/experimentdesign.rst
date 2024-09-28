@@ -24,7 +24,7 @@ There are three tools primarily used for designing the experiment used in NYUAD 
 - Psychopy: an open source Python library with both GUI based design and code based design
 
 
-Definning the hardware needs for your experiment
+Defining the hardware needs for your experiment
 ------------------------------------------------
 
 Depending on your study you might need different require different hardware, the following use cases can be identified:
