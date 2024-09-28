@@ -1,7 +1,7 @@
 
 % Vpixx BOOLS
 
-VPIXX_USE = 1; % 0 if vpixx is not conected
+VPIXX_USE = 0; % 0 if vpixx is not conected
 TRIGGER_TEST = 1;
 
 
@@ -12,31 +12,33 @@ if VPIXX_USE == 1
     Datapixx('Open');
     Datapixx('EnablePixelMode');  % to use topleft pixel to code trigger information, see https://vpixx.com/vocal/pixelmode/
     Datapixx('RegWr');
-end
 
+    % Define trigger pixels for all usable MEG channels
+    trig.ch224 = [4  0  0]; %224 meg channel
+    trig.ch225 = [16  0  0];  %225 meg channel
+    trig.ch226 = [64 0 0]; % 226 meg channel
+    trig.ch227 = [0  1 0]; % 227 meg channel
+    trig.ch228 = [0  4 0]; % 228 meg channel
+    trig.ch229 = [0 16 0]; % 229 meg channel
+    trig.ch230 = [0 64 0]; % 230 meg channel
+    trig.ch231 = [0 0  1]; % 231 meg channel
 
+    % Trigger example
 
-% Define trigger pixels for all usable MEG channels
-trig.ch224 = [4  0  0]; %224 meg channel
-trig.ch225 = [16  0  0];  %225 meg channel
-trig.ch226 = [64 0 0]; % 226 meg channel
-trig.ch227 = [0  1 0]; % 227 meg channel
-trig.ch228 = [0  4 0]; % 228 meg channel
-trig.ch229 = [0 16 0]; % 229 meg channel
-trig.ch230 = [0 64 0]; % 230 meg channel
-trig.ch231 = [0 0  1]; % 231 meg channel
+    % Top left pixel that controls triggers in PixelMode
+    if TRIGGER_TEST == 0
+        trigRect = [0 0 1 1];
+        %centeredRect_trigger = CenterRectOnPointd(trigRect, 0.5, 0.5);
+    elseif TRIGGER_TEST == 1
+        trigRect = [0 0 100 100];
+        %centeredRect_trigger = CenterRectOnPointd(trigRect, 25, 25);
+    end
+    
 
+    % Ensure that the initial trigRect is black, means all triggers are off
+    Screen('FillRect', window, black, trigRect);
+    Screen('Flip', window);
 
-
-% Trigger example
-
-% Top left pixel that controls triggers in PixelMode
-if TRIGGER_TEST == 0
-    trigRect = [0 0 1 1];
-    %centeredRect_trigger = CenterRectOnPointd(trigRect, 0.5, 0.5);
-elseif TRIGGER_TEST == 1
-    trigRect = [0 0 100 100];
-    %centeredRect_trigger = CenterRectOnPointd(trigRect, 25, 25);
 end
 
 
@@ -63,7 +65,8 @@ textSize = 25;
 % define screen parameters
 white = [255 255 255];
 gray = (white/2)/255;
-red = [255 0 0]; 
+red = [255 0 0];
+black = [0 0 0];
 alpha = 0.03; % transparency
 targetColor = [gray, alpha]; % combine color with alpha
 
@@ -127,6 +130,7 @@ clc
 Screen('TextSize', window, textSize);
 welcomeText = 'Welcome to our experiment! \n Press the spacebar to begin.';
 DrawFormattedText(window, welcomeText, 'center', 'center');
+Screen('FillRect', window, black, trigRect);
 Screen('Flip', window);
 continueKeyPressed = 0;
 while ~continueKeyPressed 
@@ -141,6 +145,7 @@ end
 for b = 1:length(blockAttentionCondition) % 2 blocks, one side each
     % initial central fixation
     DrawFixation()
+    Screen('FillRect', window, black, trigRect);
     Screen('Flip', window)
     WaitSecs(initialCenterFixation) % wait for fixation duration
 
@@ -148,11 +153,13 @@ for b = 1:length(blockAttentionCondition) % 2 blocks, one side each
     % Screen('TextSize', window, cueSize);
     % DrawFormattedText(window, cell2mat(cueType(b)), xCenter-cueSize/2, yCenter+cueSize/2, cueColor);
     Screen('DrawTexture', window, cell2mat(cueType(b)), [], cueRect);
+    Screen('FillRect', window, black, trigRect);
     Screen('Flip', window)
     WaitSecs(cueDuration)
 
     % blank screen for delay
     DrawFixation()
+    Screen('FillRect', window, black, trigRect);
     Screen('Flip', window)
     WaitSecs(delay)
 
@@ -164,6 +171,7 @@ for b = 1:length(blockAttentionCondition) % 2 blocks, one side each
             % peripheral target with central fixation
             DrawFixation()
             Screen('FillOval', window, targetColor, targetPosition(targetSide(t),:))
+            Screen('FillRect', window, black, trigRect);
             Screen('Flip', window)
             % WaitSecs(targetDuration)
 
@@ -196,6 +204,7 @@ for b = 1:length(blockAttentionCondition) % 2 blocks, one side each
             responses{b,1} = [responses{b,1} R];
 
             DrawFixation()
+            Screen('FillRect', window, black, trigRect);
             Screen('Flip', window)
             WaitSecs(delayInBetween)
         end
@@ -203,6 +212,7 @@ for b = 1:length(blockAttentionCondition) % 2 blocks, one side each
     if b < length(blockAttentionCondition)
         endBlockText = sprintf('End of block %s \n Press the spacebar to proceed to the next block. \n\n', num2str(b));
         DrawFormattedText(window, endBlockText, 'center', 'center')
+        Screen('FillRect', window, black, trigRect);
         Screen('Flip', window)
         % WaitSecs(blockITI)
         % wait for space press to continue to the next block
@@ -219,6 +229,7 @@ for b = 1:length(blockAttentionCondition) % 2 blocks, one side each
 end
 endSessionText = sprintf('This is the end of the experiment. \n Thank you for participating! Please wait for the experimenter.'); 
 DrawFormattedText(window, endSessionText, 'center', 'center')
+Screen('FillRect', window, black, trigRect);
 Screen('Flip', window)
 
 exitKeyPressed = 0;
@@ -237,7 +248,7 @@ save([mainDir '/data/performance_' subject session '.mat'], 'params')
 
 
 
-if vpix_use == 1
+if VPIXX_USE == 1
     %VIEW PIXX SETUP
     Datapixx('Close');
 end
