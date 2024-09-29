@@ -10,7 +10,7 @@ clearvars; clc
 VPIXX_USE = 1; % 0 if vpixx is not conected
 TRIGGER_TEST = 1;
 
-mainDir = '/MEG_Demo'; 
+mainDir = 'output_data'; 
 %addpath(genpath(mainDir))
 %addpath(genpath('/Applications/Psychtoolbox')); sca
 PsychDebugWindowConfiguration(0, 1); % 1 for running exp; 0.5 for debugging
@@ -26,24 +26,31 @@ textSize = 25;
 
 % define screen parameters
 white = [255 255 255];
-gray = (white/2)/255;
+
 red = [255 0 0];
 black = [0 0 0];
-alpha = 0.03; % transparency
+gray = [255/2 255/2 255/2];
+alpha = 0.03*255; % transparency
+% targetGray = (white/2)/255;
 targetColor = [black, alpha]; % combine color with alpha
 
 % for saving later
 subject = input('subject number: '); subject = int2strz(subject,2);  
 session = input('session number: '); session = int2strz(session,2);
+grayScreen = [255/2 255/2 255/2];  % normalized gray color in RGB
+%[window, windowRect] = PsychImaging('OpenWindow', screenNum, gray); % open a gray window
 
-[window, windowRect] = PsychImaging('OpenWindow', screenNum, gray); % open a gray window
+[window, windowRect] = Screen('Openwindow',screenNum, grayScreen);
 Screen('BlendFunction', window, 'GL_SRC_ALPHA', 'GL_ONE_MINUS_SRC_ALPHA');
-[xCenter, yCenter] = RectCenter(windowRect); % get the center of the screen
 
+[xCenter, yCenter] = RectCenter(windowRect); % get the center of the screen
+ 
 
 if VPIXX_USE == 1
     %VIEW PIXX SETUP
     Datapixx('Open');
+    Datapixx('SetPropixxDlpSequenceProgram', 0)
+    Datapixx('RegWr')
     Datapixx('EnablePixelMode');  % to use topleft pixel to code trigger information, see https://vpixx.com/vocal/pixelmode/
     Datapixx('RegWr');
     
@@ -116,7 +123,7 @@ initialCenterFixation = 1.5; % duration to fixate on the center at first and in 
 cueDuration = .5; % 35ms in paper 
 delay = 1; %1000ms in paper
 targetDuration = .1; % 85ms; time they have to respond 
-delayInBetween = 5; % between target appearing on each side within block
+delayInBetween = 1.2; % between target appearing on each side within block
 blockDuration = 10*60;
 
 % work out how many times targets appear in total based on above timings
@@ -184,17 +191,31 @@ for b = 1:length(blockAttentionCondition) % 2 blocks, one side each
     startCondition = GetSecs();
     while GetSecs()-startCondition < blockDuration
         for t = 1:timesTargetsAppear
-            
+             
             targetSide = conditionSet{b,:}; 
             % peripheral target with central fixation
             disp(['b', num2str(b)])
             if b == leftID
-               
-                % Trigger either 224 or 225
+                disp('Left Block')
+%                 % Trigger either 224 or 225
                 if targetSide(t) == rightID
+                    disp('Left Block right side')
                     DrawFixation()
-                    %Screen('FillOval', window, targetColor, targetPosition(targetSide(t),:))
+                    Screen('FillOval', window, targetColor, targetPosition(targetSide(t),:))
                     Screen('FillRect', window, trig.ch224, trigRect);
+                    Screen('Flip', window)
+                    DrawFixation()
+                    Screen('FillOval', window, targetColor, targetPosition(targetSide(t),:))
+                    Screen('FillRect', window, black, trigRect);
+                    Screen('Flip', window)
+                    
+                    WaitSecs(targetDuration)
+
+                elseif targetSide(t) == leftID
+                    disp('Left Block left side')
+                    DrawFixation() 
+                    Screen('FillOval', window, targetColor, targetPosition(targetSide(t),:))
+                    Screen('FillRect', window, trig.ch225, trigRect);
                     Screen('Flip', window)
                     DrawFixation()
                     Screen('FillOval', window, targetColor, targetPosition(targetSide(t),:))
@@ -202,40 +223,32 @@ for b = 1:length(blockAttentionCondition) % 2 blocks, one side each
                     Screen('Flip', window)
                     WaitSecs(targetDuration)
                 end
-%                 elseif targetSide(t) == leftID
-%                     DrawFixation()
-%                     %Screen('FillOval', window, targetColor, targetPosition(targetSide(t),:))
-%                     Screen('FillRect', window, trig.ch225, trigRect);
-%                     Screen('Flip', window)
-%                     DrawFixation()
-%                     Screen('FillOval', window, targetColor, targetPosition(targetSide(t),:))
-%                     Screen('FillRect', window, black, trigRect);
-%                     Screen('Flip', window)
-%                     WaitSecs(targetDuration)
-%                 end
-%             elseif b == rightID
+            elseif b == rightID
+                disp('right Block')
 %                  % Trigger either 226 or 227
-%                  if targetSide(t) == rightID
-%                     DrawFixation()
-%                     %Screen('FillOval', window, targetColor, targetPosition(targetSide(t),:))
-%                     Screen('FillRect', window, trig.ch226, trigRect);
-%                     Screen('Flip', window)
-%                     DrawFixation()
-%                     Screen('FillOval', window, targetColor, targetPosition(targetSide(t),:))
-%                     Screen('FillRect', window, black, trigRect);
-%                     Screen('Flip', window)
-%                     WaitSecs(targetDuration)
-%                  elseif targetSide(t) == leftID
-%                     DrawFixation()
-%                     %Screen('FillOval', window, targetColor, targetPosition(targetSide(t),:))
-%                     Screen('FillRect', window, trig.ch227, trigRect);
-%                     Screen('Flip', window)
-%                     DrawFixation()
-%                     Screen('FillOval', window, targetColor, targetPosition(targetSide(t),:))
-%                     Screen('FillRect', window, black, trigRect);
-%                     Screen('Flip', window)
-%                     WaitSecs(targetDuration)
-%                  end
+                 if targetSide(t) == rightID
+                     disp('Right Block right side')
+                    DrawFixation()
+                    Screen('FillOval', window, targetColor, targetPosition(targetSide(t),:))
+                    Screen('FillRect', window, trig.ch226, trigRect);                    
+                    Screen('Flip', window)
+                    DrawFixation()
+                    Screen('FillOval', window, targetColor, targetPosition(targetSide(t),:))
+                    Screen('FillRect', window, black, trigRect);
+                    Screen('Flip', window)
+                    WaitSecs(targetDuration)
+                 elseif targetSide(t) == leftID
+                    disp('Right Block left side')
+                    DrawFixation()
+                    Screen('FillOval', window, targetColor, targetPosition(targetSide(t),:))
+                    Screen('FillRect', window, trig.ch227, trigRect);
+                    Screen('Flip', window) 
+                    DrawFixation()
+                    Screen('FillOval', window, targetColor, targetPosition(targetSide(t),:))
+                    Screen('FillRect', window, black, trigRect);
+                    Screen('Flip', window)
+                    WaitSecs(targetDuration)
+                 end
             end
             DrawFixation()
             Screen('FillRect', window, black, trigRect);
@@ -309,9 +322,9 @@ while ~exitKeyPressed
         end
     end
 end 
-params.performance = responses; 
+%params.performance = responses; 
 params.blockCondition = conditionSet; 
-save([mainDir '/data/performance_' subject session '.mat'], 'params')
+save([mainDir '/performance_' subject session '.mat'], 'params')
 
 
 
