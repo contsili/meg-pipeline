@@ -10,5 +10,5 @@ The experiment repeats itself for the right side.
 
 .. dropdown:: Attention task code
 
-    .. literalinclude:: ../../../../experiments/psychtoolbox/attention/main/meg_attention_task.m
+    .. literalinclude:: ../../../../experiments/psychtoolbox/attention/meg_attention_task.m
       :language: matlab
