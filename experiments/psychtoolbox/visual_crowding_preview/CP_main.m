@@ -1,3 +1,10 @@
+% This is the original file that is causing the trigger error
+% This file includes the 'outro' page/screen
+
+% This paradigm file uses a LogFile to account for extra triggers 
+% The LogFile logs all important events
+% Added 'executedTrials' to ensure no repeats of trials
+
 clearvars
 Screen('Preference', 'SkipSyncTests', 1);
 AssertOpenGL;
@@ -217,9 +224,16 @@ try
     numTrials = size(expTable, 1);
     questIdx = 1;
     validTrialsIndex = true(size(expTable,1), 1);
-
+    executedTrials = false(size(expTable, 1), 1);
 
     while i_trial <= size(expTable, 1)
+            fprintf(logFile, '%d\tN/A\tN/A\t%f\tN/A\tN/A\tStarting trial\n', i_trial, GetSecs());
+
+        if executedTrials(i_trial)
+            % Skip this trial since it has already been executed
+            i_trial = i_trial + 1;
+            continue;
+        end
 
                 % PAUSE
         if mod(i_trial, round(size(expTable, 1)/3+1)) == 0
@@ -243,6 +257,7 @@ try
             i_trial = i_trial + 1;
             continue;
         end
+        
         previewMatrix = imread(fullfile(stim_set, preview_fn));
         previewTexture = Screen('MakeTexture', w, previewMatrix);
         targetTexture = previewTexture;
@@ -392,11 +407,8 @@ try
 
         % PREVIEW AND CUE
         Screen('DrawTexture', w, wPreview);
-        if strcmp(imageName, 'N/A')
-            fprintf(logFile, '%d\t226\tPreview Image\t%f\t%s\t%s\tExtra trigger - no image\n', i_trial, GetSecs(), imageName, conditionLabel);
-        else
-            fprintf(logFile, '%d\t226\tPreview Image\t%f\t%s\t%s\tTriggering preview image\n', i_trial, GetSecs(), imageName, conditionLabel);
-        end
+        fprintf(logFile, '%d\t226\tPreview Image\t%f\t%s\t%s\tTriggering preview image\n', i_trial, GetSecs(), preview_fn, num2str(cwdg));
+
         Screen('FillRect', w, trig.ch226, trigRect);
         Screen('Flip', w);
         Screen('DrawTexture', w, wPreview);
@@ -429,11 +441,8 @@ try
                     if dist_center < fixTolerance % fixation is good
                         if GetSecs() - expTable.fixStartTime(i_trial) > expTable.fixDuration(i_trial)+.5 % fixation is long enough
                             Screen('DrawTexture', w, wCue);
-                            if strcmp(imageName, 'N/A')
-                                fprintf(logFile, '%d\t227\tPreview Image\t%f\t%s\t%s\tExtra trigger - no image\n', i_trial, GetSecs(), imageName, conditionLabel);
-                            else
-                                fprintf(logFile, '%d\t227\tPreview Image\t%f\t%s\t%s\tTriggering preview image\n', i_trial, GetSecs(), imageName, conditionLabel);
-                            end
+           fprintf(logFile, '%d\t227\tCue\t%f\t%s\t%s\tTriggering preview image\n', i_trial, GetSecs(), preview_fn, num2str(cwdg));
+
                             Screen('FillRect', w, trig.ch227, trigRect);
                             Screen('Flip', w);
                             Screen('DrawTexture', w, wCue);
@@ -482,11 +491,8 @@ try
 
         % TARGET
         Screen('DrawTexture', w, wTarget);
-        if strcmp(imageName, 'N/A')
-            fprintf(logFile, '%d\t229\tPreview Image\t%f\t%s\t%s\tExtra trigger - no image\n', i_trial, GetSecs(), imageName, conditionLabel);
-        else
-            fprintf(logFile, '%d\t229\tPreview Image\t%f\t%s\t%s\tTriggering preview image\n', i_trial, GetSecs(), imageName, conditionLabel);
-        end
+        fprintf(logFile, '%d\t229\tTarget Image\t%f\t%s\t%s\tTriggering preview image\n', i_trial, GetSecs(), preview_fn, num2str(cwdg));
+
         Screen('FillRect', w, trig.ch229, trigRect);
         Screen('Flip', w);
         Screen('DrawTexture', w, wTarget);
@@ -652,8 +658,6 @@ try
 
 catch
     % FINISH EXPERIMENT
-    fprintf(logFile, 'ERROR\tN/A\t%f\tN/A\tN/A\t%s\n', GetSecs(), ME.message);
-
     ShowCursor();
     RestrictKeysForKbCheck([]);
     Screen('CloseAll');

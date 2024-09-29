@@ -5,125 +5,184 @@ Atlas = ft_read_atlas('C:\Users\tasni\Desktop\Masterarbeit\atlas\aal\ROI_MNI_V4.
 
 % Load the MNI template MRI
 mri = ft_read_mri('C:\Users\tasni\Desktop\Masterarbeit\anatomy\Subject01.mri');
-
+mri = ft_convert_units(mri, 'mm');
+template = ft_read_headmodel('standard_bem.mat');
+template = ft_convert_units(template, 'mm');
 
 cfg = [];
-cfg.method = 'headshape';
-cfg.headshape = headshape;  % This is the aligned headshape struct
+cfg.method = 'interactive';
 cfg.coordsys = 'ctf';       % Ensure consistency with your MEG data's coordinate system
-% Align the MRI to the headshape
-mri_aligned = ft_volumerealign(cfg, mri);
+mri_init = ft_volumerealign(cfg, mri);
 
+% Coregistration: MRI and headshape
 
-%%
-% Is this the warping??? 
-
-ft_path = fileparts(which('ft_defaults'));  % Get FieldTrip path
-template_file = fullfile(ft_path, 'template', 'anatomy', 'single_subj_T1.nii');  % Path to template file
-
-cfg = [];
-cfg.template = template_file;  % Use the loaded MRI structure as the template
-cfg.nonlinear = 'yes';
-cfg.spmversion = 'spm12';
-mri_warped = ft_volumenormalise(cfg, mri_aligned);  % Normalize your aligned MRI to this template
-
-ft_sourceplot([], mri_warped);  % Check the warped MRI
-
-
-%% segmentation MRI
-cfg           = [];
-cfg.output    = {'brain', 'skull', 'scalp'};
-segmentedmri  = ft_volumesegment(cfg, mri_aligned);
+cfg                     = [];
+cfg.method              = 'headshape';
+cfg.headshape.headshape = headshape;
+cfg.headshape.interactive = 'no';
+cfg.headshape.icp = 'yes';
+mri_aligned           = ft_volumerealign(cfg, mri_init);
 
 cfg = [];
-cfg.method='singleshell';
-mriskullmodel = ft_prepare_headmodel(cfg, segmentedmri);
-
-
-
-cfg = [];
-cfg.tissue      = {'brain', 'skull', 'scalp'};
-cfg.numvertices = [3000 2000 1000];
-mesh = ft_prepare_mesh(cfg, segmentedmri);
-
-cfg = [];
-%   cfg.elec              = structure, see FT_READ_SENS
-   cfg.grad              = grad;%structure, see FT_READ_SENS
-%   cfg.opto              = structure, see FT_READ_SENS
-  cfg.headshape         = mesh(3); %structure, see FT_READ_HEADSHAPE
-  cfg.headmodel         = mriskullmodel; % structure, see FT_PREPARE_HEADMODEL and FT_READ_HEADMODEL
-%   cfg.sourcemodel       = structure, see FT_PREPARE_SOURCEMODEL
-%   cfg.dipole            = structure, see FT_DIPOLEFITTING
-  cfg.mri               = mri_aligned;
-  cfg.mesh              = headshape;
-  cfg.axes              = 'yes';
+cfg.grad              = grad;   %structure, see FT_READ_SENS
+cfg.headshape         = headshape;   %structure, see FT_READ_HEADSHAPE
+cfg.mri               = mri_aligned;
+cfg.mesh              = headshape;
+cfg.axes              = 'yes';
 
 ft_geometryplot(cfg)
 
-ft_plot_mesh(mesh);  % Plot the MRI surface mesh
+%% CREATING HEADMODEL (METHOD 2)
+
+figure;
+ft_plot_mesh(template.bnd(1));
+ft_plot_mesh(headshape);
+
+defaced_template      = template.bnd(1);
+defaced_template.unit = template.unit;
+
+cfg              = [];
+cfg.translate    = [0 220 0];
+cfg.scale        = [250 250 250];
+cfg.rotate       = [0 0 0];
+defaced_template =  ft_defacemesh(cfg, defaced_template);
+
+cfg              = [];
+cfg.translate    = [0 0 -100];
+cfg.scale        = [200 200 200];
+cfg.rotate       = [0 0 0];
+defaced_polhemus =  ft_defacemesh(cfg, headshape);
+
+% Question: the points of the headshape and template are being removed when
+% inside the yellow box. 
+
+figure;
+ft_plot_mesh(defaced_template);
+ft_plot_mesh(defaced_polhemus);
+
+
+
+addpath(genpath('C:\Users\tasni\AppData\Roaming\MathWorks\MATLAB Add-Ons\Collections\CoherentPointDrift-master'))
+
+% Prepare the configuration for the affine transformation
+cfg                  = [];
+cfg.headshape        = defaced_polhemus;
+cfg.template         = defaced_template;
+cfg.method           = 'fittemplate';
+template_fit_surface = ft_prepare_mesh(cfg, template.bnd);
+
+% NOTE: Cut on the Z-plane (from the coregistration) after the warping
+
+%% COMPUTING HEADMODEL
+
+addpath(genpath('C:\Users\tasni\AppData\Roaming\MathWorks\MATLAB Add-Ons\Collections\OpenMEEG-2.5.12-Windows\bin'))
+
+% template_fit_sphere  = ft_convert_units(template_fit_sphere,'m');
+template_fit_surface = ft_convert_units(template_fit_surface,'m');
+
+% Visualize the individual surfaces of the head model
+figure;
+% ft_plot_mesh(template_fit_surface(1), 'facecolor', 'r');  % Scalp
+ft_plot_mesh(template_fit_surface(3));  % Brain
 hold on;
-plot3(headshape.pos(:,1), headshape.pos(:,2), headshape.pos(:,3), 'r.');  % Overlay laser scan points
+ft_plot_mesh(template_fit_surface(2), 'facecolor', 'g');  % Skull
+
+
+% cfg = [];
+% cfg.conductivity = [0.33 0.0042 0.33];  % Conductivities for scalp, skull, brain
+% cfg.method = 'bemcp';
+% cfg.isolatedsource = false;  % Set this to false for non-isolated source models
+% cfg.tissue = {'scalp', 'skull', 'brain'};  % Specify the tissue labels if needed
+% headmodel_surface = ft_prepare_headmodel(cfg, template_fit_surface);
+
+% figure;
+% ft_plot_mesh(headmodel_surface.bnd(1))
+% ft_plot_mesh(headshape)
+
+% figure;
+% ft_plot_headmodel(headmodel_surface, 'facecolor', 'cortex', 'edgecolor', 'none', 'facealpha', 0.4);
+% title('Head Model Computed Using BEMCP');
+
+% SINGLESHELL
+cfg                           = [];
+cfg.method                    = 'singleshell';
+headmodel_singleshell_surface = ft_prepare_headmodel(cfg, template_fit_surface(3));
+
+figure;
+ft_plot_headmodel(headmodel_singleshell_surface, 'facecolor', 'cortex', 'edgecolor', 'none', 'facealpha', 0.4);
+title('Single-Shell Head Model Based on Brain Surface');
 
 
 
 
-%% Sourcemodel
+%% SOURCEMODEL
 
-% brain_mask = ft_volumesegment([], mri_aligned);  % Create a brain mask
-brain_mask = segmentedmri.brain;
 cfg = [];
-cfg.grid.resolution = 10;  % Grid resolution in mm
-cfg.grid.unit = 'mm';
-cfg.mri = mri_aligned;  % Your aligned and resliced MRI data
-cfg.headmodel = mriskullmodel;  % The head model representing the brain/skull
-cfg.inwardshift = 5;  % Optional: Shift the grid inward
-cfg.grid.tight = 'yes';  % Ensure the grid is tightly constrained to the brain
-cfg.grid.inside = brain_mask(:);  % Restrict grid points to brain mask
+cfg.headmodel = headmodel_singleshell_surface;
+cfg.grad = grad; % this being needed here is a silly historical artifact
+cfg.resolution = 7; % in SI units
+cfg.unit = 'mm'; % ensure that the sourcemodel is expressed in SI units
 sourcemodel = ft_prepare_sourcemodel(cfg);
 
+figure
+ft_plot_headmodel(headmodel_singleshell_surface, 'unit', 'mm');
+ft_plot_sens(grad, 'unit', 'mm', 'coilsize', 10, 'chantype', 'meggrad');
+ft_plot_mesh(sourcemodel.pos, 'unit', 'mm');
+alpha 0.5
 
 
-inside_idx = find(sourcemodel.inside);
-plot3(sourcemodel.pos(inside_idx, 1), sourcemodel.pos(inside_idx, 2), sourcemodel.pos(inside_idx, 3), 'o');
-ft_plot_vol(mriskullmodel, 'facecolor', 'cortex', 'edgecolor', 'none');
-
-%% Leadfield
+%% LEADFIELD
 
 cfg = [];
-cfg.grid = sourcemodel;  % Use the refined sourcemodel
-cfg.headmodel = mriskullmodel;  % The head model prepared earlier
-cfg.grad = grad;  % MEG sensor positions
-% TO TEST
-cfg.resolution = 0.6;
-cfg.sourcemodel.unit = 'cm';
-% End to test
-leadfield = ft_prepare_leadfield(cfg);
+cfg.channel = 'AG*';
+cfg.headmodel = headmodel_singleshell_surface;
+cfg.sourcemodel = sourcemodel;
+cfg.normalize = 'yes'; % normalization avoids power bias towards centre of head
+cfg.reducerank = 2;
+leadfield = ft_prepare_leadfield(cfg, avgCWDG1);
 
+% NOTE: try using non-averaged data (then average)
+
+cfg = [];
+cfg.channel = leadfield.cfg.channel;  % Only keep the channels present in the leadfield
+CWDG1_aligned = ft_selectdata(cfg, avgCWDG1);
+
+% NOTE: remove channel 91 in MEG_analysis_ERP 
+
+%% SOURCEANALYSIS
 
 cfg = [];
 cfg.method = 'lcmv';  % Beamforming method
 cfg.sourcemodel = leadfield;  % Use the sourcemodel with leadfield
-cfg.headmodel = mriskullmodel;  % Use the head model
+cfg.headmodel = headmodel_singleshell_surface;  % Use the head model
 cfg.lcmv.keepfilter = 'yes';  % Keep the spatial filter
 cfg.lcmv.lambda = '5%';  % Regularization parameter % high means priority to prior; low means priority for measurement
+cfg.lcmv.kappa = 69;
+cfg.lcmv.projectmom = 'yes'; 
 cfg.lcmv.fixedori = 'yes';  % Use fixed orientation
-source_lcmv = ft_sourceanalysis(cfg, dataCrowding1);  % 'meg_data' is your preprocessed MEG data
+cfg.lcmv.kurtosis = 'yes';
+source = ft_sourceanalysis(cfg, dataCrowding1);  % 'meg_data' is your preprocessed MEG data
+% NOTE: change scale of heatmap
 
 
+% source is in m, mri_resliced is in mm, hence source_interp will also be in mm
 cfg = [];
-cfg.parameter = 'pow';  % Power or any other parameter of interest
-cfg.interpmethod = 'nearest';  % Interpolation method
-cfg.atlas = Atlas;  % The AAL atlas you loaded earlier
-%Interpolation computes for each voxel of the MRI the source activitz given
-%the activitz at the points of the beamformer GRID
-source_atlas = ft_sourceinterpolate(cfg, source_lcmv, Atlas);
+cfg.parameter = 'avg.pow';
+source_interp = ft_sourceinterpolate(cfg, source, mri_aligned);
+
+
+%% VISUALISE USING MRI TEMPLATE
 
 cfg = [];
 cfg.method = 'ortho';  % Orthogonal slices visualization
 cfg.funparameter = 'pow';  % Parameter to plot
-ft_sourceplot(cfg, source_lcmv);  % Visualize the source activity
+ft_sourceplot(cfg, source_interp);  % Visualize the source activity
 
 cfg = [];
-cfg.method = 'surface';
+cfg.method = 'slice';
 cfg.funparameter = 'pow';  % Parameter to plot
-ft_sourceplot(cfg, source_atlas);  % Plot on the atlas
+ft_sourceplot(cfg, source_interp);  % Plot on the atlas
+
+%% VISUALISE USING ATLAS
+
+% Warp/align the atlas (like the mri)

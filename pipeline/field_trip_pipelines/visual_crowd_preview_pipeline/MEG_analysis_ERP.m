@@ -240,11 +240,11 @@ segmented_data_all = cell(1, length(MEGFILES));
     %cfg.trialdef.eventtype = 'combined_binary_trigger'; % this will be the type of the event if combinebinary = true
     %cfg.trialdef.combinebinary = 1;
     % cfg.trialdef.trigshift = 2; % return the value of the combined pulse 2 samples after the on-ramp (in case of small staircases)
-    cfg = ft_definetrial(cfg)
+    cfg = ft_definetrial(cfg);
 
-    cfg.demean = 'yes'
-    cfg.channel = 'AG*'
-    data = ft_preprocessing(cfg)
+    cfg.demean = 'yes';
+    cfg.channel = 'AG*';
+    data = ft_preprocessing(cfg);
 
 
     %% DEBUG ONLY: Reading triggers from confile
@@ -333,7 +333,7 @@ segmented_data_all = cell(1, length(MEGFILES));
     
     %% Cleaning: Inspect and exclude trials for artefacts 
     % MEG channels
-    meg_channels = 1:208;
+    % meg_channels = 1:208;
     %Corrected
     meg_channels = setdiff(1:208, 92);
 
@@ -445,6 +445,61 @@ segmented_data_all = cell(1, length(MEGFILES));
     %% Do a constrast analysis High crowding - No Crowding
 
     
+
+%% FREQUENCY ANALYSIS
+
+% Frequency Analysis using Hanning window
+
+cfg              = [];
+cfg.output       = 'pow';
+cfg.channel      = 'AG*';
+cfg.method       = 'mtmconvol';
+cfg.taper        = 'hanning';
+cfg.foi          = 12:2:30;                         % analysis 2 to 30 Hz in steps of 2 Hz
+cfg.t_ftimwin    = ones(length(cfg.foi),1).*0.5;   % length of time window = 0.5 sec
+cfg.toi          = -1:0.05:0.5;                  % time window "slides" from -0.5 to 1.5 sec in steps of 0.05 sec (50 ms)
+TFRhann = ft_freqanalysis(cfg, dataCrowding1);
+
+% Plot 
+cfg = [];
+cfg.baseline     = [-0.5 -0.1];
+cfg.baselinetype = 'absolute';
+cfg.zlim         = [-2.5e-27 2.5e-27];
+cfg.showlabels   = 'yes';
+% cfg.layout       = 'CTF151_helmet.mat';
+figure
+set(gcf, 'Position', [200, 100, 1500, 1000]);  % Adjust the size (optional)
+ft_multiplotTFR(cfg, TFRhann);
+title('Frequency Analysis using Hanning; Cond1');
+h = gcf;  % gcf gets the handle of the current figure
+saveas(h, 'Frequ_Hanning_Cond1.png');
+
+
+% Frequency Analysis using Wavelet
+
+cfg = [];
+cfg.channel    = 'AG*';
+cfg.method     = 'wavelet';
+cfg.width      = 15;
+cfg.output     = 'pow';
+cfg.foi        = 12:2:30;
+cfg.toi        = -1:0.05:0.5;
+TFRwave = ft_freqanalysis(cfg, dataCrowding1);
+
+% plot
+cfg = [];
+cfg.baseline     = [-0.5 -0.1];
+cfg.baselinetype = 'absolute';
+cfg.zlim         = [-2e-25 2e-25];
+cfg.showlabels   = 'yes';
+% cfg.layout       = 'CTF151_helmet.mat';
+cfg.colorbar     = 'yes';
+figure
+ft_multiplotTFR(cfg, TFRwave)
+set(gcf, 'Position', [200, 100, 1500, 1000]);  % Adjust the size (optional)
+title('Frequency Analysis using Wavelet; Cond1');
+h = gcf;  % gcf gets the handle of the current figure
+saveas(h, 'Frequ_Wavelet_Cond1.png');
 
 
 
