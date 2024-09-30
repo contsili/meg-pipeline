@@ -105,6 +105,9 @@ def process_all_con_files(base_folder, file_limit=None):
     try:
 
         kit_csv = pd.read_csv(KIT_CSV_LOCAL_SAVE_PATH)
+
+        kit_csv = kit_csv.dropna(how='all')
+
         for root, _, files in os.walk(base_folder):
             for file in files:
                 if file.endswith(".con"):
