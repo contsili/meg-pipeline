@@ -13,6 +13,7 @@ Example Experiments MEG
    experiments/4-face-inversion-psychopy
    experiments/5-responsebox
    experiments/6-exp-sound
+   experiments/7-attention-experiment.rst
 
 
 Example Experiment EEG-FMRI
@@ -24,7 +25,6 @@ Example Experiment EEG-FMRI
 
    experiments-eeg-fmri/1-alpha-blocking
 
-   experiments/7-attention-experiment.rst
 
 
 MEG Lab demonstrations
