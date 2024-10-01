@@ -51,6 +51,9 @@ def process_con_file(file_path):
         # add other matrices here
         s_fft = 10
 
+
+        metrics = pd.read_csv(file_path)
+
         logging.info(f"Processing file: {file_path}")
         # Load the .con file using MNE
         raw = mne.io.read_raw_kit(file_path, preload=False, verbose=False)
