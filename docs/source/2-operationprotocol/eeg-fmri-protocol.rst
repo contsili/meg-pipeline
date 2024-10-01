@@ -126,8 +126,9 @@ ECG Removal
 -----------
 - The subtraction method can work better than ICA, use the substraction method to remove ECG signals
 
-Steps for noise removal and pre-processing:
--------------------------------------------
+Steps for noise removal and pre-processing
+------------------------------------------
+
 - Gradient artifact correction:
   - Always remove the gradient artifacts first.
   - ECG with gradient artifacts can be saturated sometimes, which means that the ECG sensor should be moved around.
