@@ -162,3 +162,17 @@ Steps for noise removal and pre-processing
 
 We can automate the process by saving all the analysis steps.
 
+
+Testing and debugging
+#####################
+
+Simulated amplifier environment
+-------------------------------
+
+A simulated environment can be used to perform tests and debugging.
+
+In BP Recorder:
+
+- Go to configuration, then select amplifier then select simulated amplifier
+- Create a new workspace and select data to be played back
+
