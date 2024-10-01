@@ -2,8 +2,8 @@ Example Experiments MEG
 -----------------------
 
 .. toctree::
-    :maxdepth: 1
-    :caption: MEG Experiments
+   :maxdepth: 1
+   :caption: MEG Experiments
 
    experiments/1-exp-resting-state
    experiments/2-exp-trigger-psychtoolbox
