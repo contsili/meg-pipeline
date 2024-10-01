@@ -2,10 +2,8 @@ Example Experiments MEG
 -----------------------
 
 .. toctree::
-   :maxdepth: 2
-   :caption: MEG Experiments
-   :maxdepth: 1
-   :caption: Experiments
+    :maxdepth: 1
+    :caption: MEG Experiments
 
    experiments/1-exp-resting-state
    experiments/2-exp-trigger-psychtoolbox
@@ -21,7 +19,7 @@ Example Experiment EEG-FMRI
 
 .. toctree::
    :maxdepth: 1
-   :caption: EEG-FMRI experiments
+   :caption: EEG-FMRI Experiments
 
    experiments-eeg-fmri/1-alpha-blocking
 
