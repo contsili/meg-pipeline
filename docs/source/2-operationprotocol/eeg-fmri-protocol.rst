@@ -140,8 +140,7 @@ Steps for noise removal and pre-processing
   - Do not select **Common use of all channels** for bad intervals and correlation.
   - Then next: select all EEG channels (only time we don’t use all channels is if we are measuring a specific thing).
   - Then next: deselect downsampling (we can do this later).
-  - How to store data:
-    - Select **store corrected data** in a cached file.
+  - How to store data Select **store corrected data** in a cached file.
 
 - ECG signals correction after gradient artifact cleaning:
   - Also use a **sliding average subtraction** approach (Not ICA), use ICA if there is a residual.

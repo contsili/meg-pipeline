@@ -2,7 +2,6 @@ Example Experiments MEG
 -----------------------
 
 .. toctree::
-   :maxdepth: 2
    :caption: MEG Experiments
    :maxdepth: 1
    :caption: Experiments
