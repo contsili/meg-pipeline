@@ -16,6 +16,12 @@ ATTEND_RIGHT_CON = [DATASET_PATH, SUB_ID, 'attention_attend_right_01.con'];
 ATTEND_LEFT_CON = [DATASET_PATH, SUB_ID, 'attention_attend_left_01.con'];
 
 
+
+% Pipeline Configuration
+
+
+APPLY_FILTERS = false;
+
 %Trigger information: KIT channel indexing starts with 0 while MATLAB
 %indexing starts with 1, so ch224 on KIT is ch225 in MATLAB
 
@@ -50,34 +56,36 @@ ATTEND_LEFT_CON = [DATASET_PATH, SUB_ID, 'attention_attend_left_01.con'];
 
     %% Filtering data
     
+    if APPLY_FILTERS
     
-    % Notch filter the data at 50 Hz
-    cfg = [];
-    cfg.bsfilter = 'yes';
-    cfg.bsfreq = [49 51]; % Notch filter range
-    data_MEG_RIGHT = ft_preprocessing(cfg, data_MEG_RIGHT);
-
-    % Band-pass filter the data
-    cfg = [];
-    cfg.bpfilter = 'yes';
-    cfg.bpfreq = [4 40]; % Band-pass filter range
-    cfg.bpfiltord = 4;    % Filter order
-    data_MEG_RIGHT = ft_preprocessing(cfg, data_MEG_RIGHT);
-
-
-    % Notch filter the data at 50 Hz
-    cfg = [];
-    cfg.bsfilter = 'yes';
-    cfg.bsfreq = [49 51]; % Notch filter range
-    data_MEG_LEFT = ft_preprocessing(cfg, data_MEG_LEFT);
-
-    % Band-pass filter the data
-    cfg = [];
-    cfg.bpfilter = 'yes';
-    cfg.bpfreq = [4 40]; % Band-pass filter range
-    cfg.bpfiltord = 4;    % Filter order
-    data_MEG_LEFT = ft_preprocessing(cfg, data_MEG_LEFT);
-
+        % Notch filter the data at 50 Hz
+        cfg = [];
+        cfg.bsfilter = 'yes';
+        cfg.bsfreq = [49 51]; % Notch filter range
+        data_MEG_RIGHT = ft_preprocessing(cfg, data_MEG_RIGHT);
+    
+        % Band-pass filter the data
+        cfg = [];
+        cfg.bpfilter = 'yes';
+        cfg.bpfreq = [4 40]; % Band-pass filter range
+        cfg.bpfiltord = 4;    % Filter order
+        data_MEG_RIGHT = ft_preprocessing(cfg, data_MEG_RIGHT);
+    
+    
+        % Notch filter the data at 50 Hz
+        cfg = [];
+        cfg.bsfilter = 'yes';
+        cfg.bsfreq = [49 51]; % Notch filter range
+        data_MEG_LEFT = ft_preprocessing(cfg, data_MEG_LEFT);
+    
+        % Band-pass filter the data
+        cfg = [];
+        cfg.bpfilter = 'yes';
+        cfg.bpfreq = [4 40]; % Band-pass filter range
+        cfg.bpfiltord = 4;    % Filter order
+        data_MEG_LEFT = ft_preprocessing(cfg, data_MEG_LEFT);
+    
+    end
 
 %%
 
@@ -115,6 +123,8 @@ ATTEND_LEFT_CON = [DATASET_PATH, SUB_ID, 'attention_attend_left_01.con'];
     cfg.trialdef.threshold = threshold;
     cfg.trialdef.eventtype = 'combined_binary_trigger'; % this will be the type of the event if combinebinary = true
     cfg.trialdef.combinebinary = 1;
+    cfg.preproc.baselinewindow = [-0.2 0];
+    cfg.preproc.demean     = 'yes';
 
     TRIALS_AL_TR = ft_definetrial(cfg);
     
@@ -136,6 +146,8 @@ ATTEND_LEFT_CON = [DATASET_PATH, SUB_ID, 'attention_attend_left_01.con'];
     cfg.trialdef.threshold = threshold;
     cfg.trialdef.eventtype = 'combined_binary_trigger'; % this will be the type of the event if combinebinary = true
     cfg.trialdef.combinebinary = 1;
+    cfg.preproc.baselinewindow = [-0.2 0];
+    cfg.preproc.demean     = 'yes';
     
     TRIALS_AL_TL = ft_definetrial(cfg);
     
@@ -157,6 +169,8 @@ ATTEND_LEFT_CON = [DATASET_PATH, SUB_ID, 'attention_attend_left_01.con'];
     cfg.trialdef.threshold = threshold;
     cfg.trialdef.eventtype = 'combined_binary_trigger'; % this will be the type of the event if combinebinary = true
     cfg.trialdef.combinebinary = 1;
+    cfg.preproc.baselinewindow = [-0.2 0];
+    cfg.preproc.demean     = 'yes';
     
     TRIALS_AR_TR = ft_definetrial(cfg);
     
@@ -179,7 +193,9 @@ ATTEND_LEFT_CON = [DATASET_PATH, SUB_ID, 'attention_attend_left_01.con'];
     cfg.trialdef.threshold = threshold;
     cfg.trialdef.eventtype = 'combined_binary_trigger'; % this will be the type of the event if combinebinary = true
     cfg.trialdef.combinebinary = 1;
-    
+    cfg.preproc.baselinewindow = [-0.2 0];
+    cfg.preproc.demean     = 'yes';
+
     TRIALS_AR_TL = ft_definetrial(cfg);
     
     SG_AR_TL = ft_preprocessing(TRIALS_AR_TL);
@@ -191,8 +207,7 @@ ATTEND_LEFT_CON = [DATASET_PATH, SUB_ID, 'attention_attend_left_01.con'];
     
     cfg = [];
     cfg.method='summary';
-    cfg.channel = {'AG*'};
-    
+    cfg.channel = {'AG*'};    
     dataALTL_rej = ft_rejectvisual(cfg, SG_AL_TL);
 
  %% Visual Inspection ALTR
@@ -272,16 +287,11 @@ cfg.layout = kit_layout;
 ft_topoplotER(cfg, avgARTL);
 
 
-
-
-
-%% Plot conditions on same plot  ALTL and ARTL
-
-
+%% Plot ERP for conditions on same plot  ALTL and ARTL
 
 
 % Define the sensor of interest (for example, 'MZC01')
-%sensor_name = 'AG181';
+%sensor_name = 'AG183';
 sensor_name = 'AG147';
 
 % Find the index of the sensor in the layout
@@ -309,14 +319,7 @@ grid on;
 
 
 
-
-
-
-
-
-%% Plot conditions on same plot  ARTR and ALTR
-
-
+%% Plot  ERP for conditions on same plot  ARTR and ALTR
 
 
 % Define the sensor of interest (for example, 'MZC01')
@@ -333,9 +336,9 @@ data_ALTR = avgALTR.avg(sensor_idx, :);
 
 % Plot both conditions for the same sensor
 figure;
-plot(time, data_ARTR, 'g', 'LineWidth', 2); % Plot avgALTL in blue
+plot(time, data_ARTR, 'r', 'LineWidth', 2); % Plot avgALTL in blue
 hold on;
-plot(time, data_ALTR, 'r', 'LineWidth', 2); % Plot avgARTL in red
+plot(time, data_ALTR, 'g', 'LineWidth', 2); % Plot avgARTL in red
 
 % Add labels and legend
 xlabel('Time (s)');
@@ -348,99 +351,130 @@ grid on;
 
 
 
+%% Plot alpha power for two conditions on same plot ALTL and ARTL
 
-%% FFT
 
 % Define the sensor of interest (for example, 'MZC01')
+%sensor_name = 'AG183';
 sensor_name = 'AG147';
 
 % Find the index of the sensor in the layout
 sensor_idx = find(strcmp(avgALTL.label, sensor_name));
 
-% Extract time and data for the sensor from both conditions
-time = avgALTL.time; % Assuming both conditions have the same time vector
-data_ALTL = avgALTL.avg(sensor_idx, :);
-data_ARTL = avgARTL.avg(sensor_idx, :);
-
-% Define sampling frequency
-Fs = 1 / mean(diff(time));  % Sampling frequency
-
-% Define smaller window length and overlap
-window_length = 0.2; % 0.2 second window (smaller window)
-overlap_fraction = 0.5; % 50% overlap
-
-% Convert window length and overlap to samples
-window_length_samples = round(window_length * Fs);  % Window length in samples
-overlap_samples = round(overlap_fraction * window_length_samples);  % Overlap in samples (must be less than window length)
-
-% Ensure overlap is less than window length
-if overlap_samples >= window_length_samples
-    error('The overlap must be less than the window length');
-end
-
-% Number of FFT points
-nfft = max(256, 2^nextpow2(window_length_samples)); % Adjust if necessary, should be a power of 2
-
-% Perform Short-Time Fourier Transform (STFT) for both conditions
-[~, f, t, psd_ALTL] = spectrogram(data_ALTL, window_length_samples, overlap_samples, nfft, Fs, 'yaxis');
-[~, ~, ~, psd_ARTL] = spectrogram(data_ARTL, window_length_samples, overlap_samples, nfft, Fs, 'yaxis');
-
-% Now you can proceed with extracting the alpha band and plotting
-
-
-
-%%
-
-% Define the sensor of interest (for example, 'MZC01')
-sensor_name = 'AG147';
-
-
-% Find the index of the sensor in the layout
-sensor_idx = find(strcmp(avgALTL.label, sensor_name));
-
-% Select data for that sensor
+% Select data for that sensor for both conditions
 cfg = [];
 cfg.channel = {sensor_name};  % Use only the specific sensor
 avgALTL_sensor = ft_selectdata(cfg, avgALTL);
 avgARTL_sensor = ft_selectdata(cfg, avgARTL);
 
-% Perform time-frequency analysis
+% Perform time-frequency analysis for ALTL
 cfg = [];
 cfg.method     = 'mtmconvol';    % Time-frequency analysis using multitapers
-cfg.foi        = 8:1:14;         % Frequencies of interest (alpha band 8-14 Hz)
-cfg.t_ftimwin  = 5 ./ cfg.foi;   % Time window length: 5 cycles per frequency
-cfg.tapsmofrq  = 2.5;            % Smoothing in frequency domain (increase if needed)
+cfg.foi        = 8:0.1:14;         % Frequencies of interest (alpha band 8-14 Hz)
+cfg.t_ftimwin  = 3 ./ cfg.foi;   % Time window length
+cfg.tapsmofrq  = 2.5;              % Smoothing in frequency domain
 cfg.toi        = 'all';          % Time of interest (use all time points)
 cfg.output     = 'pow';          % Output power spectrum
 
-% Perform the time-frequency analysis for ALTL
+% Perform time-frequency analysis for ALTL
 freq_ALTL_sensor = ft_freqanalysis(cfg, avgALTL_sensor);
 
-% Perform the time-frequency analysis for ARTL
+% Perform time-frequency analysis for ARTL
 freq_ARTL_sensor = ft_freqanalysis(cfg, avgARTL_sensor);
 
-% Plot the time-frequency representation for ALTL
+% Extract the alpha band power (8-14 Hz) and ignore NaN values
+alpha_band_idx = find(freq_ALTL_sensor.freq >= 8 & freq_ALTL_sensor.freq <= 14);
+
+% Check if there are valid indices
+if isempty(alpha_band_idx)
+    error('Alpha band (8-14 Hz) not found in the frequency range.');
+end
+
+% Calculate the mean alpha power over time for ALTL, ignoring NaNs
+alpha_power_ALTL = nanmean(freq_ALTL_sensor.powspctrm(1, alpha_band_idx, :), 2);
+alpha_power_ALTL = squeeze(alpha_power_ALTL);  % Convert to 1D
+
+% Calculate the mean alpha power over time for ARTL, ignoring NaNs
+alpha_power_ARTL = nanmean(freq_ARTL_sensor.powspctrm(1, alpha_band_idx, :), 2);
+alpha_power_ARTL = squeeze(alpha_power_ARTL);  % Convert to 1D
+
+% Plot both ALTL and ARTL alpha power on the same plot
 figure;
+plot(freq_ALTL_sensor.time, alpha_power_ALTL, 'g', 'LineWidth', 2);  % ALTL in blue
+hold on;
+plot(freq_ARTL_sensor.time, alpha_power_ARTL, 'r', 'LineWidth', 2);  % ARTL in red
+
+% Add labels, legend, and title
+xlabel('Time (s)');
+ylabel('Alpha Power (8-14 Hz)');
+legend('ALTL Condition', 'ARTL Condition');
+title(['Alpha Power Over Time for Sensor: ' sensor_name]);
+
+% Add grid for better visualization
+grid on;
+
+
+
+
+%% Plot alpha power for two conditions on same plot ARTR and ALTR
+
+% Define the sensor of interest (for example, 'MZC01')
+sensor_name = 'AG183'; % Left Hemisphere
+%sensor_name = 'AG147';
+% Find the index of the sensor in the layout
+sensor_idx = find(strcmp(avgARTR.label, sensor_name));
+
+% Select data for that sensor for both conditions
 cfg = [];
-cfg.xlim = 'maxmin';        % Show full time range
-cfg.ylim = [8 14];          % Focus on alpha band (8-14 Hz)
-cfg.layout = kit_layout;    % Define the sensor layout
-cfg.colorbar   = 'yes';     % Include a colorbar in the plot
-ft_singleplotTFR(cfg, freq_ALTL_sensor);
+cfg.channel = {sensor_name};  % Use only the specific sensor
+avgARTR_sensor = ft_selectdata(cfg, avgARTR);
+avgALTR_sensor = ft_selectdata(cfg, avgALTR);
 
-title(['Time-Frequency Representation (Alpha) for Sensor: ' sensor_name]);
+% Perform time-frequency analysis for ALTL
+cfg = [];
+cfg.method     = 'mtmconvol';    % Time-frequency analysis using multitapers
+cfg.foi        = 8:0.1:14;         % Frequencies of interest (alpha band 8-14 Hz)
+cfg.t_ftimwin  = 3 ./ cfg.foi;   % Time window length
+cfg.tapsmofrq  = 2.5;              % Smoothing in frequency domain
+cfg.toi        = 'all';          % Time of interest (use all time points)
+cfg.output     = 'pow';          % Output power spectrum
 
-% Plot for ARTL in a separate figure
+% Perform time-frequency analysis for ALTL
+freq_ARTR_sensor = ft_freqanalysis(cfg, avgARTR_sensor);
+
+% Perform time-frequency analysis for ARTL
+freq_ALTR_sensor = ft_freqanalysis(cfg, avgALTR_sensor);
+
+% Extract the alpha band power (8-14 Hz) and ignore NaN values
+alpha_band_idx = find(freq_ARTR_sensor.freq >= 8 & freq_ARTR_sensor.freq <= 14);
+
+% Check if there are valid indices
+if isempty(alpha_band_idx)
+    error('Alpha band (8-14 Hz) not found in the frequency range.');
+end
+
+% Calculate the mean alpha power over time for ALTL, ignoring NaNs
+alpha_power_ARTR = nanmean(freq_ARTR_sensor.powspctrm(1, alpha_band_idx, :), 2);
+alpha_power_ARTR = squeeze(alpha_power_ARTR);  % Convert to 1D
+
+% Calculate the mean alpha power over time for ARTL, ignoring NaNs
+alpha_power_ALTR = nanmean(freq_ALTR_sensor.powspctrm(1, alpha_band_idx, :), 2);
+alpha_power_ALTR = squeeze(alpha_power_ALTR);  % Convert to 1D
+
+% Plot both ALTL and ARTL alpha power on the same plot
 figure;
-cfg = [];
-cfg.xlim = 'maxmin';        % Show full time range
-cfg.ylim = [8 14];          % Focus on alpha band (8-14 Hz)
-cfg.layout = kit_layout;    % Define the sensor layout
-cfg.colorbar   = 'yes';     % Include a colorbar in the plot
-ft_singleplotTFR(cfg, freq_ARTL_sensor);
+plot(freq_ARTR_sensor.time, alpha_power_ARTR, 'r', 'LineWidth', 2);  % ALTL in blue
+hold on;
+plot(freq_ALTR_sensor.time, alpha_power_ALTR, 'g', 'LineWidth', 2);  % ARTL in red
 
-title(['Time-Frequency Representation (Alpha) for Sensor: ' sensor_name]);
+% Add labels, legend, and title
+xlabel('Time (s)');
+ylabel('Alpha Power (8-14 Hz)');
+legend('ARTR Condition', 'ALTR Condition');
+title(['Alpha Power Over Time for Sensor: ' sensor_name]);
 
+% Add grid for better visualization
+grid on;
 
 
 %% % Step 1: Define the sensor of interest (for example, 'MZC01')
