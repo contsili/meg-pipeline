@@ -52,7 +52,7 @@ def process_con_file(file_path):
         s_fft = 10
 
 
-        metrics = pd.read_csv(file_path)
+        #metrics = pd.read_csv(file_path)
 
         logging.info(f"Processing file: {file_path}")
         # Load the .con file using MNE

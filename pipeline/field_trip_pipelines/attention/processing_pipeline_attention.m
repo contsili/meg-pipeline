@@ -1,4 +1,3 @@
-
 %% Attention task pipeline for external noise reduced data
 
 MEG_DATA_FOLDER = getenv('MEG_DATA');
@@ -57,7 +56,7 @@ APPLY_FILTERS = false;
     %% Filtering data
     
     if APPLY_FILTERS
-    
+
         % Notch filter the data at 50 Hz
         cfg = [];
         cfg.bsfilter = 'yes';
@@ -84,7 +83,7 @@ APPLY_FILTERS = false;
         cfg.bpfreq = [4 40]; % Band-pass filter range
         cfg.bpfiltord = 4;    % Filter order
         data_MEG_LEFT = ft_preprocessing(cfg, data_MEG_LEFT);
-    
+
     end
 
 %%
@@ -148,7 +147,7 @@ APPLY_FILTERS = false;
     cfg.trialdef.combinebinary = 1;
     cfg.preproc.baselinewindow = [-0.2 0];
     cfg.preproc.demean     = 'yes';
-    
+
     TRIALS_AL_TL = ft_definetrial(cfg);
     
     SG_AL_TL = ft_preprocessing(TRIALS_AL_TL);
@@ -171,7 +170,7 @@ APPLY_FILTERS = false;
     cfg.trialdef.combinebinary = 1;
     cfg.preproc.baselinewindow = [-0.2 0];
     cfg.preproc.demean     = 'yes';
-    
+
     TRIALS_AR_TR = ft_definetrial(cfg);
     
     SG_AR_TR = ft_preprocessing(TRIALS_AR_TR);
