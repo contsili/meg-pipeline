@@ -37,7 +37,7 @@ extensions = [
     "sphinx_panels"
 ]
 
-exclude_patterns = ['docs/source/5-pipeline/notebooks/fieldtrip/template_*.ipynb']
+exclude_patterns = ['docs/source/5-pipeline/notebooks/fieldtrip/template_notebook.ipynb']
 
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3/", None),
