@@ -22,6 +22,3 @@ ctf151                      = ft_prepare_layout(cfg);
 layout.outline              = ctf151.outline;
 layout.mask                 = ctf151.mask;
 
-% plot the custom layout
-figure;
-ft_plot_layout(layout, 'box', 1);
