@@ -24,6 +24,19 @@ VPIXX_USE = false;
 VPIXX_USE = true;
 PSYCHTOOLBOX = false;
 
+
+
+%%
+
+% To make a marker S2 appear on the EEG data we must activate pin number 3
+% on the 25-pin D-Sub as in Table 1 below
+% To activate the pin number 3, we need to activate the Digital Out 4 on
+% the Datapixx
+% To activate the Digital Out 4, we need to send this combination 00000100 -> 4
+
+% Using Datapixx('SetDoutValues', 4);
+
+
 % Pinout of the trigger socket (digital port) on USB2 Adapter on the
 % EEG-FMRI trigger box
 
@@ -186,20 +199,7 @@ Datapixx('RegWrRd');
 % | 15                        | D02 (S 4)  | 4                    |                  |
 % | 16                        | D04 (S 16) | 6                    |                  |
 % | 17                        | D06 (S 64) | 8                    |                  |
-    % According to BrainProducts datasheet:
-    % +-----------------------------------------------------+
-    % | Pin on 26-pin HD D-Sub    | Function   | 25-pin D-Sub/LPT on  | BNC connector on |
-    % | trigger socket (digital   |            | trigger cable        | trigger cable     |
-    % | port)                     |            |                      |                  |
-    % +-----------------------------------------------------+
-    % |  2                        | D01 (S 2)  | 3                    |                  |
-    % |  3                        | D03 (S 8)  | 5                    |                  |
-    % |  4                        | D05 (S 32) | 7                    |                  |
-    % |  5                        | D07 (S128) | 9                    |                  |
-    % | 14                        | D00 (S 1)  | 2                    |                  |
-    % | 15                        | D02 (S 4)  | 4                    |                  |
-    % | 16                        | D04 (S 16) | 6                    |                  |
-    % | 17                        | D06 (S 64) | 8                    |                  |
+
 
 
 % In MRI we have a 25-pin D-Sub cable so we care about this column
@@ -250,7 +250,9 @@ Datapixx('RegWrRd');
 % 01000000 -> 64
 % 10000000 -> 128
 
-    
+
+% Datapixx 
+
     % Current State = 0
     while toc < totalDuration
         
