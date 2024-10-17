@@ -24,6 +24,19 @@ Experiment Procedure for KIT
 
 
 
+#. Prior to arrival, participant is assumed to have no implants, no retainer, no pace-maker, big tattoos
+#. Participant goes into the lab and asked to change their clothes to scrubs
+#. Ask them to put their phone on Airplane mode
+#. Ask them to remove any Jewlry, metallic things, Red Nail polish ideally to be removed, glasses
+
+#. Big steps:
+    #. Laser Scan of the head: participant head scan, stylus marking on head Output: surface
+    #. Participant in the MSR:
+        #. Attach the HPI coils to the participant
+experiment conducted
+    #. Participant outside the MSR, experiment finished, back to normal clothes
+
+
 #. Wake HeadScan computer system in preparation room
 
 #. Prepare rooms:
