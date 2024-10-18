@@ -96,7 +96,8 @@ hold off
 
 %% DEBUG ONLY: Reading triggers from confile
 
-hdr   = ft_read_header(confile);
+hdr      = ft_read_header(confile);
+type = ft_chantype(hdr); % meggrad = meg axial gradiometers
 event227 = ft_read_event(confile, 'chanindx', 227); % only 56 times is '227' found. FT does not detect well the triggers
 event231 = ft_read_event(confile, 'chanindx', 231); % only 226 times is '231' found
 
@@ -216,17 +217,18 @@ for k = 1
     save(fullfile(derivatives_folder, 'avgCWDG3.mat'), 'avgCWDG3');
 end
 
-
+load(fullfile(derivatives_folder, 'avgCWDG1.mat'), 'avgCWDG1');
+load(fullfile(derivatives_folder, 'avgCWDG2.mat'), 'avgCWDG2');
+load(fullfile(derivatives_folder, 'avgCWDG3.mat'), 'avgCWDG3'); 
 %% Plot all ERPs in sensor space
 
+meg_channels = setdiff(1:208, 92);
+
 cfg = [];
-cfg.showlabels = 'no';
-cfg.fontsize = 6;
-%cfg.layout = 'CTF151_helmet.mat';
-cfg.baseline = [-0.2 0];
-cfg.xlim = [-0.2 1.0];
-cfg.ylim = [-3e-13 3e-13];
-ft_multiplotER(cfg, avgCWDG1, avgCWDG2, avgCWDG3);
+cfg.showlabels = 'yes';
+cfg.channel          = meg_channels;  % Include only MEG channels
+ft_multiplotER(cfg, avgCWDG1, avgCWDG2, avgCWDG3); % it automatically creates layout for yokogawa208 system
+legend(avgCWDG1, avgCWDG2, avgCWDG3)
 title(sprintf('ERP Activity in sensor space: %s', subjectID), 'Interpreter', 'none');
 
 saveas(gcf, fullfile(subjectResultsFolder, sprintf('%s_ERP_Sensor_Space.png', subjectID)));
