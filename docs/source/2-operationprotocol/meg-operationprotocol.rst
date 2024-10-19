@@ -1,6 +1,6 @@
 Operational Protocol: KIT
 =========================
-Lead author: Haidee Paterson `haidee.paterson@nyu.edu <haidee.paterson@nyu.edu>`_
+Lead author: Haidee Paterson `haidee.paterson@nyu.edu <haidee.paterson@nyu.edu>`_, Hadi Zaatiti `hadi.zaatiti@nyu.edu <hadi.zaatiti@nyu.edu>`_
 
 
 Prepare the lab equipment
@@ -18,10 +18,20 @@ Prepare the lab equipment
    - Ensure the image on the Vpixx screen in the MSR room is displaying correctly
 
 
+Experiment Procedure for KIT on a participant
+---------------------------------------------
 
-Experiment Procedure for KIT
-----------------------------
+#. Prior to arrival, participant is assumed to have no implants, no retainer, no pace-maker, no big-tattoos
+#. Participant goes into the lab and asked to change their clothes to scrubs
+#. Ask them to put their phone on Airplane mode
+#. Ask them to remove any Jewlry, metallic things, Red Nail polish ideally to be removed, glasses
 
+#. Big steps:
+    #. Laser Scan of the head: participant head scan, stylus marking on head Output: surface
+    #. Participant in the MSR:
+        #. Attach the HPI coils to the participant
+    #. Experiment being run
+    #. Participant outside the MSR, experiment finished, back to normal clothes
 
 
 #. Wake HeadScan computer system in preparation room
