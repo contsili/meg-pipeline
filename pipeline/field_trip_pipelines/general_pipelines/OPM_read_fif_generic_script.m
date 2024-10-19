@@ -34,3 +34,20 @@ hdr = ft_read_header(cfg.dataset);
 disp(hdr);
 
 
+
+
+%% Plot sensors
+
+sensors = ft_convert_units(data_all.grad, 'mm');
+
+figure
+ft_plot_sens(sensors)
+hold on
+
+sensors2 = ft_convert_units(hdr.grad, 'mm');
+
+figure
+ft_plot_sens(sensors2)
+hold on
+
+
