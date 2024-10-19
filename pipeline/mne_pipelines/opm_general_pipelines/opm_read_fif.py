@@ -13,10 +13,3 @@ calibration_factors = [ch['cal'] for ch in channel_info]
 
 # Display the first few calibration factors
 print(calibration_factors[:10])
-
-
-# Get the raw data (in Tesla or T/m for magnetometers or gradiometers)
-data, times = raw[:, :]
-
-# Convert data back to Volts (or original unit)
-data_in_volts = data / calibration_factors
