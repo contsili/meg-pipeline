@@ -5,30 +5,6 @@ Lead author: Gayathri Satheesh `gs2750@nyu.edu <gs2750@nyu.edu>`_, Haidee Paters
 Based on a previous version of the protocol from Aniol Santos Angles.
 
 
-.. task-list::
-    :name: task_list_example
-    :clickable:
-
-    1. [x] Task A
-    2. [ ] Task B
-
-       .. task-list::
-           :clickable:
-
-           * [x] Task B1
-           * [x] Task B2
-           * [] Task B3
-
-           A rogue paragraph with a reference to
-           the `parent task_list <task_list_example>`.
-
-           - A list item without a checkbox.
-           - [ ] Another bullet point.
-
-    3. [ ] Task C
-
-
-
 Lab booking and schedule
 ------------------------
 
