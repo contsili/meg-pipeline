@@ -46,15 +46,15 @@ Prepare the lab equipment
         - Close the MSR door without having any individual inside
         - Switch the heater off
 
-.. figure:: 2-operationprotocol/figures/meg-operationprotocol/heater_button.png
-   :alt: Heater Button Image
-   :align: center
+    .. figure:: 2-operationprotocol/figures/meg-operationprotocol/heater_button.png
+       :alt: Heater Button Image
+       :align: center
 
-   Heater Button.
+    Heater Button.
 
     - Get empty room data and check noise levels
-        #. Empty room data is recorded at 1kHz sampling rate for around 3 minutes
-        #. The dashboards show the noise levels from empty-room data and are updated automatically on a daily basis
+        - Empty room data is recorded at 1kHz sampling rate for around 3 minutes
+        - The dashboards show the noise levels from empty-room data and are updated automatically on a daily basis
 #. Prepare projector for visual stimulus, on the Stimulus Computer:
     - Turn on the computer if it is off, boot under Windows
     - Turn on the three Vpixx systems: Soundpixx, Propixx and Responsepixx
