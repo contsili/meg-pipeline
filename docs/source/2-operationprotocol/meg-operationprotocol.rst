@@ -8,11 +8,17 @@ Based on a previous version of the protocol from Aniol Santos Angles.
 Lab booking and schedule
 ------------------------
 
-All bookings should not happen on a monday morning, as Helium refill is scheduled for monday mornings
-and it is not possible to acquire data during this period.
+.. warning::
 
-Prepare the lab equipment
--------------------------
+   All bookings should not happen on a monday morning, as Helium refill is scheduled for monday mornings
+   and it is not possible to acquire data during this period.
+
+
+
+
+
+Prepare the lab equipment (prior to participant arrival) Estimated Time: 20min
+------------------------------------------------------------------------------
 
 #. Check KIT system operation status
     - Ensure Helium level is sufficient
@@ -42,6 +48,10 @@ Prepare the lab equipment
         - Open Pypixx, press `Rear Projection`, check again
    - Ensure the image on the Vpixx screen in the MSR room is displaying correctly
 
+
+
+Project owner steps:
+-------------------------
 
 Experiment Procedure for KIT on a participant
 ---------------------------------------------
