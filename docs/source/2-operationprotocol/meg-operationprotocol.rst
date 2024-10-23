@@ -14,29 +14,63 @@ Lab booking and schedule
    and it is not possible to acquire data during this period.
 
 
+Lab equipment provided to the project owner
+-------------------------------------------
 
+The MEG lab is provided to the project owner after the following checks and tests have been made successfully:
+
+#. KIT system is in an operational status
+    - Helium levels are sufficient to conduct an experiment
+    - Quality of the data from SQUIDs sensor has been verified
+    - Empty-room data has been acquired and noise levels has been computed and asessed
+        - Empty room data is recorded at 1kHz sampling rate for around 3 minutes every couple of days and made available on NYU-BOX
+        - The dashboards show the noise levels from empty-room data and are updated automatically on a daily basis
+        - If the project owner requires empty-room data on the day of his experiment run, he should make this clear to the lab scientist
+
+#. Vpixx system is operational
+    - Trigger events are tested
+    - Projector is in a running state
+    - Response boxes are running correctly
+
+#. Communication system with participant are operational
+    - Microphone to communicate to the participant works correctly
+    - Earplugs for participant to hear the project owner outisde the MSR works correctly
+
+#. Laser scanner system is operational
+    - Laser scanner computer works correctly
+    - Laser pointer/surface scanner is operational
+
+#. Scrubs and caps and all hygience related materials are available
+    - earplugs are desinfected
+    - caps are available
+    - scrubs are available
+    - clinical application tape is available
 
 
 Prepare the lab equipment (prior to participant arrival) Estimated Time: 20min
 ------------------------------------------------------------------------------
 
-#. Check KIT system operation status
-    - Ensure Helium level is sufficient
-    - Check MSR state:
-        - Make sure the MSR has no metal objects inside
-        - Turn off the MSR lights and put the light brightness to low
-        - Close the MSR door without having any individual inside
-        - Switch the heater off
+Responsability of lab scientist:
+################################
+
+
+
+
+Responsability of the project owner:
+####################################
+
+#. Check MSR state:
+    - Make sure the MSR has no metal objects inside
+    - Turn off the MSR lights and put the light brightness to low
+    - Close the MSR door without having any individual inside
+    - Switch the heater off
 
     .. figure:: 2-operationprotocol/figures/meg-operationprotocol/heater_button.png
-       :alt: Heater Button Image
-       :align: center
+        :alt: Heater Button Image
+        :align: center
 
-    Heater Button.
+        Heater Button.
 
-    - Get empty room data and check noise levels
-        - Empty room data is recorded at 1kHz sampling rate for around 3 minutes
-        - The dashboards show the noise levels from empty-room data and are updated automatically on a daily basis
 #. Prepare projector for visual stimulus, on the Stimulus Computer:
     - Turn on the computer if it is off, boot under Windows
     - Turn on the three Vpixx systems: Soundpixx, Propixx and Responsepixx
@@ -48,15 +82,13 @@ Prepare the lab equipment (prior to participant arrival) Estimated Time: 20min
         - Open Pypixx, press `Rear Projection`, check again
    - Ensure the image on the Vpixx screen in the MSR room is displaying correctly
 
+#. Ensure that your experiments work correctly as expected and that trigger signals are showing up properly
 
-
-Project owner steps:
--------------------------
 
 Experiment Procedure for KIT on a participant
 ---------------------------------------------
 
-#. Prior to arrival, participant is assumed to have no implants, no retainer, no pace-maker, no big-tattoos
+#. Prior to arrival, participant is assumed to have no implants, no retainer, no pace-maker, no large-sized-tattoos
 #. Participant goes into the lab and asked to change their clothes to scrubs
 #. Ask them to put their phone on Airplane mode
 #. Ask them to remove any Jewlry, metallic things, Red Nail polish ideally to be removed, glasses
@@ -64,10 +96,8 @@ Experiment Procedure for KIT on a participant
 #. Big steps:
     #. Laser Scan of the head: participant head scan, stylus marking on head Output: surface
     #. Participant in the MSR:
-        #. Attach the HPI coils to the participant
-experiment conducted
+        #. Attach the HPI coils to the participant experiment conducted
     #. Participant outside the MSR, experiment finished, back to normal clothes
-
 
 #. Wake HeadScan computer system in preparation room
 
