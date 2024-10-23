@@ -1,20 +1,48 @@
 Operational Protocol: KIT
 =========================
-Lead author: Haidee Paterson `haidee.paterson@nyu.edu <haidee.paterson@nyu.edu>`_, Hadi Zaatiti `hadi.zaatiti@nyu.edu <hadi.zaatiti@nyu.edu>`_
+Lead author: Gayathri Satheesh `gs2750@nyu.edu <gs2750@nyu.edu>`_, Haidee Paterson `haidee.paterson@nyu.edu <haidee.paterson@nyu.edu>`_, Hadi Zaatiti `hadi.zaatiti@nyu.edu <hadi.zaatiti@nyu.edu>`_
 
+Based on a previous version of the protocol from Aniol Santos Angles.
+
+
+
+Lab booking and schedule
+------------------------
+
+All bookings should not happen on a monday morning, as Helium refill is scheduled for monday mornings
+and it is not possible to acquire data during this period.
 
 Prepare the lab equipment
 -------------------------
 
+
+
 #. Check KIT system operation status
+    - Ensure Helium level is sufficient
+    - Check MSR state:
+        - Make sure the MSR has no metal objects inside
+        - Turn off the MSR lights and put the light brightness to low
+        - Close the MSR door without having any individual inside
+        - Switch the heater off
 
-#. Ensure Helium level is sufficient
+.. figure:: 2-operationprotocol/figures/meg-operationprotocol/heater_button.png
+   :alt: Heater Button Image
+   :align: center
 
-#. Get empty room data and check noise levels
+   Heater Button.
 
-#. On the Stimulus2 Computer:
-   - Wake Vpixx
-   - Run test script
+    - Get empty room data and check noise levels
+        #. Empty room data is recorded at 1kHz sampling rate for around 3 minutes
+        #. The dashboards show the noise levels from empty-room data and are updated automatically on a daily basis
+#. Prepare projector for visual stimulus, on the Stimulus Computer:
+    - Turn on the computer if it is off, boot under Windows
+    - Turn on the three Vpixx systems: Soundpixx, Propixx and Responsepixx
+    - Ensure projector inside the MSR is on, if not:
+        - open `Vputil` found on the desktop
+        - run `ppx a`, if projector is still off then:
+            - run `ppx s`, then run `reset`, then wait for a minute, run `ppx a`
+    - Ensure the orientation of the screen inside the MSR is correct, if not:
+        - Open Pypixx, press `Rear Projection`, check again
    - Ensure the image on the Vpixx screen in the MSR room is displaying correctly
 
 
