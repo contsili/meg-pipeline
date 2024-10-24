@@ -65,7 +65,7 @@ Responsability of the project owner:
     - Close the MSR door without having any individual inside
     - Switch the heater off
 
-    .. figure:: 2-operationprotocol/figures/meg-operationprotocol/heater_button.png
+    .. figure:: figures/meg-operationprotocol/heater_button.png
         :alt: Heater Button Image
         :align: center
 
@@ -81,7 +81,6 @@ Responsability of the project owner:
     - Ensure the orientation of the screen inside the MSR is correct, if not:
         - Open Pypixx, press `Rear Projection`, check again
    - Ensure the image on the Vpixx screen in the MSR room is displaying correctly
-
 #. Ensure that your experiments work correctly as expected and that trigger signals are showing up properly
 
 
