@@ -1,5 +1,6 @@
 Operational Protocol: KIT
 =========================
+
 Lead author: Gayathri Satheesh `gs2750@nyu.edu <gs2750@nyu.edu>`_, Haidee Paterson `haidee.paterson@nyu.edu <haidee.paterson@nyu.edu>`_, Hadi Zaatiti `hadi.zaatiti@nyu.edu <hadi.zaatiti@nyu.edu>`_
 
 Based on a previous version of the protocol from Aniol Santos Angles.
@@ -44,7 +45,7 @@ The MEG lab is provided to the project owner after the following checks and test
     - Laser scanner computer works correctly
     - Laser pointer/surface scanner is operational
 
-#. Scrubs and caps and all hygience related materials are available
+#. Scrubs and caps and all hygiene related materials are available
     - earplugs are desinfected
     - caps are available
     - scrubs are available
@@ -85,7 +86,7 @@ Prepare the lab equipment (prior to participant arrival) Estimated Time: 20min
         :alt: Trigger Box
         :align: center
 
-        Trigger Box.
+        Trigger Box found above the `MEG Main PC`.
 
     - Ensure that the `Source` button is set to `PC` which is the left side
 
@@ -173,12 +174,6 @@ Prepare the lab equipment (prior to participant arrival) Estimated Time: 20min
     - [IMAGE]
 
 
-#. Verify your experiment script:
-    - If using `PsychToolBox`:
-        - Open MATLAB
-        - Access your experiment `.m` script and launch it
-        - Make sure you arrive to the `Introduction Page` mentioned in the :ref:`design_experiment` section
-
 #. Prepare the `FastScan` computer:
     - If the `FastScan` computer is not turned on:
         - make sure that FastScan device is off (the flat black box next to the monitor, picture below)
@@ -192,14 +187,23 @@ Prepare the lab equipment (prior to participant arrival) Estimated Time: 20min
             FastScan device.
 
 
+#. Verify your experiment script:
+    - If using `PsychToolBox`:
+        - Open MATLAB
+        - Access your experiment `.m` script and launch it
+        - Make sure you arrive to the `Introduction Page` mentioned in the :ref:`design_experiment` section
+    - You can make a quick test run to make sure that trigger signals are appearing correctly on the `MEG160` software
 
-#. Ensure that your experiments work correctly as expected and that trigger signals are showing up properly
+
+Perform the MEG Experiment (Participant is present)
+---------------------------------------------------
+
+#. Welcoming the participant and providing them with explanations
+    - [WELCOME] Thank you for joining our study. Is this your first time in the MEG?
+    - [GENERAL OVERVIEW] No worry, Let me explain to you now what we are going to do today.
+    - [BEFORE MEG - HEAD SHAPE] Before you are going into the MEG, we need to do some preparation.
 
 
-Experiment Procedure for KIT on a participant
----------------------------------------------
-
-#. Prior to arrival, participant is assumed to have no implants, no retainer, no pace-maker, no large-sized-tattoos
 #. Ask the participant to put their phone on Airplane mode
 #. Participant goes into the lab is asked to change their clothes to scrubs
 #. Ask them to remove any Jewelry, metallic objects, Red Nail polish ideally to be removed as it can contain ferromagnetic material, glasses
