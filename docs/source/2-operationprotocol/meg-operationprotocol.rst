@@ -58,7 +58,6 @@ Prepare the lab equipment (prior to participant arrival) Estimated Time: 20min
 
 #. Prepare MSR:
     - Make sure the MSR has no metal objects inside
-
     - Switch the heater off
 
     .. figure:: figures/meg-operationprotocol/heater_button.png
@@ -67,6 +66,28 @@ Prepare the lab equipment (prior to participant arrival) Estimated Time: 20min
 
         Heater Button.
 
+    - Prepare bedsheets and pillowcases
+    - Clinical Tape is usually stored in the drawers inside the plastic furniture piece inside the MSR
+        - or/also in the top right wooden drawer outside the MSR, on the right side of the `Stimulus computer`
+    - Prepare 12 pieces of tape, those will be used to set the `HPI coils` on the participant's head
+
+#. Marker box check:
+    - Ensure that the `Marker Box` found inside the MSR has enough battery
+        - Power up the `Marker Box` by flipping the `Power` switch up
+        - If there is enough battery, the red led 'Low battery' should go on for a second and then back off
+        - If there is not enough battery, the red led 'Low batter' is either on all the time or never comes on for a second as previously
+            - In this case, change the batteries of the Box, recharged batteries are available under the `Eyetracker` computer
+    - Unroll the five HPI marker coils that are linked to the `Marker Box`
+#. Trigger Box preparation:
+    - The `Trigger Box` is outside the MSR and pictured below
+
+    .. figure:: figures/meg-operationprotocol/trigger_box.png
+        :alt: Trigger Box
+        :align: center
+
+        Trigger Box.
+
+    - Ensure that the `Source` button is set to `PC` which is the left side
 
 #. If project owner requires empty-room data prior to experiment:
     - Turn off the MSR lights and put the light brightness to low
@@ -139,7 +160,39 @@ Prepare the lab equipment (prior to participant arrival) Estimated Time: 20min
     - Ensure the image on the Vpixx screen in the MSR room is displaying correctly
     - Response Device
         - Button box: make sure all the optical cables form the button boxes are plugged in correctly as shown in the picture
+        - [IMAGE]
         - Dial: make sure that dial is connected to Vpixx computer, and USB button is OFF
+
+#. Microphone inside MSR:
+    - Make sure the sound box is switched on, if not click on the green round button
+    - Check if you can hear the participant through the speakers, talking from inside the MSR to the microphone (on the left side of the Dewar)
+    - [IMAGE]
+
+#. Earplugs
+    - Check the earplugs and make sure the participant can hear you
+    - [IMAGE]
+
+
+#. Verify your experiment script:
+    - If using `PsychToolBox`:
+        - Open MATLAB
+        - Access your experiment `.m` script and launch it
+        - Make sure you arrive to the `Introduction Page` mentioned in the :ref:`design_experiment` section
+
+#. Prepare the `FastScan` computer:
+    - If the `FastScan` computer is not turned on:
+        - make sure that FastScan device is off (the flat black box next to the monitor, picture below)
+        - then turn on the computer then launch `FastScanII` program
+        - then turn on the FastScan device
+
+        .. figure:: figures/meg-operationprotocol/fast_scan_device.png
+            :alt: Fast Scan device
+            :align: center
+
+            FastScan device.
+
+
+
 #. Ensure that your experiments work correctly as expected and that trigger signals are showing up properly
 
 
