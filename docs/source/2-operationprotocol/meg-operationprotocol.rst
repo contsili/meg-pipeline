@@ -247,6 +247,41 @@ Perform the MEG Experiment (Participant is present)
     - Ask the participant to put their phone on Airplane mode
 
 #. Perform the FastScan laser head scan
+    - Capping the participant
+        - Put the 'pink' swimming cap on the head of the person
+        - Make sure the cap is as smooth as possible on the participant's head
+        - People with long hair, can keep most part of their hair outside the cap behind their ears and onto the back
+        - The ears must be clear of hair
+        - The cap must cover all the hair that can be seen at the anterior, left and right parts of the head
+        - The goal is that the cap takes the shape of the skull at best
+    - Mark the fiducials
+        - Use the “T” template, with the line aligning the participant’s nasion as in the below picture
+
+        .. figure:: figures/meg-operationprotocol/template_nasion.png
+            :alt: Template and Nasion
+            :align: center
+
+            "T" template on the right and nasion/pre(auricular) positions on the left.
+
+        - Mark the nasion using a pen (fiducial 1)
+        - Adjust the "T" template to the participants nasion
+        - Using a pen marker, mark fiducials 6, 7 and 8 by using the three holes in the "T" template
+
+        .. figure:: figures/meg-operationprotocol/fiducials.png
+            :alt: Fiducials
+            :align: center
+
+            Fiducials numbered by the order they should be laser scanned with.
+
+        - Mark the left and right pre-auriculars (1cm anterior to the tragi) and the right and left auriculars
+        - Put on the neck brace
+            - Place a tissue over the area closest to the mouth on the neck brace for sanitary purposes - see picture
+
+        .. figure:: figures/meg-operationprotocol/neckbrace.png
+            :alt: Neck brace with tissue for sanitary purposes
+            :align: center
+
+            Neck brace with tissue for sanitary purposes
 
 
 
