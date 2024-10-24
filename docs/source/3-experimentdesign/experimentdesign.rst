@@ -1,3 +1,5 @@
+.. _design_experiment:
+
 Implementing your experiment
 ============================
 
@@ -65,6 +67,14 @@ If using python library PsychoPy:
 * you can run from within the psycopy builder the experiment file with .psyexp extension c
 
 
+
+Pixel mode experiments
+----------------------
+
+All experiments that uses the Vpixx pixel mode should follow these rules:
+
+- Once the experiment script is run, the experiment should land on an `Introduction page` that can only be skipped by the project owner
+- Prior to landing on the `Introduction page` within your script, you should deactivate the Vpixx Pixel Mode, otherwise there could be false trigger events in the data recording
 
 
 "Presentation" based experiments
