@@ -68,7 +68,7 @@ Prepare the lab equipment (prior to participant arrival) Estimated Time: 20min
         Heater Button.
 
 
-#. If they need empty-room data:
+#. If project owner requires empty-room data prior to experiment:
     - Turn off the MSR lights and put the light brightness to low
     - Close the MSR door without having any individual inside
     - After the previous steps, on the `MEG Main PC` computer, open `MEG160` software
@@ -98,17 +98,48 @@ Prepare the lab equipment (prior to participant arrival) Estimated Time: 20min
     - Close the `MEG Measurement` window
     - Open the MSR door
 
-
-#. Prepare projector for visual stimulus, on the Stimulus Computer:
+#. Prepare Vpixx systems:
+    - Ensure that the three `Vpixx` boxes are turned on: Soundpixx, Propixx and Responsepixx
     - Turn on the computer if it is off, boot under Windows
-    - Turn on the three Vpixx systems: Soundpixx, Propixx and Responsepixx
-    - Ensure projector inside the MSR is on, if not:
-        - open `Vputil` found on the desktop
-        - run `ppx a`, if projector is still off then:
+    - Settings of Vpixx computer. Ensure that
+        - The Bar menu is fixed (not disappearing)
+            - Right click on the bar menu > Taskbar settings > …
+        - Screens are in multiple displays (not mirror display)
+            - Right-click on desktop > Display settings > Extend these displays > Keep changes
+        - Volume is off (keyboard)
+    - Set up Vpixx either through bash script **VPutil** (preferred) or through **PyPixx GUI**
+        - Open `Vputil` found on the desktop
+        - Run `ppx a` and `Enter`,
+        - Check if the screen inside the MSR is on, if the screen is off then:
             - run `ppx s`, then run `reset`, then wait for a minute, run `ppx a`
-    - Ensure the orientation of the screen inside the MSR is correct, if not:
-        - Open Pypixx, press `Rear Projection`, check again
+
+    - Ensure the orientation (vertical flip) of the screen inside the MSR is correct, if not:
+        - Open `Pypixx`, press `Rear Projection`, check again
+
+        .. figure:: figures/meg-operationprotocol/pypixx_icon.png
+            :alt: Pypixx icon
+            :align: center
+
+            Pypixx icon.
+
+        - Open `Display Settings` on the top left of the GUI
+            - Unselect `Ceiling Mount`
+            - Select `Rear projection`
+
+            .. figure:: figures/meg-operationprotocol/projection_mode.png
+                :alt: Projection Mode
+                :align: center
+
+                Projection Mode.
+
+        - Switch on the projector (if not already done via Vputil):
+            - Press 'Wake PROPIXX', (when it says 'Sleep PROPixx', it means it is awake)
+
+        - Check whether the projected image in the MSR appears correctly (use text file `PROPIXX_Test_text.txt` found on the desktop)
     - Ensure the image on the Vpixx screen in the MSR room is displaying correctly
+    - Response Device
+        - Button box: make sure all the optical cables form the button boxes are plugged in correctly as shown in the picture
+        - Dial: make sure that dial is connected to Vpixx computer, and USB button is OFF
 #. Ensure that your experiments work correctly as expected and that trigger signals are showing up properly
 
 
