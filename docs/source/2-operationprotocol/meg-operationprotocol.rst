@@ -24,6 +24,8 @@ The MEG lab is provided to the project owner after the following checks and test
     - Quality of the data from SQUIDs sensor has been verified
     - Empty-room data has been acquired and noise levels has been computed and asessed
         - Empty room data is recorded at 1kHz sampling rate for around 3 minutes every couple of days and made available on NYU-BOX
+        - MSR lights are put off during empty-room data recordin and brightness is set to low
+        - All phones are on airplane mode
         - The dashboards show the noise levels from empty-room data and are updated automatically on a daily basis
         - If the project owner requires empty-room data on the day of his experiment run, he should make this clear to the lab scientist
 
@@ -33,8 +35,10 @@ The MEG lab is provided to the project owner after the following checks and test
     - Response boxes are running correctly
 
 #. Communication system with participant are operational
-    - Microphone to communicate to the participant works correctly
+    - Microphone outside the MSR, to communicate to the participant works correctly
+    - Microphone inside the MSR for participant to communicate with project owner works correctly
     - Earplugs for participant to hear the project owner outisde the MSR works correctly
+    - Coming soon: Camera inside MSR for visualising the participant
 
 #. Laser scanner system is operational
     - Laser scanner computer works correctly
@@ -44,25 +48,17 @@ The MEG lab is provided to the project owner after the following checks and test
     - earplugs are desinfected
     - caps are available
     - scrubs are available
-    - clinical application tape is available
+    - clinical application tape is available for HPI coils on participant face
 
 
 Prepare the lab equipment (prior to participant arrival) Estimated Time: 20min
 ------------------------------------------------------------------------------
 
-Responsability of lab scientist:
-################################
+**Performed by the project owner** by following the order
 
-
-
-
-Responsability of the project owner:
-####################################
-
-#. Check MSR state:
+#. Prepare MSR:
     - Make sure the MSR has no metal objects inside
-    - Turn off the MSR lights and put the light brightness to low
-    - Close the MSR door without having any individual inside
+
     - Switch the heater off
 
     .. figure:: figures/meg-operationprotocol/heater_button.png
@@ -70,6 +66,38 @@ Responsability of the project owner:
         :align: center
 
         Heater Button.
+
+
+#. If they need empty-room data:
+    - Turn off the MSR lights and put the light brightness to low
+    - Close the MSR door without having any individual inside
+    - After the previous steps, on the `MEG Main PC` computer, open `MEG160` software
+    - Then, Menu -> Acquire -> Auto Tuning -> Ok
+        - Wait for the auto-tuning to be done
+    - From Menu -> MEG Measurement -> Monitor and Acquisition window should open
+        - Ensure or set (these parameters are only to be used for empty-room data and not for a neuro-activity experiment measurement):
+            - LPF to `0.1 Hz`
+            - HPF to `1 KHz`
+            - BEF to `THRU`
+        - Sensor Check
+        - Let the `Sensor Check` run for around 2 minutes
+        - Make sure that the sensor display identical sinusoidal wave
+        - Remind that `Sensor 91` is broken and will not display a sine wave
+
+    - Under ‘Data Acquisition’
+    - Patient ID: sub-emptyroom
+    - Name: sub-emptyroom_<data in YYYYMMDD>
+    - Foldername: C: \MEG160\Bin\emptyroom
+    - After ensuring the MSR door is closed, press `Lock`
+        - The sensor measurements will oscillate rapidly, wait until the values are stable, i.e., no upward or downward trend is observed
+    - Continuous Mode -> Start
+        - Set Sampling Rate to 2000 Hz
+        - Set Time to `180 seconds`
+        - then, `Start Acquisition`
+    - When recording is done, press `Unlock`
+    - Close the `MEG Measurement` window
+    - Open the MSR door
+
 
 #. Prepare projector for visual stimulus, on the Stimulus Computer:
     - Turn on the computer if it is off, boot under Windows
@@ -80,7 +108,7 @@ Responsability of the project owner:
             - run `ppx s`, then run `reset`, then wait for a minute, run `ppx a`
     - Ensure the orientation of the screen inside the MSR is correct, if not:
         - Open Pypixx, press `Rear Projection`, check again
-   - Ensure the image on the Vpixx screen in the MSR room is displaying correctly
+    - Ensure the image on the Vpixx screen in the MSR room is displaying correctly
 #. Ensure that your experiments work correctly as expected and that trigger signals are showing up properly
 
 
@@ -88,9 +116,9 @@ Experiment Procedure for KIT on a participant
 ---------------------------------------------
 
 #. Prior to arrival, participant is assumed to have no implants, no retainer, no pace-maker, no large-sized-tattoos
-#. Participant goes into the lab and asked to change their clothes to scrubs
-#. Ask them to put their phone on Airplane mode
-#. Ask them to remove any Jewlry, metallic things, Red Nail polish ideally to be removed, glasses
+#. Ask the participant to put their phone on Airplane mode
+#. Participant goes into the lab is asked to change their clothes to scrubs
+#. Ask them to remove any Jewelry, metallic objects, Red Nail polish ideally to be removed as it can contain ferromagnetic material, glasses
 
 #. Big steps:
     #. Laser Scan of the head: participant head scan, stylus marking on head Output: surface
