@@ -95,6 +95,8 @@ Experiment Procedure for KIT on a participant
 #. Big steps:
     #. Laser Scan of the head: participant head scan, stylus marking on head Output: surface
     #. Participant in the MSR:
+        #. Attach the HPI coils to the participant
+    #. Experiment being run
         #. Attach the HPI coils to the participant experiment conducted
     #. Participant outside the MSR, experiment finished, back to normal clothes
 
