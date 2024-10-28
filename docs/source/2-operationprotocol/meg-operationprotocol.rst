@@ -245,6 +245,8 @@ Perform the MEG Experiment (Participant is present)
         - Phone
     - If the subject arrives with make-up, ask him/her to completely remove it
     - Ask the participant to put their phone on Airplane mode
+    - Put your own phone and all other phones in the MEG lab on airplane mode
+    - Call the security guard on `85849` and ask them to turn off their walkie-talkies for the duration of the experiment
 
 #. Perform the FastScan laser head scan
     - Capping the participant
@@ -366,6 +368,15 @@ Perform the MEG Experiment (Participant is present)
 
         HPI Coils placement on head.
 
+
+    - Communicate with participant
+        - Turn on the microphone [IMAGE]
+        - Talk to the participant through the Vpixx microphone
+        - Make sure the participant is replying back and that the voice quality is good
+        - Tell them that the experiment is about to start and that they should refrain from any movement
+        - Tell them that if they need to speak to you for any urgent issue, they can freely do this at any time
+        - Turn off the microphone [IMAGE]
+
 #. Run experiment and recording
     - Run your script until it lands on the `Introduction Page` of your script as explaind in the :ref:`design_experiment` section.
     - Prepare MEG recording
@@ -404,130 +415,52 @@ Perform the MEG Experiment (Participant is present)
        - Time: 4000 [66 minutes] (this is the maximum possible time in the MEG160 software)
        - Start Acquisition
 
-
    - [While end-of-task text is prompted] Perform marker measurement again as in the step above
-
    - Main task - block 1 (see points 8-10)
      - Start recording
      - Talk with subject
      - Switch ON USB dial
      - Start task
-
    - [While end-of-task text is prompted] Marker measurement (see point 7)
-
    - Main task - block 2 (see points 8-10)
      - Start recording
      - Talk with subject
      - Start task
-
    - [While end-of-task text is prompted] Marker measurement (see point 7)
-
    - Main task - block 3 (see points 8-10)
      - Start recording
      - Talk with subject
      - Start task
-
    - [While end-of-task text is prompted] Marker measurement (see point 7)
-
    - Finish up MEG session (see point 11)
      - Talk with subject
-
-
-Experimental Task
-=================
-
-#. Start experimental task
-   ------------------------
-
-   - Talk with the participant, make sure she is comfortable, and let her know the experiment will start soon.
-
-   - Switch off microphone
-
-   - Functional localizer
-     - Read instructions task
-
-       "Now, you will do the visual perception task. You will see a red dot moving on the screen. You have two things to do:
-
-       First, all the time, look at the point in the center of the screen. You have to press a button when the fixation point changes its luminance, that is when the point flickers.
-
-       Second, you have to press a button when the color of the moving dot is NOT red.
-
-       In both cases, you have to press the button as fast as possible and only once. Do not keep the button pressed.
-       And please, do not move and blink as little as possible."
-
-     - On Vpixx computer, in MATLAB:
-       - Run script of functional localizer
-       - Introduce subject ID and session number
-
-   - Sequential working memory task
-     - Read instructions task
-
-       "Now, you will do the memory task. You will see a sequence of dots and, after a few seconds, you have to reproduce the exact same sequence.
-
-       To respond, move the dial to change the location of the gray dot shown on the screen. When the gray dot is in the right location, stop touching the dial and then press a button to select that location. Then, you will see that the color of the dot becomes red. Because the dial is very sensitive, if you keep touching the dial while pressing the button, it is very likely that you will select an incorrect location. Please, remember to untouch the dial while pressing a button.
-
-       You have to keep your gaze on the center of the screen, and press a button when the fixation point changes its luminance and flickers, as you did in the perception task.
-
-       One final thing. You cannot blink during the task, only between trials, or while responding if extremely necessary. This is important for the quality of the data we are recording. This is why you have to press a button before starting any trial, to give you time to blink.
-
-       Please, remember not to move during the whole session."
-
-     - Switch off the microphone!
-
-     - On Vpixx computer, in MATLAB:
-       - Run script of functional localizer
-       - Introduce subject ID, session number, and block
-
-
-Stop Continuous Recording
-=========================
-
-#. Stop continuous recording (when task finishes)
-   ----------------------------------------------
-
+#. Stop continuous recording (when task finishes, or if the experiment spans for more than 4000 seconds and needs a new recording)
    - On “Monitor and Acquisition” window - see picture 14:
      - Continuous Mode > Abort
-
-
-Finish MEG Session
-==================
-
 #. Finish up the MEG session (when all tasks are done!)
-   ---------------------------------------------------
-
    - On “Monitor and Acquisition” window:
      - ‘Unlock’ [VERY IMPORTANT STEP, DO NOT OPEN THE DOOR BEFORE IT]
      - Close MEG160 software
-
 #. Take out participant from MSR
-   -----------------------------
-
    - [ONLY WHEN SENSORS ARE UNLOCK!] Open the MSR door
    - When removing the head-position indicator coils and earphones, do the removal yourself. The coils in particular are very fragile and expensive. Remove with care.
+   - Ask participant to change clothes back and put the scrubs in the wash bin (in the laser scan room)
    - Pay the participant and make her sign the receipt.
 
 
-After MEG Session
-=================
+After the MEG session
+---------------------
 
 #. Settings MEG
-   ------------
-
    - Do not shut down any of the computers. They can all be locked or logged off.
-   - Turn on the heater cable [THIS IS VERY IMPORTANT] - see picture 6
+   - Turn on the heater cable [THIS IS VERY IMPORTANT] - see picture above
    - Switch off the dial through the USB board.
    - Turn off the MSR lights.
    - Double-check that you turned the heater cable back on.
-
 #. Clean room
-   ----------
-
    - Clean the helmet, head-position indicator coils, and button box with alcohol wipes.
    - Wipe down the FastScan neck brace and any other surfaces the participant came in contact with
-
 #. Postprocessing
-   --------------
-
    - FastScan Instructions
      - Open FastScanII software (icon on desktop)
      - Open <projectname>_sub<subjectID>_sess<session_number>_<date in ddmmyyyy>_raw.fsn file previously generated (Desktop > FastScan Files)
@@ -544,82 +477,17 @@ After MEG Session
      - File > Export > save as
        - sweeps by appending ‘_basic’ to the filename: <projectname>_sub<subjectID>_sess<session_number>_<date in ddmmyyyy>_basic
        - points by appending  ‘_points’ to the filename: <projectname>_sub<subjectID>_sess<session_number>_<date in ddmmyyyy>_points
-
-
-Uploading Data to the Server (GAYA)
-===================================
-
-#. Save data into lab server (ex: for Sreenivassan lab: Pegasus32R8)
-   -----------------------------------------------------------------
-
-   - On MEG MAIN PC
-     - Explorer > Right-click on ‘Computer’ > Map Network drive > Drive: A: (or any unused drive) > \\10.224.45.39\Pegasus32R8 > [unselect] Reconnect at logon > Finish
-     - Copy empty room recordings:
-       - From: D:\MEGDATA\sreenivasan_lab\CODE\emptyroom
-       - To: /Pegasus32R8/studies/CODE/data/MEG/emptyroom
-       - Includes: <>.con # this is the MEG raw data
-     - Copy subject’s folder to the server:
-       - From: D:\MEGDATA\sreenivasan_lab\CODE\sub<subjectID>\sess<session_number>
-       - To: /Pegasus32R8/studies/CODE/data/MEG/sub_<subjectID>/sess/<session_number>
-       - Includes:
-         - <>.con # MEG data
-         - <>.mrk # markers
-
-   - On the FASTSCAN computer:
-     - Mount server (same as above - may take time)
-     - Copy subject’s files
-       - From: C:\Users\meglab\FastScan Files\sreenivasan_lab\CODE\sub_<subjectID>\sess<session_number>
-       - Files:
-         - <subjectID>
-         - <subjectID>_points
-         - <subjectID>_basic
-       - To: /Pegasus32R8/studies/CODE/data/head_shape/sub_<subjectID>/sess_<session_number>
-
-   - On the Vpixx computer:
-     - Mount server (same as above - may take time)
-     - Copy subject’s folder to the server:
-       - From: C:\Users\vpixx\Desktop\sreenivasan_lab\CODE\results\behavior\sub<subjectID>\sess<session_number>
-       - To: /Pegasus32R8/studies/CODE/data/behavioral/sub_<subjectID>/sess_<session_number>
-       - Includes:
-         - functional_localizer.m
-         - responses_task.m
-         - responses_task_backup.m
-         - task_trial_presentation.m
-
-
-
-
-
-
-
-
-
-#. To be sorted
-
-#. Big steps:
-    #. Laser Scan of the head: participant head scan, stylus marking on head Output: surface
-    #. Participant in the MSR:
-        #. Attach the HPI coils to the participant
-    #. Experiment being run
-        #. Attach the HPI coils to the participant experiment conducted
-    #. Participant outside the MSR, experiment finished, back to normal clothes
-
+#. Uploading to NYU BOX
+    - You should have your own folder on `NYU BOX` named after your project
+    - Refer to the uploading data section to upload your data
 #. Wake HeadScan computer system in preparation room
-
 #. Prepare rooms:
    - Fresh linen
    - Clear tape
    - Earbuds inside MSR
-   - Camera monitor on
-   - For female participants: sign on door, block door
+   - Camera monitor on (Camera is still not available yet)
+   - For veil-wearing female participants: sign on door, block door with the isolation found behind the laser scan room door
 
-#. Take participant’s informed consent, demographics
-
-#. Change participant into scrubs
-
-#. Seat participant in static chair. Mark the face for laser point marking (1-7) for placement of markers inside the MSR
-
-#. Scan the head with HeadScan computer and register laser points 1-7
 
 #. Phones in airplane mode, heater off, call security to request they switch off their radios
 
