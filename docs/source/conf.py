@@ -78,7 +78,9 @@ html_static_path = ["_static"]
 # -- Options for EPUB output
 epub_show_urls = "footnote"
 
-
+latex_documents = [
+    ('manual_index', 'PartialDocs.tex', 'Partial Documentation', 'Author Name', 'manual'),
+]
 
 def run_generate_system_status_dashboards_script(app: Sphinx):
     """Run the dashboard generation script."""

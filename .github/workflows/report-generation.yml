@@ -1,45 +1,38 @@
-name: MEG Manual Generation
+name: Build PDF from Docs
 
 on:
   push:
     branches:
-      - main  # You can change this to any branch you want
-  pull_request:
-  workflow_dispatch:  # Allows manual triggering from GitHub Actions UI
+      - main
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Step 2: Set up Python environment
-      - name: Setup Python
-        uses: actions/setup-python@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
           python-version: '3.x'
 
-      # Step 3: Install Sphinx and dependencies
-      - name: Install Sphinx and dependencies
+      - name: Install LaTeX and other dependencies
         run: |
+          sudo apt-get update
+          sudo apt-get install texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended latexmk
           python -m pip install --upgrade pip
-          pip install -r docs/requirements.txt  # Make sure you have your Sphinx dependencies here
+          pip install sphinx rst2pdf
 
-      # Step 4: Install LaTeX to build the PDF
-      - name: Install LaTeX
-        run: sudo apt-get install texlive-full -y
-
-      # Step 5: Build the LaTeX output
-      - name: Build LaTeX files from Sphinx
+      - name: Build PDF
         run: |
-          make -C docs latexpdf  # Change 'docs' if your conf.py is located in a different directory
+          cd docs  # Assuming your documentation is in a `docs` folder
+          make latexpdf
 
-      # Step 6: Upload PDF as an artifact
-      - name: Upload PDF
+      - name: Upload PDF as artifact
         uses: actions/upload-artifact@v3
         with:
-          name: documentation-pdf
-          path: docs/_build/latex/*.pdf  # Adjust the path based on where your build outputs the PDF
+          name: docs-pdf
+          path: docs/_build/latex/*.pdf  # Adjust if necessary
