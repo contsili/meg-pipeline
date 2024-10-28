@@ -281,7 +281,20 @@ Perform the MEG Experiment (Participant is present)
             :alt: Neck brace with tissue for sanitary purposes
             :align: center
 
-            Neck brace with tissue for sanitary purposes
+            Neck brace with tissue for sanitary purposes.
+
+    - Perform laser scan
+        - Once FastScan is finished initializing (indicated at the bottom of the software UI):
+            - Ask the participant to close their eyes and avoid any movements until scan is finished
+            - Open `FastScan II` software on the computer
+            - Press 'New'
+            - Ensure the scanner is in Sweep mode (add [IMAGE])
+            - Point the laser gun at the stationary point (the box on the ring you place around the neck, [IMAGE]) with a half-click, followed by a full click.
+            - Scan head shape (sweeps) with full click. Tips:
+                - All cap surface + surfaces with fiducial points
+                - Avoid overlapping sweeps
+                - Making sweeps for head and face separately.
+                - Keep a consistent distance between the head and scanner.
 
 
 
