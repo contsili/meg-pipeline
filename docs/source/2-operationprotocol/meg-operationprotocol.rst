@@ -295,8 +295,306 @@ Perform the MEG Experiment (Participant is present)
                 - Avoid overlapping sweeps
                 - Making sweeps for head and face separately.
                 - Keep a consistent distance between the head and scanner.
+        - After sweeps, switch to Laser Points and click on Stylus List for points options, ensure that Stylus > Properties > Capture Points (NOT capture lines)
+            - Close the flap down on the laser gun and start registering the fiducial points following this order - see picture.
+            - Nasion - between eye-brows (not marked)
+            - (Participant's) left tragus - cartilage of left ear (not marked)
+            - Right tragus - cartilage of right ear (not marked)
+            - Left marker - marked left ear
+            - Right marker - marked right ear
+            - Center forehead - marked center forehead point
+            - Left forehead - marked left forehead point
+            - Right forehead - marked right forehead point
+        - Ensure that you have only 8 points selected on the Stylus List
+        - Tell participant they can move back again
+    - Return the scanner and box to the foam holder on the table, and make sure none of the cords are on the floor
+        `THIS IS A VERY EXPENSIVE DEVICE` - see picture
+
+    .. figure:: figures/meg-operationprotocol/fast_scan_pack.png
+        :alt: Fast Scanner Box
+        :align: center
+
+        FastScan divide MUST be always like this: laser on foam, cables on table (not floor).
+
+    - Put off the neck brace and make subject stand up
+        - Save as (this is the .fsn files)
+        - Create folder: FastScan Files/<Lab_Name>/<Study CODE>/sub_<subjectID>/ sess_<session_number>
+        - [e.g. sub_12/sess_01]
+        - Filename: sub-<subjectID>-sess-<session_number>_<data in yyyymmdd>_raw
+        - Export as basic surface   (check)
+        - Save the file and press `Yes` to export stylus points aswell
 
 
+#. Marker Box check
+    - Switch on the marker box (inside of MSR) - see picture
+
+    .. figure:: figures/meg-operationprotocol/marker_box.png
+        :alt: Marker Box
+        :align: center
+
+        Marker box.
+
+    - When the marker box is switched on with the power button, there is a light on for a brief moment. If there is no light, batteries run out of energy and should be changed (see below picture of rechargeable battery device).
+
+    .. figure:: figures/meg-operationprotocol/batteries.png
+        :alt: Batteries
+        :align: center
+
+        Rechargeable batteries.
+
+#. Participant goes into the MSR
+    - Subject wears off the shoes
+    - Subject sits on the bed (looking at the small table)
+    - Place the five Head Position Indicator (HPI) coils on the marker points - see picture below [IMAGE]
+        - Each HPI coil is marked by a color that correspond to the position of placement of the coil on the head
+        - The position of the HPI coil on the participant's head should follow the following mapping
+        - Bring the forehead markers over the top of the head so the wires are not in the participant’s face
+        - Do not loop the ear markers behind the ears
+    - Place earphones [IMAGE]
+    - Assist the participant with the wires while they move into the helmet [IMAGE]
+    - Place the bubble wrap burritos on the sides of the participant’s head as shown in the photo. This will help to keep their head still as well as keeping the ear marker coils against the head if the tape fails. You may also want to put tissues around the foam for sanitary purposes.
+    - Place the pillow on the legs for the back rest
+    - [Optional] if the experiment requires it, place the `Vpixx Response Box` or the `Dial` to their right/or left hand (depending on their convenience)
+        - Tape the box to the mattress, to avoid making the box fall from the mattress
+    - Tape any loose wires for the markers and the button boxes
+    - **Ensure  that the participant is comfortable**
+    - Close and lock the MSR door
+
+    .. figure:: figures/meg-operationprotocol/hpi_coils.png
+        :alt: hpi coils
+        :align: center
+
+        HPI Coils placement on head.
+
+#. Run experiment and recording
+    - Run your script until it lands on the `Introduction Page` of your script as explaind in the :ref:`design_experiment` section.
+    - Prepare MEG recording
+
+
+#. Prepare MEG recording
+    - On ‘MEG MAIN PC’ computer, open MEG Lab (on desktop), aka MEG160
+
+    - When the participant is in the MSR, and door is CLOSED
+        - From the menu  “Acquire (Q)”, select “Auto Tuning (A)” > OK On “Monitor and Acquisition” window > Sensor Control
+        - From the menu “Acquire (Q)”, select “MEG Measurement (Q)”
+        - On “Monitor and Acquisition” window > ‘Data Acquisition’
+            - Patient ID: <projectname>_<subjectID>
+            - Patient Name: <projectname>_sub<subjectID>_sess<session_number>_<data in ddmmyyyy> [e.g., CODE_sub001_sess01_10032023]
+            - Foldername: D:\MEGDATA\<Lab_name>\CODE\sub<subjectID>
+        - “Lock” [only if MSR door is CLOSED]
+        - Wait until MEG sensors are stable i.e. no upward or downards trend
+
+   - Perform marker measurement
+       - Switch off microphone [IMAGE]
+       - On “Monitor and Acquisition” window:
+         - Marker measurement > Start > OK - see picture
+         - When done, column ‘GOF%’ should be around 99%
+         - If not, at least one of the head coils is misplaced (proceed unless there are fewer than 3 head coils in place)
+         - Click OK
+
+        .. figure:: figures/meg-operationprotocol/daq_measurement.png
+            :alt: Daq measurement
+            :align: center
+
+            Continuous mode (left) and Marker measurement (right).
+
+   - On “Monitor and Acquisition” window:
+     - Continuous Mode > Start - see above picture
+       - Sampling rate: 1000 (default)
+       - Time: 4000 [66 minutes] (this is the maximum possible time in the MEG160 software)
+       - Start Acquisition
+
+
+   - [While end-of-task text is prompted] Perform marker measurement again as in the step above
+
+   - Main task - block 1 (see points 8-10)
+     - Start recording
+     - Talk with subject
+     - Switch ON USB dial
+     - Start task
+
+   - [While end-of-task text is prompted] Marker measurement (see point 7)
+
+   - Main task - block 2 (see points 8-10)
+     - Start recording
+     - Talk with subject
+     - Start task
+
+   - [While end-of-task text is prompted] Marker measurement (see point 7)
+
+   - Main task - block 3 (see points 8-10)
+     - Start recording
+     - Talk with subject
+     - Start task
+
+   - [While end-of-task text is prompted] Marker measurement (see point 7)
+
+   - Finish up MEG session (see point 11)
+     - Talk with subject
+
+
+Experimental Task
+=================
+
+#. Start experimental task
+   ------------------------
+
+   - Talk with the participant, make sure she is comfortable, and let her know the experiment will start soon.
+
+   - Switch off microphone
+
+   - Functional localizer
+     - Read instructions task
+
+       "Now, you will do the visual perception task. You will see a red dot moving on the screen. You have two things to do:
+
+       First, all the time, look at the point in the center of the screen. You have to press a button when the fixation point changes its luminance, that is when the point flickers.
+
+       Second, you have to press a button when the color of the moving dot is NOT red.
+
+       In both cases, you have to press the button as fast as possible and only once. Do not keep the button pressed.
+       And please, do not move and blink as little as possible."
+
+     - On Vpixx computer, in MATLAB:
+       - Run script of functional localizer
+       - Introduce subject ID and session number
+
+   - Sequential working memory task
+     - Read instructions task
+
+       "Now, you will do the memory task. You will see a sequence of dots and, after a few seconds, you have to reproduce the exact same sequence.
+
+       To respond, move the dial to change the location of the gray dot shown on the screen. When the gray dot is in the right location, stop touching the dial and then press a button to select that location. Then, you will see that the color of the dot becomes red. Because the dial is very sensitive, if you keep touching the dial while pressing the button, it is very likely that you will select an incorrect location. Please, remember to untouch the dial while pressing a button.
+
+       You have to keep your gaze on the center of the screen, and press a button when the fixation point changes its luminance and flickers, as you did in the perception task.
+
+       One final thing. You cannot blink during the task, only between trials, or while responding if extremely necessary. This is important for the quality of the data we are recording. This is why you have to press a button before starting any trial, to give you time to blink.
+
+       Please, remember not to move during the whole session."
+
+     - Switch off the microphone!
+
+     - On Vpixx computer, in MATLAB:
+       - Run script of functional localizer
+       - Introduce subject ID, session number, and block
+
+
+Stop Continuous Recording
+=========================
+
+#. Stop continuous recording (when task finishes)
+   ----------------------------------------------
+
+   - On “Monitor and Acquisition” window - see picture 14:
+     - Continuous Mode > Abort
+
+
+Finish MEG Session
+==================
+
+#. Finish up the MEG session (when all tasks are done!)
+   ---------------------------------------------------
+
+   - On “Monitor and Acquisition” window:
+     - ‘Unlock’ [VERY IMPORTANT STEP, DO NOT OPEN THE DOOR BEFORE IT]
+     - Close MEG160 software
+
+#. Take out participant from MSR
+   -----------------------------
+
+   - [ONLY WHEN SENSORS ARE UNLOCK!] Open the MSR door
+   - When removing the head-position indicator coils and earphones, do the removal yourself. The coils in particular are very fragile and expensive. Remove with care.
+   - Pay the participant and make her sign the receipt.
+
+
+After MEG Session
+=================
+
+#. Settings MEG
+   ------------
+
+   - Do not shut down any of the computers. They can all be locked or logged off.
+   - Turn on the heater cable [THIS IS VERY IMPORTANT] - see picture 6
+   - Switch off the dial through the USB board.
+   - Turn off the MSR lights.
+   - Double-check that you turned the heater cable back on.
+
+#. Clean room
+   ----------
+
+   - Clean the helmet, head-position indicator coils, and button box with alcohol wipes.
+   - Wipe down the FastScan neck brace and any other surfaces the participant came in contact with
+
+#. Postprocessing
+   --------------
+
+   - FastScan Instructions
+     - Open FastScanII software (icon on desktop)
+     - Open <projectname>_sub<subjectID>_sess<session_number>_<date in ddmmyyyy>_raw.fsn file previously generated (Desktop > FastScan Files)
+     - Click on ‘Select’ and start dragging your mouse over areas you want to delete
+     - To delete points you’ve selected, simply click on the backspace key on your keyboard
+     - Then go to Edit > Generate Surface
+       - Smoothing = 5mm
+       - Decimation = 3mm
+     - In the pop-up, click on Apply Basic Surface, then close it
+     - To save your head scan, go to File > Save As > [attention to path] FastScan Files/sreenivasan_lab/sub_<subjectID>/ sess_<session_number>/<projectname>_sub<subjectID>_sess<session_number>_<date in ddmmyyyy>.fsn
+     - Edit > Generate surface > Apply basic surface
+       - Basic surface has fewer than 10,000 points
+       - If not, decimate: Generate > Surface Simplification = 0.10 > Apply (Basic Surface)
+     - File > Export > save as
+       - sweeps by appending ‘_basic’ to the filename: <projectname>_sub<subjectID>_sess<session_number>_<date in ddmmyyyy>_basic
+       - points by appending  ‘_points’ to the filename: <projectname>_sub<subjectID>_sess<session_number>_<date in ddmmyyyy>_points
+
+
+Uploading Data to the Server (GAYA)
+===================================
+
+#. Save data into lab server (ex: for Sreenivassan lab: Pegasus32R8)
+   -----------------------------------------------------------------
+
+   - On MEG MAIN PC
+     - Explorer > Right-click on ‘Computer’ > Map Network drive > Drive: A: (or any unused drive) > \\10.224.45.39\Pegasus32R8 > [unselect] Reconnect at logon > Finish
+     - Copy empty room recordings:
+       - From: D:\MEGDATA\sreenivasan_lab\CODE\emptyroom
+       - To: /Pegasus32R8/studies/CODE/data/MEG/emptyroom
+       - Includes: <>.con # this is the MEG raw data
+     - Copy subject’s folder to the server:
+       - From: D:\MEGDATA\sreenivasan_lab\CODE\sub<subjectID>\sess<session_number>
+       - To: /Pegasus32R8/studies/CODE/data/MEG/sub_<subjectID>/sess/<session_number>
+       - Includes:
+         - <>.con # MEG data
+         - <>.mrk # markers
+
+   - On the FASTSCAN computer:
+     - Mount server (same as above - may take time)
+     - Copy subject’s files
+       - From: C:\Users\meglab\FastScan Files\sreenivasan_lab\CODE\sub_<subjectID>\sess<session_number>
+       - Files:
+         - <subjectID>
+         - <subjectID>_points
+         - <subjectID>_basic
+       - To: /Pegasus32R8/studies/CODE/data/head_shape/sub_<subjectID>/sess_<session_number>
+
+   - On the Vpixx computer:
+     - Mount server (same as above - may take time)
+     - Copy subject’s folder to the server:
+       - From: C:\Users\vpixx\Desktop\sreenivasan_lab\CODE\results\behavior\sub<subjectID>\sess<session_number>
+       - To: /Pegasus32R8/studies/CODE/data/behavioral/sub_<subjectID>/sess_<session_number>
+       - Includes:
+         - functional_localizer.m
+         - responses_task.m
+         - responses_task_backup.m
+         - task_trial_presentation.m
+
+
+
+
+
+
+
+
+
+#. To be sorted
 
 #. Big steps:
     #. Laser Scan of the head: participant head scan, stylus marking on head Output: surface
