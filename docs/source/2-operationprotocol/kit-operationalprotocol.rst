@@ -194,9 +194,14 @@ Prepare the lab equipment (prior to participant arrival) Estimated Time: 20min
         - Make sure you arrive to the `Introduction Page` mentioned in the :ref:`design_experiment` section
     - You can make a quick test run to make sure that trigger signals are appearing correctly on the `MEG160` software
 
+#. Turn-off the bell ring at the entrance of the lab by turning off the plug [IMAGE]
 
 Perform the MEG Experiment (Participant is present)
 ---------------------------------------------------
+
+#. If the participant is a veil-wearing female:
+    - sign on door
+    - block door with the isolation found behind the laser scan room door
 
 #. Welcoming the participant and providing them with explanations
     - [WELCOME] Thank you for joining our study. Is this your first time in the MEG?
@@ -245,6 +250,8 @@ Perform the MEG Experiment (Participant is present)
         - Phone
     - If the subject arrives with make-up, ask him/her to completely remove it
     - Ask the participant to put their phone on Airplane mode
+    - Put your own phone and all other phones in the MEG lab on airplane mode
+    - Call the security guard on `85849` and ask them to turn off their walkie-talkies for the duration of the experiment
 
 #. Perform the FastScan laser head scan
     - Capping the participant
@@ -281,86 +288,213 @@ Perform the MEG Experiment (Participant is present)
             :alt: Neck brace with tissue for sanitary purposes
             :align: center
 
-            Neck brace with tissue for sanitary purposes
+            Neck brace with tissue for sanitary purposes.
+
+    - Perform laser scan
+        - Once FastScan is finished initializing (indicated at the bottom of the software UI):
+            - Ask the participant to close their eyes and avoid any movements until scan is finished
+            - Open `FastScan II` software on the computer
+            - Press 'New'
+            - Ensure the scanner is in Sweep mode (add [IMAGE])
+            - Point the laser gun at the stationary point (the box on the ring you place around the neck, [IMAGE]) with a half-click, followed by a full click.
+            - Scan head shape (sweeps) with full click. Tips:
+                - All cap surface + surfaces with fiducial points
+                - Avoid overlapping sweeps
+                - Making sweeps for head and face separately.
+                - Keep a consistent distance between the head and scanner.
+        - After sweeps, switch to Laser Points and click on Stylus List for points options, ensure that Stylus > Properties > Capture Points (NOT capture lines)
+            - Close the flap down on the laser gun and start registering the fiducial points following this order - see picture.
+            - Nasion - between eye-brows (not marked)
+            - (Participant's) left tragus - cartilage of left ear (not marked)
+            - Right tragus - cartilage of right ear (not marked)
+            - Left marker - marked left ear
+            - Right marker - marked right ear
+            - Center forehead - marked center forehead point
+            - Left forehead - marked left forehead point
+            - Right forehead - marked right forehead point
+        - Ensure that you have only 8 points selected on the Stylus List
+        - Tell participant they can move back again
+    - Return the scanner and box to the foam holder on the table, and make sure none of the cords are on the floor
+        `THIS IS A VERY EXPENSIVE DEVICE` - see picture
+
+    .. figure:: figures/meg-operationprotocol/fast_scan_pack.png
+        :alt: Fast Scanner Box
+        :align: center
+
+        FastScan divide MUST be always like this: laser on foam, cables on table (not floor).
+
+    - Put off the neck brace and make subject stand up
+        - Save as (this is the .fsn files)
+        - Create folder: FastScan Files/<Lab_Name>/<Study CODE>/sub_<subjectID>/ sess_<session_number>
+        - [e.g. sub_12/sess_01]
+        - Filename: sub-<subjectID>-sess-<session_number>_<data in yyyymmdd>_raw
+        - Export as basic surface   (check)
+        - Save the file and press `Yes` to export stylus points aswell
+
+
+#. Marker Box check
+    - Switch on the marker box (inside of MSR) - see picture
+
+    .. figure:: figures/meg-operationprotocol/marker_box.png
+        :alt: Marker Box
+        :align: center
+
+        Marker box.
+
+    - When the marker box is switched on with the power button, there is a light on for a brief moment. If there is no light, batteries run out of energy and should be changed (see below picture of rechargeable battery device).
+        - The marker box requires 4 rechargeable AA batteries
+
+        .. figure:: figures/meg-operationprotocol/batteries.png
+            :alt: Batteries
+            :align: center
+
+            Rechargeable batteries.
+
+#. Participant goes into the MSR
+    - Subject wears off the shoes
+    - Subject sits on the bed (looking at the small table)
+    - Place the five Head Position Indicator (HPI) coils on the marker points - see picture below [IMAGE]
+        - Each HPI coil is marked by a color that correspond to the position of placement of the coil on the head
+        - The position of the HPI coil on the participant's head should follow the following mapping
+        - Bring the forehead markers over the top of the head so the wires are not in the participant’s face
+        - Do not loop the ear markers behind the ears
+    - Place earphones [IMAGE]
+    - Assist the participant with the wires while they move into the helmet [IMAGE]
+    - Place the bubble wrap burritos on the sides of the participant’s head as shown in the photo. This will help to keep their head still as well as keeping the ear marker coils against the head if the tape fails. You may also want to put tissues around the foam for sanitary purposes.
+    - Place the pillow on the legs for the back rest
+    - [Optional] if the experiment requires it, place the `Vpixx Response Box` or the `Dial` to their right/or left hand (depending on their convenience)
+        - Tape the box to the mattress, to avoid making the box fall from the mattress
+    - Tape any loose wires for the markers and the button boxes
+    - **Ensure  that the participant is comfortable**
+    - Close and lock the MSR door
+
+    .. figure:: figures/meg-operationprotocol/hpi_coils.png
+        :alt: hpi coils
+        :align: center
+
+        HPI Coils placement on head.
+
+
+    - Communicate with participant
+        - Turn on the microphone [IMAGE]
+        - Talk to the participant through the Vpixx microphone
+        - Make sure the participant is replying back and that the voice quality is good
+        - Tell them that the experiment is about to start and that they should refrain from any movement
+        - Tell them that if they need to speak to you for any urgent issue, they can freely do this at any time
+        - Turn off the microphone [IMAGE]
+
+#. Run experiment and recording
+    - Run your script until it lands on the `Introduction Page` of your script as explaind in the :ref:`design_experiment` section.
+    - Prepare MEG recording
+#. Prepare MEG recording
+    - On ‘MEG MAIN PC’ computer, open MEG Lab (on desktop), aka MEG160
+    - When the participant is in the MSR, and door is CLOSED
+        - From the menu  “Acquire (Q)”, select “Auto Tuning (A)” > OK On “Monitor and Acquisition” window > Sensor Control
+        - From the menu “Acquire (Q)”, select “MEG Measurement (Q)”
+        - On “Monitor and Acquisition” window > ‘Data Acquisition’
+            - Patient ID: <projectname>_<subjectID>
+            - Patient Name: <projectname>_sub<subjectID>_sess<session_number>_<data in ddmmyyyy> [e.g., CODE_sub001_sess01_10032023]
+            - Foldername: D:\MEGDATA\<Lab_name>\CODE\sub<subjectID>
+        - “Lock” [only if MSR door is CLOSED]
+        - Wait until MEG sensors are stable i.e. no upward or downards trend
+    - Perform marker measurement
+        - Switch off microphone [IMAGE]
+        - On “Monitor and Acquisition” window:
+        - Marker measurement > Start > OK - see picture
+        - When done, column ‘GOF%’ should be around 99%
+        - If not, at least one of the head coils is misplaced (proceed unless there are fewer than 3 head coils in place)
+        - Click OK
+
+        .. figure:: figures/meg-operationprotocol/daq_measurement.png
+            :alt: Daq measurement
+            :align: center
+
+            Continuous mode (left) and Marker measurement (right).
+
+        - If your experiment is lengthy i.e. 2 hours long, we recommend that you perform a marker measurement in between, i.e., after 1 hour is elapsed
+    - On “Monitor and Acquisition” window:
+        - Continuous Mode > Start - see above picture
+        - Sampling rate: 1000 (default)
+        - Time: 4000 [66 minutes] (this is the maximum possible time in the MEG160 software)
+        - Start Acquisition
+    - [While end-of-task text is prompted] Perform marker measurement again as in the step above
+    - Main task - block 1 (see points 8-10)
+        - Start recording
+        - Talk with subject
+        - Switch ON USB dial
+        - Start task
+    - [While end-of-task text is prompted] Marker measurement (see point 7)
+    - Main task - block 2 (see points 8-10)
+        - Start recording
+        - Talk with subject
+        - Start task
+    - [While end-of-task text is prompted] Marker measurement (see point 7)
+    - Main task - block 3 (see points 8-10)
+        - Start recording
+        - Talk with subject
+        - Start task
+    - [While end-of-task text is prompted] Perform another Marker measurement (see point 7)
+    - Finish up MEG session (see point 11)
+        - Talk with subject
+#. Stop continuous recording (when task finishes, or if the experiment spans for more than 4000 seconds and needs a new recording)
+    - On “Monitor and Acquisition” window - see picture 14:
+        - Continuous Mode > Abort
+#. Finish up the MEG session (when all tasks are done!)
+    - On “Monitor and Acquisition” window:
+        - ‘Unlock’ [VERY IMPORTANT STEP, DO NOT OPEN THE DOOR BEFORE IT]
+        - Close MEG160 software
+#. Take out participant from MSR
+    - [ONLY WHEN SENSORS ARE UNLOCK!] Open the MSR door
+    - When removing the head-position indicator coils and earphones, do the removal yourself. The coils in particular are very fragile and expensive. Remove with care.
+    - Ask participant to change clothes back and put the scrubs in the wash bin (in the laser scan room)
+    - Pay the participant and make her sign the receipt.
+
+
+After the MEG session
+---------------------
+
+#. Settings MEG
+   - Do not shut down any of the computers. They can all be locked or logged off.
+   - Turn on the heater cable [THIS IS VERY IMPORTANT] - see picture above
+   - Switch off the dial through the USB board.
+   - Turn off the MSR lights.
+   - Double-check that you turned the heater cable back on.
+#. Clean room
+   - Clean the helmet, head-position indicator coils, and button box with alcohol wipes.
+   - Wipe down the FastScan neck brace and any other surfaces the participant came in contact with
+#. Postprocessing
+    - Apply Noise Reduction filter using the reference magnetometers
+        - The KIT system is equipped with reference magnetometers on channels 208 till 223, that measures the external magnetic field
+        - [Optional] you can noise reduce your SQUID data (channel 0-207) by applying a filter that uses the data from channels 208 to 223
+            - Open the produced `.con` file in the default app `MEG160` then apply a Noise Reduction filter using Edit -> Noise Reduction
+            - Make sure the Magnetometers on channels 208, 209, 210 are used.
+            - Execute the noise reduction, then File -> Save As -> add `_NR` at the end of the file name.
+            - Transfer both files to NYU BOX as detailed in the data uploading section.
+    - FastScan Instructions
+        - Open FastScanII software (icon on desktop)
+        - Open <projectname>_sub<subjectID>_sess<session_number>_<date in ddmmyyyy>_raw.fsn file previously generated (Desktop > FastScan Files)
+        - Click on ‘Select’ and start dragging your mouse over areas you want to delete
+        - To delete points you’ve selected, simply click on the backspace key on your keyboard
+        - Then go to Edit > Generate Surface
+            - Smoothing = 5mm
+            - Decimation = 3mm
+    - In the pop-up, click on Apply Basic Surface, then close it
+    - To save your head scan, go to File > Save As > [attention to path] FastScan Files/sreenivasan_lab/sub_<subjectID>/ sess_<session_number>/<projectname>_sub<subjectID>_sess<session_number>_<date in ddmmyyyy>.fsn
+    - Edit > Generate surface > Apply basic surface
+        - Basic surface has fewer than 10,000 points
+        - If not, decimate: Generate > Surface Simplification = 0.10 > Apply (Basic Surface)
+    - File > Export > save as
+        - sweeps by appending ‘_basic’ to the filename: <projectname>_sub<subjectID>_sess<session_number>_<date in ddmmyyyy>_basic
+        - points by appending  ‘_points’ to the filename: <projectname>_sub<subjectID>_sess<session_number>_<date in ddmmyyyy>_points
+#. Uploading to NYU BOX
+    - You should have your own folder on `NYU BOX` named after your project
+    - Refer to the uploading data section to upload your data
 
 
 
-#. Big steps:
-    #. Laser Scan of the head: participant head scan, stylus marking on head Output: surface
-    #. Participant in the MSR:
-        #. Attach the HPI coils to the participant
-    #. Experiment being run
-        #. Attach the HPI coils to the participant experiment conducted
-    #. Participant outside the MSR, experiment finished, back to normal clothes
 
-#. Wake HeadScan computer system in preparation room
-
-#. Prepare rooms:
-   - Fresh linen
-   - Clear tape
-   - Earbuds inside MSR
-   - Camera monitor on
-   - For female participants: sign on door, block door
-
-#. Take participant’s informed consent, demographics
-
-#. Change participant into scrubs
-
-#. Seat participant in static chair. Mark the face for laser point marking (1-7) for placement of markers inside the MSR
-
-#. Scan the head with HeadScan computer and register laser points 1-7
-
-#. Phones in airplane mode, heater off, call security to request they switch off their radios
-
-   You are now ready to take the participant into the MSR
-
-#. Inside the MSR:
-   - Power on marker box (please check if it powers on – it is powered by 4 rechargeable AA batteries and sometimes require changing)
-   - Place 5 markers on face in correctly corresponding positions
-   - Lay participant down with comfort pad under knees and position head inside KIT
-   - Clean earbuds in participants ears (using appropriate system – Vpixx or Legacy)
-   - Left or Right Button (VPixx or Legacy) boxes in participants corresponding hand (depending on requirement of experiment)
-
-#. This is the most important step in setting up:
-
-   **CLOSE AND LOCK THE MSR DOOR**
-
-#. Open MEGLab:
-    - Acquire -> Autotuning
-
-#. Acquire -> MEG Measurement
-
-#. Lock sensors [is MSR door locked?] Evaluate signal quality
-
-#. Do a Marker measurement. If results are above 90%, you are good to go.
-
-#. Start continuous to begin recording of MEG signal
-
-#. On Stimulus2 Computer:
-    - Navigate to Experiments
-
-#. MEGLab:
-    - When experiment is done - Click Abort to stop recording
-
-#. Do one last Marker measurement
-
-   **UNLOCK SENSORS BEFORE OPENING THE MSR DOOR**
-
-Participant can now be removed from the KIT
-
-
-
-Noise reduction of the .con data
---------------------------------
-
-Open the .con file in the default app `MEG160` then apply a Noise Reduction filter using Edit -> Noise Reduction
-Make sure the Magnetometers on channels 208, 209, 210 are used.
-Execute the noise reduction, then File -> Save As -> add `_NR` at the end of the file name.
-Transfer both files to NYU BOX as detailed in the data uploading section.
-
-
-Stylus location and markers
----------------------------
+Appendix. A: Stylus location and markers
+----------------------------------------
 
 .. image:: ../graphic/markers1.jpeg
   :width: 400
@@ -371,7 +505,7 @@ Stylus location and markers
   :alt: AI generated MEG-system image
 
 
-The following table sumarises the position of each registered stylus location and whether or not a KIT coil will be placed on that position.
+The following table is a summary of the position of each registered stylus location and whether or not a KIT coil will be placed on that position.
 
 +-------+-----------------+--------------------------------------+
 | Index | Body Part       | Marker Coil Information              |
@@ -394,8 +528,8 @@ The following table sumarises the position of each registered stylus location an
 +-------+-----------------+--------------------------------------+
 
 
-Marker coils for KIT order of appearence in .mrk
-------------------------------------------------
+Appendix. B: Marker coils for KIT order of appearence in .mrk
+-------------------------------------------------------------
 
 The registered `.mrk` file containing the position of the HPI coils for KIT.
 Using `fieldtrip` function named `ft_read_headshape('PATH TO .mrk')`, we report the order of appearence
@@ -427,33 +561,9 @@ This has been tested with many `.mrk` files in the current pluggin setting (last
 
 
 
-Operational Protocol: OPM
-=========================
-
-There are three ways to coregister with OPM:
-
-way 1: laser scan the participants head and stylus points, then place participant in helmet, then laser scan the fiducials on the face again, followed by the 8 points on the OPM
-(Check if the laser scanner would work with the OPM 8 points) (this way assumes that the participant is not moving their head within the OPM helmet)
-
-way 2: laser scan the participant head and stylus points, then place the participant in helmet, then place HPI coils on known stylus points (must standardize those locations).
-In this case, a script must be ran at beginning and end of the experiment to energize the coils with sinusoidal waves of known frequencies (follow up with fieldtrip tutorial section 2)
-
-way 3: laser scan the participant, mark fiducials, then place participant in helmet, laser scan everything, mark fiducials
-Coregister both set of fiducials
 
 
 
-Training to become an MEG authorized operator
-=============================================
-
-A project owner can be trained by the MEG lab scientists to become an authorized operator.
-Over the course of a day, they will be taught about the operation protocol described above, the emergency procedures to perform, the safety rules to folow and any
-operation that must be done in the lab prior/post data acquisition.
-
-Once the training is performed, the following form should be submitted to the MEG lab scientists.
-
-.. note::
-    `Access to training attendance form <https://docs.google.com/forms/d/e/1FAIpQLScLW1MOvo-9aAwX2_04FcyLGPR9xtDso9hu9SEixUy2VzuAiw/viewform>`_
 
 
 

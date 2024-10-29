@@ -41,8 +41,9 @@ Check out the :doc:`1-systems/1-meg-kit-system` section for further information.
    :maxdepth: 2
    :caption: Operation Protocol
 
-   2-operationprotocol/participant_document
-   2-operationprotocol/meg-operationprotocol
+   2-operationprotocol/training_meg
+   2-operationprotocol/kit-operationalprotocol
+   2-operationprotocol/opm-operationalprotocol
    2-operationprotocol/eeg-fmri-protocol
 
 .. toctree::
