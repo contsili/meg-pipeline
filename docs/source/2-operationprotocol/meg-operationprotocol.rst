@@ -194,9 +194,14 @@ Prepare the lab equipment (prior to participant arrival) Estimated Time: 20min
         - Make sure you arrive to the `Introduction Page` mentioned in the :ref:`design_experiment` section
     - You can make a quick test run to make sure that trigger signals are appearing correctly on the `MEG160` software
 
+#. Turn-off the bell ring at the entrance of the lab by turning off the plug [IMAGE]
 
 Perform the MEG Experiment (Participant is present)
 ---------------------------------------------------
+
+#. If the participant is a veil-wearing female:
+    - sign on door
+    - block door with the isolation found behind the laser scan room door
 
 #. Welcoming the participant and providing them with explanations
     - [WELCOME] Thank you for joining our study. Is this your first time in the MEG?
@@ -337,7 +342,7 @@ Perform the MEG Experiment (Participant is present)
         Marker box.
 
     - When the marker box is switched on with the power button, there is a light on for a brief moment. If there is no light, batteries run out of energy and should be changed (see below picture of rechargeable battery device).
-
+        - The marker box requires 4 rechargeable AA batteries
     .. figure:: figures/meg-operationprotocol/batteries.png
         :alt: Batteries
         :align: center
@@ -409,6 +414,7 @@ Perform the MEG Experiment (Participant is present)
 
             Continuous mode (left) and Marker measurement (right).
 
+        - If your experiment is lengthy i.e. 2 hours long, we recommend that you perform a marker measurement in between, i.e., after 1 hour is elapsed
    - On “Monitor and Acquisition” window:
      - Continuous Mode > Start - see above picture
        - Sampling rate: 1000 (default)
@@ -431,7 +437,7 @@ Perform the MEG Experiment (Participant is present)
      - Start recording
      - Talk with subject
      - Start task
-   - [While end-of-task text is prompted] Marker measurement (see point 7)
+   - [While end-of-task text is prompted] Perform another Marker measurement (see point 7)
    - Finish up MEG session (see point 11)
      - Talk with subject
 #. Stop continuous recording (when task finishes, or if the experiment spans for more than 4000 seconds and needs a new recording)
@@ -461,81 +467,34 @@ After the MEG session
    - Clean the helmet, head-position indicator coils, and button box with alcohol wipes.
    - Wipe down the FastScan neck brace and any other surfaces the participant came in contact with
 #. Postprocessing
-   - FastScan Instructions
-     - Open FastScanII software (icon on desktop)
-     - Open <projectname>_sub<subjectID>_sess<session_number>_<date in ddmmyyyy>_raw.fsn file previously generated (Desktop > FastScan Files)
-     - Click on ‘Select’ and start dragging your mouse over areas you want to delete
-     - To delete points you’ve selected, simply click on the backspace key on your keyboard
-     - Then go to Edit > Generate Surface
-       - Smoothing = 5mm
-       - Decimation = 3mm
-     - In the pop-up, click on Apply Basic Surface, then close it
-     - To save your head scan, go to File > Save As > [attention to path] FastScan Files/sreenivasan_lab/sub_<subjectID>/ sess_<session_number>/<projectname>_sub<subjectID>_sess<session_number>_<date in ddmmyyyy>.fsn
-     - Edit > Generate surface > Apply basic surface
-       - Basic surface has fewer than 10,000 points
-       - If not, decimate: Generate > Surface Simplification = 0.10 > Apply (Basic Surface)
-     - File > Export > save as
-       - sweeps by appending ‘_basic’ to the filename: <projectname>_sub<subjectID>_sess<session_number>_<date in ddmmyyyy>_basic
-       - points by appending  ‘_points’ to the filename: <projectname>_sub<subjectID>_sess<session_number>_<date in ddmmyyyy>_points
+    - Apply Noise Reduction filter using the reference magnetometers
+        - The KIT system is equipped with reference magnetometers on channels 208 till 223, that measures the external magnetic field
+        - [Optional] you can noise reduce your SQUID data (channel 0-207) by applying a filter that uses the data from channels 208 to 223
+            - Open the produced `.con` file in the default app `MEG160` then apply a Noise Reduction filter using Edit -> Noise Reduction
+            - Make sure the Magnetometers on channels 208, 209, 210 are used.
+            - Execute the noise reduction, then File -> Save As -> add `_NR` at the end of the file name.
+            - Transfer both files to NYU BOX as detailed in the data uploading section.
+    - FastScan Instructions
+        - Open FastScanII software (icon on desktop)
+        - Open <projectname>_sub<subjectID>_sess<session_number>_<date in ddmmyyyy>_raw.fsn file previously generated (Desktop > FastScan Files)
+        - Click on ‘Select’ and start dragging your mouse over areas you want to delete
+        - To delete points you’ve selected, simply click on the backspace key on your keyboard
+        - Then go to Edit > Generate Surface
+            - Smoothing = 5mm
+            - Decimation = 3mm
+    - In the pop-up, click on Apply Basic Surface, then close it
+    - To save your head scan, go to File > Save As > [attention to path] FastScan Files/sreenivasan_lab/sub_<subjectID>/ sess_<session_number>/<projectname>_sub<subjectID>_sess<session_number>_<date in ddmmyyyy>.fsn
+    - Edit > Generate surface > Apply basic surface
+        - Basic surface has fewer than 10,000 points
+        - If not, decimate: Generate > Surface Simplification = 0.10 > Apply (Basic Surface)
+    - File > Export > save as
+        - sweeps by appending ‘_basic’ to the filename: <projectname>_sub<subjectID>_sess<session_number>_<date in ddmmyyyy>_basic
+        - points by appending  ‘_points’ to the filename: <projectname>_sub<subjectID>_sess<session_number>_<date in ddmmyyyy>_points
 #. Uploading to NYU BOX
     - You should have your own folder on `NYU BOX` named after your project
     - Refer to the uploading data section to upload your data
-#. Wake HeadScan computer system in preparation room
-#. Prepare rooms:
-   - Fresh linen
-   - Clear tape
-   - Earbuds inside MSR
-   - Camera monitor on (Camera is still not available yet)
-   - For veil-wearing female participants: sign on door, block door with the isolation found behind the laser scan room door
 
 
-#. Phones in airplane mode, heater off, call security to request they switch off their radios
-
-   You are now ready to take the participant into the MSR
-
-#. Inside the MSR:
-   - Power on marker box (please check if it powers on – it is powered by 4 rechargeable AA batteries and sometimes require changing)
-   - Place 5 markers on face in correctly corresponding positions
-   - Lay participant down with comfort pad under knees and position head inside KIT
-   - Clean earbuds in participants ears (using appropriate system – Vpixx or Legacy)
-   - Left or Right Button (VPixx or Legacy) boxes in participants corresponding hand (depending on requirement of experiment)
-
-#. This is the most important step in setting up:
-
-   **CLOSE AND LOCK THE MSR DOOR**
-
-#. Open MEGLab:
-    - Acquire -> Autotuning
-
-#. Acquire -> MEG Measurement
-
-#. Lock sensors [is MSR door locked?] Evaluate signal quality
-
-#. Do a Marker measurement. If results are above 90%, you are good to go.
-
-#. Start continuous to begin recording of MEG signal
-
-#. On Stimulus2 Computer:
-    - Navigate to Experiments
-
-#. MEGLab:
-    - When experiment is done - Click Abort to stop recording
-
-#. Do one last Marker measurement
-
-   **UNLOCK SENSORS BEFORE OPENING THE MSR DOOR**
-
-Participant can now be removed from the KIT
-
-
-
-Noise reduction of the .con data
---------------------------------
-
-Open the .con file in the default app `MEG160` then apply a Noise Reduction filter using Edit -> Noise Reduction
-Make sure the Magnetometers on channels 208, 209, 210 are used.
-Execute the noise reduction, then File -> Save As -> add `_NR` at the end of the file name.
-Transfer both files to NYU BOX as detailed in the data uploading section.
 
 
 Stylus location and markers
