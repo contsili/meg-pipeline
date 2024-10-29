@@ -343,6 +343,7 @@ Perform the MEG Experiment (Participant is present)
 
     - When the marker box is switched on with the power button, there is a light on for a brief moment. If there is no light, batteries run out of energy and should be changed (see below picture of rechargeable battery device).
         - The marker box requires 4 rechargeable AA batteries
+
         .. figure:: figures/meg-operationprotocol/batteries.png
             :alt: Batteries
             :align: center
