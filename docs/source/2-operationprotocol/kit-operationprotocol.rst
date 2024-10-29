@@ -493,8 +493,8 @@ After the MEG session
 
 
 
-Stylus location and markers
----------------------------
+Appendix. A: Stylus location and markers
+----------------------------------------
 
 .. image:: ../graphic/markers1.jpeg
   :width: 400
@@ -505,7 +505,7 @@ Stylus location and markers
   :alt: AI generated MEG-system image
 
 
-The following table sumarises the position of each registered stylus location and whether or not a KIT coil will be placed on that position.
+The following table is a summary of the position of each registered stylus location and whether or not a KIT coil will be placed on that position.
 
 +-------+-----------------+--------------------------------------+
 | Index | Body Part       | Marker Coil Information              |
@@ -528,8 +528,8 @@ The following table sumarises the position of each registered stylus location an
 +-------+-----------------+--------------------------------------+
 
 
-Marker coils for KIT order of appearence in .mrk
-------------------------------------------------
+Appendix. B: Marker coils for KIT order of appearence in .mrk
+-------------------------------------------------------------
 
 The registered `.mrk` file containing the position of the HPI coils for KIT.
 Using `fieldtrip` function named `ft_read_headshape('PATH TO .mrk')`, we report the order of appearence
@@ -561,33 +561,9 @@ This has been tested with many `.mrk` files in the current pluggin setting (last
 
 
 
-Operational Protocol: OPM
-=========================
-
-There are three ways to coregister with OPM:
-
-way 1: laser scan the participants head and stylus points, then place participant in helmet, then laser scan the fiducials on the face again, followed by the 8 points on the OPM
-(Check if the laser scanner would work with the OPM 8 points) (this way assumes that the participant is not moving their head within the OPM helmet)
-
-way 2: laser scan the participant head and stylus points, then place the participant in helmet, then place HPI coils on known stylus points (must standardize those locations).
-In this case, a script must be ran at beginning and end of the experiment to energize the coils with sinusoidal waves of known frequencies (follow up with fieldtrip tutorial section 2)
-
-way 3: laser scan the participant, mark fiducials, then place participant in helmet, laser scan everything, mark fiducials
-Coregister both set of fiducials
 
 
 
-Training to become an MEG authorized operator
-=============================================
-
-A project owner can be trained by the MEG lab scientists to become an authorized operator.
-Over the course of a day, they will be taught about the operation protocol described above, the emergency procedures to perform, the safety rules to folow and any
-operation that must be done in the lab prior/post data acquisition.
-
-Once the training is performed, the following form should be submitted to the MEG lab scientists.
-
-.. note::
-    `Access to training attendance form <https://docs.google.com/forms/d/e/1FAIpQLScLW1MOvo-9aAwX2_04FcyLGPR9xtDso9hu9SEixUy2VzuAiw/viewform>`_
 
 
 
