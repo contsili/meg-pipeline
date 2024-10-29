@@ -343,11 +343,11 @@ Perform the MEG Experiment (Participant is present)
 
     - When the marker box is switched on with the power button, there is a light on for a brief moment. If there is no light, batteries run out of energy and should be changed (see below picture of rechargeable battery device).
         - The marker box requires 4 rechargeable AA batteries
-    .. figure:: figures/meg-operationprotocol/batteries.png
-        :alt: Batteries
-        :align: center
+        .. figure:: figures/meg-operationprotocol/batteries.png
+            :alt: Batteries
+            :align: center
 
-        Rechargeable batteries.
+            Rechargeable batteries.
 
 #. Participant goes into the MSR
     - Subject wears off the shoes
@@ -385,11 +385,8 @@ Perform the MEG Experiment (Participant is present)
 #. Run experiment and recording
     - Run your script until it lands on the `Introduction Page` of your script as explaind in the :ref:`design_experiment` section.
     - Prepare MEG recording
-
-
 #. Prepare MEG recording
     - On ‘MEG MAIN PC’ computer, open MEG Lab (on desktop), aka MEG160
-
     - When the participant is in the MSR, and door is CLOSED
         - From the menu  “Acquire (Q)”, select “Auto Tuning (A)” > OK On “Monitor and Acquisition” window > Sensor Control
         - From the menu “Acquire (Q)”, select “MEG Measurement (Q)”
@@ -399,14 +396,13 @@ Perform the MEG Experiment (Participant is present)
             - Foldername: D:\MEGDATA\<Lab_name>\CODE\sub<subjectID>
         - “Lock” [only if MSR door is CLOSED]
         - Wait until MEG sensors are stable i.e. no upward or downards trend
-
-   - Perform marker measurement
-       - Switch off microphone [IMAGE]
-       - On “Monitor and Acquisition” window:
-         - Marker measurement > Start > OK - see picture
-         - When done, column ‘GOF%’ should be around 99%
-         - If not, at least one of the head coils is misplaced (proceed unless there are fewer than 3 head coils in place)
-         - Click OK
+    - Perform marker measurement
+        - Switch off microphone [IMAGE]
+        - On “Monitor and Acquisition” window:
+        - Marker measurement > Start > OK - see picture
+        - When done, column ‘GOF%’ should be around 99%
+        - If not, at least one of the head coils is misplaced (proceed unless there are fewer than 3 head coils in place)
+        - Click OK
 
         .. figure:: figures/meg-operationprotocol/daq_measurement.png
             :alt: Daq measurement
@@ -415,43 +411,42 @@ Perform the MEG Experiment (Participant is present)
             Continuous mode (left) and Marker measurement (right).
 
         - If your experiment is lengthy i.e. 2 hours long, we recommend that you perform a marker measurement in between, i.e., after 1 hour is elapsed
-   - On “Monitor and Acquisition” window:
-     - Continuous Mode > Start - see above picture
-       - Sampling rate: 1000 (default)
-       - Time: 4000 [66 minutes] (this is the maximum possible time in the MEG160 software)
-       - Start Acquisition
-
-   - [While end-of-task text is prompted] Perform marker measurement again as in the step above
-   - Main task - block 1 (see points 8-10)
-     - Start recording
-     - Talk with subject
-     - Switch ON USB dial
-     - Start task
-   - [While end-of-task text is prompted] Marker measurement (see point 7)
-   - Main task - block 2 (see points 8-10)
-     - Start recording
-     - Talk with subject
-     - Start task
-   - [While end-of-task text is prompted] Marker measurement (see point 7)
-   - Main task - block 3 (see points 8-10)
-     - Start recording
-     - Talk with subject
-     - Start task
-   - [While end-of-task text is prompted] Perform another Marker measurement (see point 7)
-   - Finish up MEG session (see point 11)
-     - Talk with subject
+    - On “Monitor and Acquisition” window:
+        - Continuous Mode > Start - see above picture
+        - Sampling rate: 1000 (default)
+        - Time: 4000 [66 minutes] (this is the maximum possible time in the MEG160 software)
+        - Start Acquisition
+    - [While end-of-task text is prompted] Perform marker measurement again as in the step above
+    - Main task - block 1 (see points 8-10)
+        - Start recording
+        - Talk with subject
+        - Switch ON USB dial
+        - Start task
+    - [While end-of-task text is prompted] Marker measurement (see point 7)
+    - Main task - block 2 (see points 8-10)
+        - Start recording
+        - Talk with subject
+        - Start task
+    - [While end-of-task text is prompted] Marker measurement (see point 7)
+    - Main task - block 3 (see points 8-10)
+        - Start recording
+        - Talk with subject
+        - Start task
+    - [While end-of-task text is prompted] Perform another Marker measurement (see point 7)
+    - Finish up MEG session (see point 11)
+        - Talk with subject
 #. Stop continuous recording (when task finishes, or if the experiment spans for more than 4000 seconds and needs a new recording)
-   - On “Monitor and Acquisition” window - see picture 14:
-     - Continuous Mode > Abort
+    - On “Monitor and Acquisition” window - see picture 14:
+        - Continuous Mode > Abort
 #. Finish up the MEG session (when all tasks are done!)
-   - On “Monitor and Acquisition” window:
-     - ‘Unlock’ [VERY IMPORTANT STEP, DO NOT OPEN THE DOOR BEFORE IT]
-     - Close MEG160 software
+    - On “Monitor and Acquisition” window:
+        - ‘Unlock’ [VERY IMPORTANT STEP, DO NOT OPEN THE DOOR BEFORE IT]
+        - Close MEG160 software
 #. Take out participant from MSR
-   - [ONLY WHEN SENSORS ARE UNLOCK!] Open the MSR door
-   - When removing the head-position indicator coils and earphones, do the removal yourself. The coils in particular are very fragile and expensive. Remove with care.
-   - Ask participant to change clothes back and put the scrubs in the wash bin (in the laser scan room)
-   - Pay the participant and make her sign the receipt.
+    - [ONLY WHEN SENSORS ARE UNLOCK!] Open the MSR door
+    - When removing the head-position indicator coils and earphones, do the removal yourself. The coils in particular are very fragile and expensive. Remove with care.
+    - Ask participant to change clothes back and put the scrubs in the wash bin (in the laser scan room)
+    - Pay the participant and make her sign the receipt.
 
 
 After the MEG session

@@ -83,3 +83,5 @@ All experiments that uses the Vpixx pixel mode should follow these rules:
 Experiments coded in "Presentation" do not enable the Vpixx pixel mode by default.
 If your experiment uses Pixel Mode (i.e., you are using the color of the top left pixel of the screen as a condition to send triggers), you must run the `enablepixelmode.m` script.
 Find the script under  `experiments/psychtoolbox/general/enablepixelmode.m <https://github.com/hzaatiti-NYU/meg-pipeline/blob/main/experiments/psychtoolbox/general/enablepixelmode.m>`_
+
+
