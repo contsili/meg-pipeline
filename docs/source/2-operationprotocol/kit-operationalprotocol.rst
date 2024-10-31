@@ -161,6 +161,7 @@ Prepare the lab equipment (prior to participant arrival) Estimated Time: 20min
     - Ensure the image on the Vpixx screen in the MSR room is displaying correctly
     - Response Device
         - Button box: make sure all the optical cables form the button boxes are plugged in correctly as shown in the picture
+
         .. figure:: figures/meg-operationprotocol/left_response_box.png
             :alt: Projection Mode
             :align: center
