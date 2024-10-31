@@ -1,4 +1,4 @@
-name: Build Docs
+name: RTD Replicated Build
 
 on:
   push:
@@ -41,13 +41,13 @@ jobs:
           latexmk -pdf -quiet -interaction=nonstopmode -f *.tex
 
       - name: Upload HTML documentation as an artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: html-docs
           path: docs/_build/html
 
       - name: Upload PDF documentation as an artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: pdf-docs
           path: docs/_build/latex/*.pdf
