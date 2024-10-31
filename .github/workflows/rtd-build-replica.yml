@@ -41,6 +41,9 @@ jobs:
           pip install -r docs/requirements.txt
           pip install sphinx sphinx-rtd-theme  # Add any other required packages
 
+      - name: Install Pandoc
+        run: sudo apt-get install -y pandoc
+
       - name: Install LaTeX for PDF generation
         run: |
           sudo apt-get update
@@ -49,6 +52,8 @@ jobs:
       - name: Build HTML documentation
         run: |
           sphinx-build -b html docs/source docs/_build/html
+
+
 
       - name: Build PDF documentation
         run: |
