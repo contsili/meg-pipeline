@@ -30,7 +30,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r docs/requirements.txt
           pip install sphinx sphinx-rtd-theme  # Add any other required packages
 
       - name: Install LaTeX for PDF generation
