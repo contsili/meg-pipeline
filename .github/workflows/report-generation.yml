@@ -25,6 +25,7 @@ jobs:
           sudo apt-get install texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended latexmk
           python -m pip install --upgrade pip
           pip install sphinx rst2pdf
+          
 
       - name: Build PDF
         run: |
