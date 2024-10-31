@@ -162,19 +162,19 @@ Prepare the lab equipment (prior to participant arrival) Estimated Time: 20min
     - Response Device
         - Button box: make sure all the optical cables form the button boxes are plugged in correctly as shown in the picture
 
-        .. figure:: figures/meg-operationprotocol/left_response_box.png
+        .. figure:: figures/meg-operationprotocol/left_response_box.jpg
             :alt: Projection Mode
             :align: center
 
             Left response box.
 
-        .. figure:: figures/meg-operationprotocol/right_response.png
+        .. figure:: figures/meg-operationprotocol/right_response.jpg
             :alt: Projection Mode
             :align: center
 
             Right response box.
 
-        .. figure:: figures/meg-operationprotocol/response_plugs.png
+        .. figure:: figures/meg-operationprotocol/response_plugs.jpg
             :alt: Projection Mode
             :align: center
 
