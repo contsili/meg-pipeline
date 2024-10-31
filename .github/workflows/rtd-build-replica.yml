@@ -51,13 +51,13 @@ jobs:
 
       - name: Build HTML documentation
         run: |
-          sphinx-build -b html docs/ docs/_build/html
+          sphinx-build -b html docs/source docs/_build/html
 
 
 
       - name: Build PDF documentation
         run: |
-          sphinx-build -b latex docs/ docs/_build/latex
+          sphinx-build -b latex docs/source docs/_build/latex
           cd docs/_build/latex
           latexmk -pdf -quiet -interaction=nonstopmode -f *.tex
 
