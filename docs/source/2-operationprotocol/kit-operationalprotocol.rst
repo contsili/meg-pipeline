@@ -168,7 +168,7 @@ Prepare the lab equipment (prior to participant arrival) Estimated Time: 20min
 
             Left response box.
 
-        .. figure:: figures/meg-operationprotocol/right_response.jpg
+        .. figure:: figures/meg-operationprotocol/right_response_box.jpg
             :alt: Projection Mode
             :align: center
 
