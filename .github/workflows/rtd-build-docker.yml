@@ -20,7 +20,7 @@ jobs:
           python-version: "3.9"
 
       - name: Pull Read the Docs Docker image
-        run: docker pull readthedocs/build:6.0
+        run: docker pull readthedocs/build:latest
 
       - name: Set up secrets
         env:
@@ -43,9 +43,9 @@ jobs:
             -e BOX_PUBLIC_KEY_ID="${{ secrets.BOX_PUBLIC_KEY_ID }}" \
             -e BOX_PRIVATE_KEY="${{ secrets.BOX_PRIVATE_KEY }}" \
             -e BOX_PASSPHRASE="${{ secrets.BOX_PASSPHRASE }}" \
-            readthedocs/build:6.0 \
-            bash -c "pip install ."
-            bash -c "pip install -r docs/requirements.txt"
+            readthedocs/build:latest \
+            bash -c "pip3 install ."
+            bash -c "pip3 install -r docs/requirements.txt"
 
       - name: Build HTML documentation
         run: |
@@ -58,7 +58,7 @@ jobs:
             -e BOX_PUBLIC_KEY_ID="${{ secrets.BOX_PUBLIC_KEY_ID }}" \
             -e BOX_PRIVATE_KEY="${{ secrets.BOX_PRIVATE_KEY }}" \
             -e BOX_PASSPHRASE="${{ secrets.BOX_PASSPHRASE }}" \
-            readthedocs/build:6.0 \
+            readthedocs/build:latest \
             bash -c "sphinx-build -b html . _build/html"
 
       - name: Build PDF documentation
