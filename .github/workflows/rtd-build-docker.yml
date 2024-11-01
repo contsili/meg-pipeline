@@ -20,7 +20,7 @@ jobs:
           python-version: "3.9"
 
       - name: Pull Read the Docs Docker image
-        run: docker pull readthedocs/build:latest-python3.9
+        run: docker pull readthedocs/build:6.0
 
       - name: Set up secrets
         env:
