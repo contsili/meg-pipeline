@@ -75,7 +75,6 @@ GET_SUBJECT_DATA =false;
 % +-----------------------------------------------------+
 
 
-
 % Table 3: Digital output pin assignment from Vpixx system towards EEG-FMRI
 % trigger Box
 
@@ -176,7 +175,7 @@ end
 
 if ~parameters.isDemoMode
     % datapixx init
-    datapixx = 1;               
+    datapixx = 1;
     AssertOpenGL;   % We use PTB-3;
     isReady =  Datapixx('Open');
     Datapixx('StopAllSchedules');
@@ -212,32 +211,6 @@ HitKeyToContinue('Hit any key to bring all digital output to 0:');
 
 Datapixx('SetDoutValues', 0);
 Datapixx('RegWrRd');
- 
-
-
-% Observation:
-
-% In Recorder: open the BrainProducts Recorder App
-% Open the Amplifier -> Digital Port Settings
-% Ensure that Bits 0-7 are set to High Active
-
-
-%% Marker test on EEG data
-
-% According to BrainProducts datasheet:
-% +-----------------------------------------------------+
-% | Pin on 26-pin HD D-Sub    | Function   | 25-pin D-Sub/LPT on  | BNC connector on |
-% | trigger socket (digital   |            | trigger cable        | trigger cable     |
-% | port)                     |            |                      |                  |
-% +-----------------------------------------------------+
-% |  2                        | D01 (S 2)  | 3                    |                  |
-% |  3                        | D03 (S 8)  | 5                    |                  |
-% |  4                        | D05 (S 32) | 7                    |                  |
-% |  5                        | D07 (S128) | 9                    |                  |
-% | 14                        | D00 (S 1)  | 2                    |                  |
-% | 15                        | D02 (S 4)  | 4                    |                  |
-% | 16                        | D04 (S 16) | 6                    |                  |
-% | 17                        | D06 (S 64) | 8                    |                  |
 
 
 
@@ -251,7 +224,7 @@ Datapixx('RegWrRd');
     % 4 in binary is 0100
     
 
-    
+
     % Binary numbers with a single 1 over 8 bits and their decimal equivalents:
 % 00000001 -> 1
 % 00000010 -> 2
@@ -262,8 +235,8 @@ Datapixx('RegWrRd');
 % 01000000 -> 64
 % 10000000 -> 128
 
-    
-    
+
+
 % EEG Marker trigger script
 
 %% S1 marker test
@@ -290,34 +263,40 @@ Datapixx('RegWrRd');
 %% S2 marker test
 
 % Should trigger S2 marker on EEG
+% SetDoutValues will activate the bits according to the value taken as
+% input
+% The input value is a decimal which when converted to binary, the 1's will
+% be the activated pins and the 0's will be deactivated pins
+% For example if we set provide as input the value 2^24 -1 = 16777215
+% in binary that is: 111111111111111111111111, on 24 bits
+% In this case we are settings all the pins to 1
+% Takes a decimal  that if you write in binary represents
+% Example 1:
+% - To activate the S2 marker, this corresponds to the pin number 3 on the
+% 25-pin sub cable according to BP sheet, to activate pin number 3, this
+% corresponds to Digital Out 4, according to Vpixx
+% - 4 = 2^2 = 100
+%
+% Example 2:
+% - To activate the S1 marker, this corresponds to pin number 2 according
+% to BP
+% - Pin number 2 is on the Digital Out 2
+% - attempt to send 2 on digital out to activate S1
 HitKeyToContinue('\nHit any key to bring the EEG S2 marker on:');
-Datapixx('SetDoutValues', 6);
+Datapixx('SetDoutValues', (2^nBits) - 1);
 Datapixx('RegWrRd');
-
-
-% Should trigger S2 marker on EEG
-HitKeyToContinue('\nHit any key to bring the EEG S2 marker off:');
-Datapixx('SetDoutValues', 0);
-Datapixx('RegWrRd');
-
-
-%%
-
+    
 % Should trigger S2 marker on EEG
 %HitKeyToContinue('\nHit any key to bring the EEG S2 marker on:');
 
-
 % Set total duration (in seconds) to run the loop
 totalDuration = 500; % e.g., 30 seconds
+
 % Set pause duration (in seconds) between each instruction
 pauseDuration = 2; % e.g., 2 seconds
 
-% Start the timer
-tic;
-    
-Datapixx('SetDoutValues', 0);
-Datapixx('RegWrRd');
 
+    
     
     
     %Activate Current State
@@ -337,16 +316,25 @@ Datapixx('RegWrRd');
 % 10000000 -> 128
 
 
-% Datapixx 
-
     % Current State = 0
+
+    % Example 1:
+% - To activate the S2 marker, this corresponds to the pin number 3 on the
+% 25-pin sub cable according to BP sheet, to activate pin number 3, this
+% corresponds to Digital Out 4, according to Vpixx
+% - 4 = 2^2 = 100
+
+    % Start the timer
+    tic;
+    Datapixx('SetDoutValues', 0);
+    Datapixx('RegWrRd');
+
     while toc < totalDuration
         
         % Should trigger the S2 marker on EEG
         %Datapixx('SetDoutValues', 4);
         %Datapixx('RegWrRd');
-        
-%         
+
         Datapixx('SetDoutValues', 2);
         Datapixx('RegWrRd');
         disp('all triggers on');
@@ -360,15 +348,23 @@ Datapixx('RegWrRd');
         
     end
     
-    % Current State = 0
+    % Current State = 0 on all the pins
+    % Test S1 marker on EEG
+
+% Example 2:
+% - To activate the S1 marker, this corresponds to pin number 2 according
+% to BP
+% - Pin number 2 is on the Digital Out 2 according to Vpixx
+% - 2 = 2^1 = 010
+% - attempt to send 2 on digital out to activate S1
+
+    tic;
+    Datapixx('SetDoutValues', 0);
+    Datapixx('RegWrRd');
+
     while toc < totalDuration
-        
-        % Should trigger the S2 marker on EEG
-        %Datapixx('SetDoutValues', 4);
-        %Datapixx('RegWrRd');
-        
-%         
-        Datapixx('SetDoutValues', 4);
+
+        Datapixx('SetDoutValues', 2);
         Datapixx('RegWrRd');
         disp('all triggers on');
         pause(2);
@@ -383,12 +379,13 @@ Datapixx('RegWrRd');
     
     
     % Current State = 0
+ %Example 3: Set the S3 marker
+ %
     while toc < totalDuration
         
         % Should trigger the S2 marker on EEG
         %Datapixx('SetDoutValues', 4);
         %Datapixx('RegWrRd');
-        
 %         
         Datapixx('SetDoutValues', 4);
         Datapixx('RegWrRd');
