@@ -197,7 +197,7 @@ Datapixx('SetDoutValues', 0);
 Datapixx('RegWrRd');
 
 
-%% Trigger test
+%% All Triggers test
 
 % Bring 1 output high
 HitKeyToContinue('Hit any key to bring all digital output to 1:');
@@ -239,8 +239,43 @@ Datapixx('RegWrRd');
 
 % EEG Marker trigger script
 
-%% S1 marker test
 
+
+% DOUTValues = 0
+% DOUTValues = 1
+% DOUTValues = 2 --> nothing active
+% DOUTValues = 4 --> bit number 0 is activated
+% DOUTValues = 5 --> bit number 0 is activated coz 5 = 101
+% DOUTValues = 8 --> nothing active
+% DOUTVALUES = 16 --> bit 1 is activated
+
+
+
+
+%% Bit testing 0-7 markers
+
+%% Bit 0 Test WORKS
+
+% Should trigger bit 0 on EEG recorder from the digital out menu
+
+% S1 Marker = Digital 00 = Pin 2 in BP reference
+% S1 Marker = Digital Out 2 = Pin 2 in VPIXX reference
+
+% 2^2 = 4 it activates bit number 2
+
+HitKeyToContinue('Hit any key to bring the bit 0 on:');
+Datapixx('SetDoutValues', 4);
+Datapixx('RegWrRd');
+% Checked that we see Bit 0 on the BP recording app becoming on
+
+% Should trigger S1 marker on EEG
+HitKeyToContinue('Hit any key to bring the bit 0 off:');
+Datapixx('SetDoutValues', 0);
+Datapixx('RegWrRd');
+% Checked that we see Bit 0 is off on the BP recording app
+
+%% Bit 1 Test Works
+ 
 % Should trigger S1 marker on EEG
 
 % S1 Marker = Digital 00 = Pin 2 in BP reference
@@ -248,19 +283,139 @@ Datapixx('RegWrRd');
 
 % 2^2 = 4 it activates bit number 2
 
-HitKeyToContinue('Hit any key to bring the EEG S1 marker on:');
-Datapixx('SetDoutValues', 4);
-Datapixx('RegWrRd');
 
+HitKeyToContinue('Hit any key to bring the bit 1 on:');
+Datapixx('SetDoutValues', 16);
+Datapixx('RegWrRd');
+% Checked that we see Bit 0 on the BP recording app becoming on
 
 % Should trigger S1 marker on EEG
-HitKeyToContinue('Hit any key to bring the EEG S1 marker off:');
+HitKeyToContinue('Hit any key to bring the bit 1 off:');
 Datapixx('SetDoutValues', 0);
 Datapixx('RegWrRd');
+% Checked that we see Bit 0 is off on the BP recording app
 
 
 
-%% S2 marker test
+
+%% Bit 2 Test Works
+ 
+% Should trigger S1 marker on EEG
+
+% S1 Marker = Digital 00 = Pin 2 in BP reference
+% S1 Marker = Digital Out 2 = Pin 2 in VPIXX reference
+
+% 2^2 = 4 it activates bit number 2
+
+
+HitKeyToContinue('Hit any key to bring the bit 2 on:');
+Datapixx('SetDoutValues', 64);
+Datapixx('RegWrRd');
+% Checked that we see Bit 0 on the BP recording app becoming on
+  
+% Should trigger S1 marker on EEG
+HitKeyToContinue('Hit any key to bring the bit 2 off:');
+Datapixx('SetDoutValues', 0);
+Datapixx('RegWrRd');
+% Checked that we see Bit 0 is off on the BP recording app
+
+
+
+%% Bit 3 Test Works
+ 
+% Should trigger S1 marker on EEG
+
+% S1 Marker = Digital 00 = Pin 2 in BP reference
+% S1 Marker = Digital Out 2 = Pin 2 in VPIXX reference
+
+% 2^2 = 4 it activates bit number 2
+
+
+HitKeyToContinue('Hit any key to bring the bit 3 on:');
+Datapixx('SetDoutValues', 256);
+Datapixx('RegWrRd');
+% Checked that we see Bit 0 on the BP recording app becoming on
+  
+% Should trigger S1 marker on EEG
+HitKeyToContinue('Hit any key to bring the bit 3 off:');
+Datapixx('SetDoutValues', 0);
+Datapixx('RegWrRd');
+% Checked that we see Bit 0 is off on the BP recording app
+
+
+
+
+%% Bit 4 Test Works
+ 
+% Should trigger S1 marker on EEG
+
+% S1 Marker = Digital 00 = Pin 2 in BP reference
+% S1 Marker = Digital Out 2 = Pin 2 in VPIXX reference
+
+% 2^2 = 4 it activates bit number 2
+
+
+HitKeyToContinue('Hit any key to bring the bit 4 on:');
+Datapixx('SetDoutValues', 1024);
+Datapixx('RegWrRd');
+% Checked that we see Bit 0 on the BP recording app becoming on
+  
+% Should trigger S1 marker on EEG
+HitKeyToContinue('Hit any key to bring the bit 4 off:');
+Datapixx('SetDoutValues', 0);
+Datapixx('RegWrRd');
+% Checked that we see Bit 0 is off on the BP recording app
+
+
+
+
+%% Bit 5 Test Works
+ 
+% Should trigger S1 marker on EEG
+
+% S1 Marker = Digital 00 = Pin 2 in BP reference
+% S1 Marker = Digital Out 2 = Pin 2 in VPIXX reference
+
+% 2^2 = 4 it activates bit number 2
+
+
+HitKeyToContinue('Hit any key to bring the bit 5 on:');
+Datapixx('SetDoutValues', 4096);
+Datapixx('RegWrRd');
+% Checked that we see Bit 0 on the BP recording app becoming on
+  
+% Should trigger S1 marker on EEG
+HitKeyToContinue('Hit any key to bring the bit 5 off:');
+Datapixx('SetDoutValues', 0);
+Datapixx('RegWrRd');
+% Checked that we see Bit 0 is off on the BP recording app
+
+
+
+
+%% Bit 5 Test Works
+ 
+% Should trigger S1 marker on EEG
+
+% S1 Marker = Digital 00 = Pin 2 in BP reference
+% S1 Marker = Digital Out 2 = Pin 2 in VPIXX reference
+
+% 2^2 = 4 it activates bit number 2
+
+
+HitKeyToContinue('Hit any key to bring the bit 5 on:');
+Datapixx('SetDoutValues', 2^15);
+Datapixx('RegWrRd');
+% Checked that we see Bit 0 on the BP recording app becoming on
+  
+% Should trigger S1 marker on EEG
+HitKeyToContinue('Hit any key to bring the bit 5 off:');
+Datapixx('SetDoutValues', 0);
+Datapixx('RegWrRd');
+% Checked that we see Bit 0 is off on the BP recording app
+
+
+%%
 
 % Should trigger S2 marker on EEG
 % SetDoutValues will activate the bits according to the value taken as
@@ -295,6 +450,8 @@ totalDuration = 500; % e.g., 30 seconds
 % Set pause duration (in seconds) between each instruction
 pauseDuration = 2; % e.g., 2 seconds
 
+    Datapixx('SetDoutValues', 0);
+    Datapixx('RegWrRd');
 
     
     
@@ -315,7 +472,7 @@ pauseDuration = 2; % e.g., 2 seconds
 % 01000000 -> 64
 % 10000000 -> 128
 
-
+%% S2 Marker test
     % Current State = 0
 
     % Example 1:
@@ -347,9 +504,11 @@ pauseDuration = 2; % e.g., 2 seconds
         pause(pauseDuration);
         
     end
+
+    %%
     
-    % Current State = 0 on all the pins
-    % Test S1 marker on EEG
+% Current State = 0 on all the pins
+% Test S1 marker on EEG
 
 % Example 2:
 % - To activate the S1 marker, this corresponds to pin number 2 according
