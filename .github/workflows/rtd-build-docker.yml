@@ -45,6 +45,7 @@ jobs:
             -e BOX_PASSPHRASE="${{ secrets.BOX_PASSPHRASE }}" \
             readthedocs/build:latest \
             bash -c "pip3 install ."
+            bash -c "pip install sphinx"
             bash -c "pip3 install -r docs/requirements.txt"
 
       - name: Build HTML documentation
