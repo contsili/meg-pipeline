@@ -24,6 +24,19 @@ VPIXX_USE = false;
 VPIXX_USE = true;
 PSYCHTOOLBOX = false;
 
+
+
+%%
+
+% To make a marker S2 appear on the EEG data we must activate pin number 3
+% on the 25-pin D-Sub as in Table 1 below
+% To activate the pin number 3, we need to activate the Digital Out 4 on
+% the Datapixx
+% To activate the Digital Out 4, we need to send this combination 00000100 -> 4
+
+% Using Datapixx('SetDoutValues', 4);
+
+
 % Pinout of the trigger socket (digital port) on USB2 Adapter on the
 % EEG-FMRI trigger box
 
@@ -191,12 +204,12 @@ Datapixx('RegWrRd');
 % in binary that is: 111111111111111111111111, on 24 bits
 % In this case we are settings all the pins to 1
 % Takes a decimal  that if you write in binary represents
-% Example 1: 
+% Example 1:
 % - To activate the S2 marker, this corresponds to the pin number 3 on the
 % 25-pin sub cable according to BP sheet, to activate pin number 3, this
 % corresponds to Digital Out 4, according to Vpixx
 % - 4 = 2^2 = 100
-% 
+%
 % Example 2:
 % - To activate the S1 marker, this corresponds to pin number 2 according
 % to BP
@@ -238,7 +251,7 @@ pauseDuration = 2; % e.g., 2 seconds
     
     % Current State = 0
 
-    % Example 1: 
+    % Example 1:
 % - To activate the S2 marker, this corresponds to the pin number 3 on the
 % 25-pin sub cable according to BP sheet, to activate pin number 3, this
 % corresponds to Digital Out 4, according to Vpixx
@@ -254,7 +267,7 @@ pauseDuration = 2; % e.g., 2 seconds
         % Should trigger the S2 marker on EEG
         %Datapixx('SetDoutValues', 4);
         %Datapixx('RegWrRd');
-        
+
         Datapixx('SetDoutValues', 2);
         Datapixx('RegWrRd');
         disp('all triggers on');
@@ -277,13 +290,13 @@ pauseDuration = 2; % e.g., 2 seconds
 % - Pin number 2 is on the Digital Out 2 according to Vpixx
 % - 2 = 2^1 = 010
 % - attempt to send 2 on digital out to activate S1
-    
+
     tic;
     Datapixx('SetDoutValues', 0);
     Datapixx('RegWrRd');
 
     while toc < totalDuration
-   
+
         Datapixx('SetDoutValues', 2);
         Datapixx('RegWrRd');
         disp('all triggers on');
