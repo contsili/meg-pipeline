@@ -1,0 +1,74 @@
+name: RTD Build Documentation Docker
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+
+      - name: Pull Read the Docs Docker image
+        run: docker pull readthedocs/build:latest
+
+      - name: Set up secrets
+        env:
+          BOX_CLIENT_ID: ${{ secrets.BOX_CLIENT_ID }}
+          BOX_CLIENT_SECRET: ${{ secrets.BOX_CLIENT_SECRET }}
+          BOX_ENTERPRISE_ID: ${{ secrets.BOX_ENTERPRISE_ID }}
+          BOX_PUBLIC_KEY_ID: ${{ secrets.BOX_PUBLIC_KEY_ID }}
+          BOX_PRIVATE_KEY: ${{ secrets.BOX_PRIVATE_KEY }}
+          BOX_PASSPHRASE: ${{ secrets.BOX_PASSPHRASE }}
+        run: echo "Secrets configured"
+
+      - name: Install dependencies
+        run: |
+          docker run --rm \
+            -v ${{ github.workspace }}:/docs \
+            -w /docs \
+            -e BOX_CLIENT_ID="${{ secrets.BOX_CLIENT_ID }}" \
+            -e BOX_CLIENT_SECRET="${{ secrets.BOX_CLIENT_SECRET }}" \
+            -e BOX_ENTERPRISE_ID="${{ secrets.BOX_ENTERPRISE_ID }}" \
+            -e BOX_PUBLIC_KEY_ID="${{ secrets.BOX_PUBLIC_KEY_ID }}" \
+            -e BOX_PRIVATE_KEY="${{ secrets.BOX_PRIVATE_KEY }}" \
+            -e BOX_PASSPHRASE="${{ secrets.BOX_PASSPHRASE }}" \
+            readthedocs/build:latest \
+            bash -c "pip install ."
+            bash -c "pip install -r docs/requirements.txt"
+
+      - name: Build HTML documentation
+        run: |
+          docker run --rm \
+            -v ${{ github.workspace }}:/docs \
+            -w /docs \
+            -e BOX_CLIENT_ID="${{ secrets.BOX_CLIENT_ID }}" \
+            -e BOX_CLIENT_SECRET="${{ secrets.BOX_CLIENT_SECRET }}" \
+            -e BOX_ENTERPRISE_ID="${{ secrets.BOX_ENTERPRISE_ID }}" \
+            -e BOX_PUBLIC_KEY_ID="${{ secrets.BOX_PUBLIC_KEY_ID }}" \
+            -e BOX_PRIVATE_KEY="${{ secrets.BOX_PRIVATE_KEY }}" \
+            -e BOX_PASSPHRASE="${{ secrets.BOX_PASSPHRASE }}" \
+            readthedocs/build:latest \
+            bash -c "sphinx-build -b html . _build/html"
+
+      - name: Build PDF documentation
+        run: |
+          docker run --rm \
+            -v ${{ github.workspace }}:/docs \
+            -w /docs \
+            -e BOX_CLIENT_ID="${{ secrets.BOX_CLIENT_ID }}" \
+            -e BOX_CLIENT_SECRET="${{ secrets.BOX_CLIENT_SECRET }}" \
+            -e BOX_ENTERPRISE_ID="${{ secrets.BOX_ENTERPRISE_ID }}" \
+            -e BOX_PUBLIC_KEY_ID="${{ secrets.BOX_PUBLIC_KEY_ID }}" \
+            -e BOX_PRIVATE_KEY="${{ secrets.BOX_PRIVATE_KEY }}" \
+    
