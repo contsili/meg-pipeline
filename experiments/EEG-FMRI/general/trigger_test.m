@@ -19,11 +19,12 @@ global datapixx;
 global datapixx; 
 global PSYCHTOOLBOX;
 global VPIXX_USE;
+global GET_SUBJECT_DATA;
 
 VPIXX_USE = false;
 VPIXX_USE = true;
 PSYCHTOOLBOX = false;
-
+GET_SUBJECT_DATA =false;
 
 
 %%
@@ -99,6 +100,16 @@ PSYCHTOOLBOX = false;
 % * Shield is tied to the GND by a 0 Ohm resistor inside the DATAPixx system.
 
 
+%% Disable Vpixx Pixel Model incase it is already enabled
+
+Datapixx('Open')
+Datapixx('SetPropixxDlpSequenceProgram', 0)
+Datapixx('DisablePixelMode')
+Datapixx('RegWr')
+
+
+%%
+
 
 if PSYCHTOOLBOX
     Screen('Preference', 'SkipSyncTests', 1);
@@ -120,8 +131,12 @@ loadParameters();
  
 %   Initialize the subject info
 %--------------------------------------------------------------------------------------------------------------------------------------%
-initSubjectInfo();
 
+if GET_SUBJECT_DATA
+
+    initSubjectInfo();
+
+end
 
 % %  Hide Mouse Cursor
 
@@ -159,31 +174,55 @@ if VPIXX_USE
     end
 end
 
-        if ~parameters.isDemoMode
-            % datapixx init
-            datapixx = 1;               
-            AssertOpenGL;   % We use PTB-3;
-            isReady =  Datapixx('Open');
-            Datapixx('StopAllSchedules');
-            Datapixx('RegWrRd');    % Synchronize DATAPixx registers to local register cache
-        end
+if ~parameters.isDemoMode
+    % datapixx init
+    datapixx = 1;               
+    AssertOpenGL;   % We use PTB-3;
+    isReady =  Datapixx('Open');
+    Datapixx('StopAllSchedules');
+    Datapixx('RegWrRd');    % Synchronize DATAPixx registers to local register cache
+end
 
+
+
+
+
+%% Get TTL number of bits it should be 24 bits
 
 % Show how many TTL output bits are in the Datapixx
+HitKeyToContinue('Press any key to see the Datapixx TTL output number of bits');
 nBits = Datapixx('GetDoutNumBits');
 fprintf('\nDATAPixx has %d TTL output bits\n\n', nBits);
-    % Show how many TTL output bits are in the Datapixx
-    nBits = Datapixx('GetDoutNumBits');
-    fprintf('\nDATAPixx has %d TTL output bits\n\n', nBits);
+
+Datapixx('SetDoutValues', 0);
+Datapixx('RegWrRd');
+
+
+%% Trigger test
 
 % Bring 1 output high
-HitKeyToContinue('\nHit any key to bring digital output bit 0 high:');
-Datapixx('SetDoutValues', 1);
+HitKeyToContinue('Hit any key to bring all digital output to 1:');
+
+Datapixx('SetDoutValues', (2^nBits) - 1);
 Datapixx('RegWrRd');
-    % Bring 1 output high
-    %HitKeyToContinue('\nHit any key to bring digital output bit 0 high:');
-    Datapixx('SetDoutValues', 1);
-    Datapixx('RegWrRd');
+
+
+% Bring 1 output high
+HitKeyToContinue('Hit any key to bring all digital output to 0:');
+
+Datapixx('SetDoutValues', 0);
+Datapixx('RegWrRd');
+ 
+
+
+% Observation:
+
+% In Recorder: open the BrainProducts Recorder App
+% Open the Amplifier -> Digital Port Settings
+% Ensure that Bits 0-7 are set to High Active
+
+
+%% Marker test on EEG data
 
 % According to BrainProducts datasheet:
 % +-----------------------------------------------------+
@@ -212,26 +251,73 @@ Datapixx('RegWrRd');
     % 4 in binary is 0100
     
 
+    
+    % Binary numbers with a single 1 over 8 bits and their decimal equivalents:
+% 00000001 -> 1
+% 00000010 -> 2
+% 00000100 -> 4
+% 00001000 -> 8
+% 00010000 -> 16
+% 00100000 -> 32
+% 01000000 -> 64
+% 10000000 -> 128
+
+    
+    
+% EEG Marker trigger script
+
+%% S1 marker test
+
+% Should trigger S1 marker on EEG
+
+% S1 Marker = Digital 00 = Pin 2 in BP reference
+% S1 Marker = Digital Out 2 = Pin 2 in VPIXX reference
+
+% 2^2 = 4 it activates bit number 2
+
+HitKeyToContinue('Hit any key to bring the EEG S1 marker on:');
+Datapixx('SetDoutValues', 4);
+Datapixx('RegWrRd');
+
+
+% Should trigger S1 marker on EEG
+HitKeyToContinue('Hit any key to bring the EEG S1 marker off:');
+Datapixx('SetDoutValues', 0);
+Datapixx('RegWrRd');
+
+
+
+%% S2 marker test
+
 % Should trigger S2 marker on EEG
 HitKeyToContinue('\nHit any key to bring the EEG S2 marker on:');
-Datapixx('SetDoutValues', (2^nBits) - 1);
+Datapixx('SetDoutValues', 6);
 Datapixx('RegWrRd');
-    
-    % Should trigger S2 marker on EEG
-    %HitKeyToContinue('\nHit any key to bring the EEG S2 marker on:');
 
-    
-    % Set total duration (in seconds) to run the loop
-    totalDuration = 500; % e.g., 30 seconds
-    % Set pause duration (in seconds) between each instruction
-    pauseDuration = 2; % e.g., 2 seconds
 
-    % Start the timer
-    tic;
+% Should trigger S2 marker on EEG
+HitKeyToContinue('\nHit any key to bring the EEG S2 marker off:');
+Datapixx('SetDoutValues', 0);
+Datapixx('RegWrRd');
+
+
+%%
+
+% Should trigger S2 marker on EEG
+%HitKeyToContinue('\nHit any key to bring the EEG S2 marker on:');
+
+
+% Set total duration (in seconds) to run the loop
+totalDuration = 500; % e.g., 30 seconds
+% Set pause duration (in seconds) between each instruction
+pauseDuration = 2; % e.g., 2 seconds
+
+% Start the timer
+tic;
     
-    Datapixx('SetDoutValues', 0);
-    Datapixx('RegWrRd');
-    
+Datapixx('SetDoutValues', 0);
+Datapixx('RegWrRd');
+
     
     
     %Activate Current State
