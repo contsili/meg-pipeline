@@ -48,6 +48,20 @@ jobs:
             bash -c "pip3 install sphinx"
             bash -c "pip3 install -r docs/requirements.txt"
 
+      - name: Build HTML Sphinx
+        run: |
+          docker run --rm \
+            -v ${{ github.workspace }}:/docs \
+            -w /docs \
+            -e BOX_CLIENT_ID="${{ secrets.BOX_CLIENT_ID }}" \
+            -e BOX_CLIENT_SECRET="${{ secrets.BOX_CLIENT_SECRET }}" \
+            -e BOX_ENTERPRISE_ID="${{ secrets.BOX_ENTERPRISE_ID }}" \
+            -e BOX_PUBLIC_KEY_ID="${{ secrets.BOX_PUBLIC_KEY_ID }}" \
+            -e BOX_PRIVATE_KEY="${{ secrets.BOX_PRIVATE_KEY }}" \
+            -e BOX_PASSPHRASE="${{ secrets.BOX_PASSPHRASE }}" \
+            readthedocs/build:latest \
+            bash -c "python -m sphinx -T -W --keep-going -b html -d _build/doctrees -D language=en . ./html"
+
       - name: Build HTML documentation
         run: |
           docker run --rm \
