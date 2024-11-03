@@ -60,7 +60,7 @@ jobs:
             -e BOX_PRIVATE_KEY="${{ secrets.BOX_PRIVATE_KEY }}" \
             -e BOX_PASSPHRASE="${{ secrets.BOX_PASSPHRASE }}" \
             readthedocs/build:latest \
-            bash -c "python -m sphinx -T -W --keep-going -b html -d _build/doctrees -D language=en . ./html"
+            bash -c "python3 -m sphinx -T -W --keep-going -b html -d _build/doctrees -D language=en . ./html"
 
       - name: Build HTML documentation
         run: |
