@@ -11,16 +11,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Set up Docker cache
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.docker
+          key: ${{ runner.os }}-docker-${{ hashFiles('Dockerfile') }}
+          restore-keys: |
+            ${{ runner.os }}-docker-
+
+      - name: Set up Docker config for caching
+        run: |
+          mkdir -p ~/.docker
+          echo '{"registry-mirrors": ["https://mirror.gcr.io"]}' > ~/.docker/config.json
+
       - name: Check out repository
         uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.9"
+      - name: Pull and cache Docker image
+        run: |
+          DOCKER_CACHED_IMAGE=$(docker load -i /tmp/.docker/readthedocs-build-latest.tar || echo "no_cache")
+          if [ "$DOCKER_CACHED_IMAGE" = "no_cache" ]; then
+            docker pull readthedocs/build:latest
+            docker save readthedocs/build:latest -o /tmp/.docker/readthedocs-build-latest.tar
+          fi
 
-      - name: Pull Read the Docs Docker image
-        run: docker pull readthedocs/build:latest
 
       - name: Set up secrets
         env:
