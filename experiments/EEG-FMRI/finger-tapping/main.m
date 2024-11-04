@@ -69,6 +69,13 @@ end
 
  
 
+%% Experiment design notes:
+
+% have 25 blocks,  5 blocks for each finger
+% pseudo-randomly permute the blocks by:
+% ensuring we are getting all the possible sequences of 
+[~,idx] = sort(rand(5,5));
+dsm = idx(:)
 
 %  run the experiment
 %--------------------------------------------------------------------------------------------------------------------------------------%
