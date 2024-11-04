@@ -1,4 +1,4 @@
-name: RTD Replicate Build
+name: ReadTheDocs Build
 
 on:
   push:
