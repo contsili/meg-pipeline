@@ -1,33 +1,16 @@
-
-This will install the megpipeline package using the `pyproject.toml` file
-
-git clone --depth 1 https://github.com/hzaatiti/meg-pipeline.git .
-git fetch origin --force --prune --prune-tags --depth 50 refs/heads/main:refs/remotes/origin/main
-git checkout --force origin/main
-cat .readthedocs.yaml
-asdf global python 3.10.14
-python -m virtualenv $READTHEDOCS_VIRTUALENV_PATH
 python -m pip install --upgrade --no-cache-dir pip setuptools
 python -m pip install --upgrade --no-cache-dir sphinx
 python -m pip install --exists-action=w --no-cache-dir -r docs/requirements.txt
 python -m pip install --upgrade --upgrade-strategy only-if-needed --no-cache-dir .
-cat docs/source/conf.py
-python -m sphinx -T -W --keep-going -b html -d _build/doctrees -D language=en . C:\Users\hz3752\Desktop\temp/html
-python -m sphinx -T -b latex -d _build/doctrees -D language=en . $READTHEDOCS_OUTPUT/pdf
-cat latexmkrc
-latexmk -r latexmkrc -pdf -f -dvi- -ps- -jobname=meg-pipeline -interaction=nonstopmode
-
-python -m pip install --upgrade --no-cache-dir pip setuptools
-
-python -m pip install --upgrade --upgrade-strategy only-if-needed --no-cache-dir .
-
-This command works in the source folder and generates the html
+pip install pandoc
+cd docs/source
+winget install --source winget --exact --id JohnMacFarlane.Pandoc
+python -m sphinx -T -W --keep-going -b html -d ../../rtd-build-output/_build/doctrees -D language=en . ../../rtd-build-output/html
+python -m sphinx -T -b latex -d rtd-build-output/_build/doctrees -D language=en docs/source rtd-build-output/pdf
+cd .\rtd-build-output\pdf\
+Testing:
 
 
-python -m sphinx -T -W --keep-going -b html -d _build/doctrees -D language=en . ./html
-
-python -m sphinx -T -b latex -d _build/doctrees -D language=en . ./pdf
-
-cd pdf
+Untested:
 
 latexmk -r latexmkrc -pdf -f -dvi- -ps- -jobname=meg-pipeline -interaction=nonstopmode
