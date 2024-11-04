@@ -10,6 +10,8 @@ DATASET_PATH = [MEG_DATA_FOLDER,'visual_crowding_preview'];
 % This needs fixing to save properly
 SAVE_PATH = [MEG_DATA_FOLDER, 'visual_crowding_preview'];
 
+%% MEGFILES
+
 % Get a list of all MEG data files
 MEGFILES = dir(fullfile(DATASET_PATH, 'sub-*-vcp','meg-kit', 'sub-*-vcp-analysis_NR.con'));
 
@@ -20,6 +22,7 @@ for i = 1:length(MEGFILES)
     disp(MEGFILES(i).name);
 end
 
+%% MATFILES
 
 % Get a list of all MATLAB data files in the folder matching the pattern
 MATFILES = dir(fullfile(DATASET_PATH, 'sub-*-vcp','experiment-log', 'sub-*-vcp.mat'));
@@ -220,6 +223,7 @@ end
 load(fullfile(derivatives_folder, 'avgCWDG1.mat'), 'avgCWDG1');
 load(fullfile(derivatives_folder, 'avgCWDG2.mat'), 'avgCWDG2');
 load(fullfile(derivatives_folder, 'avgCWDG3.mat'), 'avgCWDG3'); 
+
 %% Plot all ERPs in sensor space
 
 meg_channels = setdiff(1:208, 92);
@@ -231,7 +235,7 @@ ft_multiplotER(cfg, avgCWDG1, avgCWDG2, avgCWDG3); % it automatically creates la
 legend(avgCWDG1, avgCWDG2, avgCWDG3)
 title(sprintf('ERP Activity in sensor space: %s', subjectID), 'Interpreter', 'none');
 
-saveas(gcf, fullfile(subjectResultsFolder, sprintf('%s_ERP_Sensor_Space.png', subjectID)));
+saveas(gcf, fullfile(derivatives_folder, sprintf('%s_ERP_Sensor_Space.png', subjectID)));
 
 
 % Plot all ERPs from a specific channel
@@ -242,7 +246,7 @@ cfg.channel = 'AG001';
 ft_singleplotER(cfg, avgCWDG1, avgCWDG2, avgCWDG3);
 title(sprintf('ERP Activity of Subject: %s', subjectID), 'Interpreter', 'none');
 
-saveas(gcf, fullfile(subjectResultsFolder, sprintf('%s_ERP.png', subjectID)));
+saveas(gcf, fullfile(derivatives_folder, sprintf('%s_ERP.png', subjectID)));
 
 % Topographic plot of the ERP
 cfg = [];
@@ -251,7 +255,7 @@ cfg.colorbar = 'yes';
 %cfg.layout = 'CTF151_helmet.mat';
 ft_topoplotER(cfg, avgCWDG1);
 title(sprintf('Topographic plot of condition 1: %s', subjectID), 'Interpreter', 'none');
-saveas(gcf, fullfile(subjectResultsFolder, sprintf('%s_Topographic_plot_cwdg_1.png', subjectID)));
+saveas(gcf, fullfile(derivatives_folder, sprintf('%s_Topographic_plot_cwdg_1.png', subjectID)));
 
 
 
@@ -261,7 +265,7 @@ cfg.colorbar = 'yes';
 %cfg.layout = 'CTF151_helmet.mat';
 ft_topoplotER(cfg, avgCWDG2);
 title(sprintf('Topographic plot of condition 2: %s', subjectID), 'Interpreter', 'none');
-saveas(gcf, fullfile(subjectResultsFolder, sprintf('%s_Topographic_plot_cwdg_2.png', subjectID)));
+saveas(gcf, fullfile(derivatives_folder, sprintf('%s_Topographic_plot_cwdg_2.png', subjectID)));
 
 
 
@@ -271,4 +275,4 @@ cfg.colorbar = 'yes';
 %cfg.layout = 'CTF151_helmet.mat';
 ft_topoplotER(cfg, avgCWDG3);
 title(sprintf('Topographic plot of condition 3: %s', subjectID), 'Interpreter', 'none');
-saveas(gcf, fullfile(subjectResultsFolder, sprintf('%s_Topographic_plot_cwdg_3.png', subjectID)));
+saveas(gcf, fullfile(derivatives_folder, sprintf('%s_Topographic_plot_cwdg_3.png', subjectID)));
