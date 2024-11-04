@@ -121,7 +121,15 @@ for   tc =  1 : parameters.numberOfBlocks
     end
     
     [blockStartTime, blockEndTime] = showBlockWindow(blockText);
-    
+
+    %% Putti says: if we are moving the right hand, this means the right hemisphere is not being used
+    %% in this case, we can use all the signals from the right hemisphere as a baseline
+    %% According to the paper https://pmc.ncbi.nlm.nih.gov/articles/PMC3713710/pdf/HBM-33-1594.pdf
+    %% it is best to have a random permutation of the finger order to get a better spatial accuracy
+    %% according to Putti: we should correct for the MRI artifact (causing higher signal amplitudes with time) that has an upward trend with time (this is done by adding a linear drift vector at the end of the design matrix)
+    %% Add a first vector of constant values in order to take the average of the BOLD signals from all fingers as a baseline
+    %% In the paper the block duration is 3 seconds, however we can then take 12 seconds per finger
+
     timingsReport(:,tc).trial = tc;
     timingsReport(:,tc).startTime =  blockStartTime;
     timingsReport(:,tc).endTime =  blockEndTime;
