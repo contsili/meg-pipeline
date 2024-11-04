@@ -1,4 +1,4 @@
-name: RTD Replicated Build
+name: RTD Build Documentation Docker
 
 on:
   push:
@@ -7,69 +7,97 @@ on:
   pull_request:
 
 jobs:
-  build:
+  docs:
     runs-on: ubuntu-latest
 
-    env:
-      BOX_CLIENT_ID: ${{ secrets.BOX_CLIENT_ID }}
-      BOX_CLIENT_SECRET: ${{ secrets.BOX_CLIENT_SECRET }}
-      BOX_ENTERPRISE_ID: ${{ secrets.BOX_ENTERPRISE_ID }}
-      BOX_PUBLIC_KEY_ID: ${{ secrets.BOX_PUBLIC_KEY_ID }}
-      BOX_PRIVATE_KEY: ${{ secrets.BOX_PRIVATE_KEY }}
-      BOX_PASSPHRASE: ${{ secrets.BOX_PASSPHRASE }}
-
     steps:
-      - name: Check out the code
-        uses: actions/checkout@v2
-
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.8'
-
-      - name: Cache Python packages
+      - name: Set up Docker cache
         uses: actions/cache@v3
         with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          path: /tmp/.docker
+          key: ${{ runner.os }}-docker-${{ hashFiles('Dockerfile') }}
           restore-keys: |
-            ${{ runner.os }}-pip-
+            ${{ runner.os }}-docker-
+
+      - name: Set up Docker config for caching
+        run: |
+          mkdir -p ~/.docker
+          echo '{"registry-mirrors": ["https://mirror.gcr.io"]}' > ~/.docker/config.json
+
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Pull and cache Docker image
+        run: |
+          DOCKER_CACHED_IMAGE=$(docker load -i /tmp/.docker/readthedocs-build-latest.tar || echo "no_cache")
+          if [ "$DOCKER_CACHED_IMAGE" = "no_cache" ]; then
+            docker pull readthedocs/build:latest
+            docker save readthedocs/build:latest -o /tmp/.docker/readthedocs-build-latest.tar
+          fi
+
+
+      - name: Set up secrets
+        env:
+          BOX_CLIENT_ID: ${{ secrets.BOX_CLIENT_ID }}
+          BOX_CLIENT_SECRET: ${{ secrets.BOX_CLIENT_SECRET }}
+          BOX_ENTERPRISE_ID: ${{ secrets.BOX_ENTERPRISE_ID }}
+          BOX_PUBLIC_KEY_ID: ${{ secrets.BOX_PUBLIC_KEY_ID }}
+          BOX_PRIVATE_KEY: ${{ secrets.BOX_PRIVATE_KEY }}
+          BOX_PASSPHRASE: ${{ secrets.BOX_PASSPHRASE }}
+        run: echo "Secrets configured"
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install -r docs/requirements.txt
-          pip install sphinx sphinx-rtd-theme  # Add any other required packages
-          pip install .
-          
-      - name: Install Pandoc
-        run: sudo apt-get install -y pandoc
+          docker run --rm \
+            -v ${{ github.workspace }}:/docs \
+            -w /docs \
+            -e BOX_CLIENT_ID="${{ secrets.BOX_CLIENT_ID }}" \
+            -e BOX_CLIENT_SECRET="${{ secrets.BOX_CLIENT_SECRET }}" \
+            -e BOX_ENTERPRISE_ID="${{ secrets.BOX_ENTERPRISE_ID }}" \
+            -e BOX_PUBLIC_KEY_ID="${{ secrets.BOX_PUBLIC_KEY_ID }}" \
+            -e BOX_PRIVATE_KEY="${{ secrets.BOX_PRIVATE_KEY }}" \
+            -e BOX_PASSPHRASE="${{ secrets.BOX_PASSPHRASE }}" \
+            readthedocs/build:latest \
+            bash -c "pip3 install ."
+            bash -c "pip3 install sphinx"
+            bash -c "pip3 install -r docs/requirements.txt"
 
-      - name: Install LaTeX for PDF generation
+      - name: Build HTML Sphinx
         run: |
-          sudo apt-get update
-          sudo apt-get install -y texlive texlive-latex-extra texlive-fonts-recommended latexmk
+          docker run --rm \
+            -v ${{ github.workspace }}:/docs \
+            -w /docs \
+            -e BOX_CLIENT_ID="${{ secrets.BOX_CLIENT_ID }}" \
+            -e BOX_CLIENT_SECRET="${{ secrets.BOX_CLIENT_SECRET }}" \
+            -e BOX_ENTERPRISE_ID="${{ secrets.BOX_ENTERPRISE_ID }}" \
+            -e BOX_PUBLIC_KEY_ID="${{ secrets.BOX_PUBLIC_KEY_ID }}" \
+            -e BOX_PRIVATE_KEY="${{ secrets.BOX_PRIVATE_KEY }}" \
+            -e BOX_PASSPHRASE="${{ secrets.BOX_PASSPHRASE }}" \
+            readthedocs/build:latest \
+            bash -c "python3 -m sphinx -T -W --keep-going -b html -d _build/doctrees -D language=en . ./html"
 
       - name: Build HTML documentation
         run: |
-          sphinx-build -b html docs/source docs/_build/html
-
-
+          docker run --rm \
+            -v ${{ github.workspace }}:/docs \
+            -w /docs \
+            -e BOX_CLIENT_ID="${{ secrets.BOX_CLIENT_ID }}" \
+            -e BOX_CLIENT_SECRET="${{ secrets.BOX_CLIENT_SECRET }}" \
+            -e BOX_ENTERPRISE_ID="${{ secrets.BOX_ENTERPRISE_ID }}" \
+            -e BOX_PUBLIC_KEY_ID="${{ secrets.BOX_PUBLIC_KEY_ID }}" \
+            -e BOX_PRIVATE_KEY="${{ secrets.BOX_PRIVATE_KEY }}" \
+            -e BOX_PASSPHRASE="${{ secrets.BOX_PASSPHRASE }}" \
+            readthedocs/build:latest \
+            bash -c "sphinx-build -b html . _build/html"
 
       - name: Build PDF documentation
         run: |
-          sphinx-build -b latex docs/source docs/_build/latex
-          cd docs/_build/latex
-          latexmk -pdf -quiet -interaction=nonstopmode -f *.tex
-
-      - name: Upload HTML documentation as an artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: html-docs
-          path: docs/_build/html
-
-      - name: Upload PDF documentation as an artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: pdf-docs
-          path: docs/_build/latex/*.pdf
+          docker run --rm \
+            -v ${{ github.workspace }}:/docs \
+            -w /docs \
+            -e BOX_CLIENT_ID="${{ secrets.BOX_CLIENT_ID }}" \
+            -e BOX_CLIENT_SECRET="${{ secrets.BOX_CLIENT_SECRET }}" \
+            -e BOX_ENTERPRISE_ID="${{ secrets.BOX_ENTERPRISE_ID }}" \
+            -e BOX_PUBLIC_KEY_ID="${{ secrets.BOX_PUBLIC_KEY_ID }}" \
+            -e BOX_PRIVATE_KEY="${{ secrets.BOX_PRIVATE_KEY }}" \
+    
