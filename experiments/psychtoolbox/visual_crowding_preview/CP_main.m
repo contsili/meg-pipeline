@@ -26,7 +26,7 @@ prompt1={'Subject Number', ...
     'Age', ...
     'Task order'};
 numlines1=1;
-defaultanswer1={ '000', 'p', 'M', '0', '1'};
+defaultanswer1={ '0', 'p', 'M', '0', '1'};
 answer1=inputdlg(prompt1,name1,numlines1,defaultanswer1);
 DEMO.num = str2double(answer1{1});
 DEMO.ID  = answer1{2};
@@ -185,7 +185,6 @@ try
         'You can answer with the yellow butto for "YES" or the red button for "NO".'
         'NOTE: The word will appear before the fixation point turns green. Please do not look at the word before the point turns to green.'
         ''
-        'PRESS SPACE TO START'
         };
 
     yPos = wy - 200;
@@ -229,11 +228,11 @@ try
     while i_trial <= size(expTable, 1)
             fprintf(logFile, '%d\tN/A\tN/A\t%f\tN/A\tN/A\tStarting trial\n', i_trial, GetSecs());
 
-        if executedTrials(i_trial)
-            % Skip this trial since it has already been executed
-            i_trial = i_trial + 1;
-            continue;
-        end
+        % if executedTrials(i_trial)
+        %     % Skip this trial since if it has already been executed
+        %     i_trial = i_trial + 1;
+        %     continue;
+        % end
 
                 % PAUSE
         if mod(i_trial, round(size(expTable, 1)/3+1)) == 0
@@ -244,11 +243,16 @@ try
 
         end
 
+        if mod(DEMO.num, 2) == 0
+            set = 'SET1';  % If subject number is even
+        else
+            set = 'SET2';  % If subject number is odd
+        end
         conn = expTable.connection(i_trial);
         cwdg = expTable.crowding(i_trial);
         imgIdx = expTable.imageIndex(i_trial);
 
-        preview_fn = sprintf('%s_conn_%d_cwdg_%d_%d.jpg', stim_set, conn, cwdg, imgIdx);
+        preview_fn = sprintf('%s_conn_%d_cwdg_%d_%d.jpg', set, conn, cwdg, imgIdx);
 
         imageFilePath = fullfile(stim_set, preview_fn);
 
@@ -406,10 +410,23 @@ try
 
 
         % PREVIEW AND CUE
-        Screen('DrawTexture', w, wPreview);
-        fprintf(logFile, '%d\t226\tPreview Image\t%f\t%s\t%s\tTriggering preview image\n', i_trial, GetSecs(), preview_fn, num2str(cwdg));
+        % Condition-based MEG trigger channel
+        if strcmp(conditionLabel, '1')
+            currentTriggerChannel = trig.ch226;  % Condition 1 -> Channel 226
+        elseif strcmp(conditionLabel, '2')
+            currentTriggerChannel = trig.ch227;  % Condition 2 -> Channel 227
+        elseif strcmp(conditionLabel, '3')
+            currentTriggerChannel = trig.ch228;  % Condition 3 -> Channel 228
+        end
 
-        Screen('FillRect', w, trig.ch226, trigRect);
+        % Trigger for preview image (Channel 226)
+        Screen('DrawTexture', w, wPreview);
+        if strcmp(imageName, 'N/A')
+            fprintf(logFile, '%d\t%d\tPreview Image\t%f\t%s\t%s\tExtra trigger - no image\n', i_trial, currentTriggerChannel, GetSecs(), imageName, conditionLabel);
+        else
+            fprintf(logFile, '%d\t%d\tPreview Image\t%f\t%s\t%s\tTriggering preview image\n', i_trial, currentTriggerChannel, GetSecs(), imageName, conditionLabel);
+        end
+        Screen('FillRect', w, currentTriggerChannel, trigRect);
         Screen('Flip', w);
         Screen('DrawTexture', w, wPreview);
         Screen('FillRect', w, black, trigRect);
@@ -439,11 +456,14 @@ try
                 if eyeX~=el.MISSING_DATA && eyeY~=el.MISSING_DATA % no blinks
                     dist_center = sqrt( (eyeX-wx)^2 + (eyeY-wy)^2 );
                     if dist_center < fixTolerance % fixation is good
-                        if GetSecs() - expTable.fixStartTime(i_trial) > expTable.fixDuration(i_trial)+.5 % fixation is long enough
+                       if GetSecs() - expTable.fixStartTime(i_trial) > expTable.fixDuration(i_trial)+.5 % fixation is long enough
+                            if strcmp(imageName, 'N/A')
+                                fprintf(logFile, '%d\t229\tCue\t%f\t%s\t%s\tExtra trigger - no image\n', i_trial, GetSecs(), imageName, conditionLabel);
+                            else
+                                fprintf(logFile, '%d\t229\tCue\t%f\t%s\t%s\tTriggering preview image\n', i_trial, GetSecs(), imageName, conditionLabel);
+                            end
                             Screen('DrawTexture', w, wCue);
-           fprintf(logFile, '%d\t227\tCue\t%f\t%s\t%s\tTriggering preview image\n', i_trial, GetSecs(), preview_fn, num2str(cwdg));
-
-                            Screen('FillRect', w, trig.ch227, trigRect);
+                            Screen('FillRect', w, trig.ch229, trigRect);
                             Screen('Flip', w);
                             Screen('DrawTexture', w, wCue);
                             Screen('FillRect', w, black, trigRect);
@@ -475,7 +495,12 @@ try
                         disp('Saccade detected'); % Debugging output
 
                         Eyelink('Message', 'TRIGGER %d', trig.SACCADE);
-                        Screen('FillRect', w, trig.ch228, trigRect);
+                        if strcmp(imageName, 'N/A')
+                            fprintf(logFile, '%d\tN/A\tSaccade\t%f\t%s\t%s\tExtra trigger - no image\n', i_trial, GetSecs(), imageName, conditionLabel);
+                        else
+                            fprintf(logFile, '%d\tN/A\tSaccade\t%f\t%s\t%s\tTriggering preview image\n', i_trial, GetSecs(), imageName, conditionLabel);
+                        end
+                        Screen('FillRect', w, black, trigRect);
                         Screen('Flip', w);
                         Screen('FillRect', w, black, trigRect);
                         Screen('Flip', w);
@@ -491,9 +516,12 @@ try
 
         % TARGET
         Screen('DrawTexture', w, wTarget);
-        fprintf(logFile, '%d\t229\tTarget Image\t%f\t%s\t%s\tTriggering preview image\n', i_trial, GetSecs(), preview_fn, num2str(cwdg));
-
-        Screen('FillRect', w, trig.ch229, trigRect);
+        if strcmp(imageName, 'N/A')
+            fprintf(logFile, '%d\t230\tTarget Image\t%f\t%s\t%s\tExtra trigger - no image\n', i_trial, GetSecs(), imageName, conditionLabel);
+        else
+            fprintf(logFile, '%d\t230\tTarget Image\t%f\t%s\t%s\tTriggering preview image\n', i_trial, GetSecs(), imageName, conditionLabel);
+        end
+        Screen('FillRect', w, trig.ch230, trigRect);
         Screen('Flip', w);
         Screen('DrawTexture', w, wTarget);
         Screen('FillRect', w, black, trigRect);
@@ -545,7 +573,7 @@ try
 
         % RESPONSE
         Screen('DrawTexture', w, wQuestion);
-        Screen('FillRect', w, trig.ch230, trigRect);
+        Screen('FillRect', w, black, trigRect);
         Screen('Flip', w);
         Screen('DrawTexture', w, wQuestion);
         Screen('FillRect', w, black, trigRect);
@@ -556,26 +584,9 @@ try
 
         if goodTrial
             nBadTrials = 0;
-            %         [ResponseC 
-            % 
-            % 
-            %  Time, keyCode] = KbWait([], 2);
             [response, ResponseTime] = getButton();
-            if ResponseTime - expTable.questionOnsetTime(i_trial) > 1.5 % slow response
-                %                 Screen('FillRect', w, black, trigRect);
-                %                 Screen('Flip', w);
-                Screen('DrawText', w, 'TOO SLOW !!',  wx - 150, wy, [0 0 0]);
-                Screen('FillRect', w, black, trigRect);
-
-                Screen('Flip', w); WaitSecs(2);
-
-                errorMsg = 'SLOW RT';
-                Eyelink('Message', ['BAD :' errorMsg]);
-                expTable(end + 1, :) = expTable(i_trial, :);
-                expTable(i_trial, :) = [];
-                nBadTrials = nBadTrials + 1;
-                Eyelink('command', ['record_status_message "TRIAL BAD :' errorMsg '" ']);
-            elseif find(keyCode) == KbName('escape') % exit response
+            
+            if find(keyCode) == KbName('escape') % exit response
                 ShowCursor();
                 RestrictKeysForKbCheck([]);
                 Screen('CloseAll');
@@ -617,7 +628,12 @@ try
             Eyelink('command', ['record_status_message "TRIAL BAD :' errorMsg '" ']);
         end
 
-        fprintf(logFile, '%d\tEnd\tN/A\t%f\t%s\t%s\tEnding trial\n', i_trial, GetSecs(), imageName, conditionLabel);
+        fprintf(logFile, '%d\tEndTrial\tN/A\t%f\t%s\t%s\tEnding trial\n', i_trial, GetSecs(), imageName, conditionLabel);
+
+        Screen('FillRect', w, [255 255 255]);
+        Screen('FillRect', w, black, trigRect);
+        Screen('Flip', w);
+        WaitSecs(1)
 
     end
 
