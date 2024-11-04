@@ -18,8 +18,6 @@ jobs:
       BOX_PRIVATE_KEY: ${{ secrets.BOX_PRIVATE_KEY }}
       BOX_PASSPHRASE: ${{ secrets.BOX_PASSPHRASE }}
 
-    run: echo "Secrets configured"
-
     steps:
       - name: Check out the code
         uses: actions/checkout@v3
