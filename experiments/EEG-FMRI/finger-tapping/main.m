@@ -10,6 +10,10 @@ global tc;
 global isTerminationKeyPressed;
 global resReport;
 global totalTime;
+
+% datapixx = 1 means w're actually listening for the scanner to send us a
+% trigger
+% datapixx = 0 means w're in demo mode
 global datapixx;
 
 Screen('Preference', 'SkipSyncTests', 1);
@@ -41,6 +45,8 @@ end
 
 %   Initialize screen
 %--------------------------------------------------------------------------------------------------------------------------------------%
+
+
 initScreen(); %change transparency of screen from here
 
 %   Convert values from visual degrees to pixels
@@ -52,7 +58,7 @@ visDegrees2Pix();
 
 if ~parameters.isDemoMode
     % datapixx init
-    datapixx = 1;               
+    datapixx = 0;               
     AssertOpenGL;   % We use PTB-3;
     isReady =  Datapixx('Open');
     Datapixx('StopAllSchedules');
@@ -87,11 +93,18 @@ end
 timing.soeDuration = 0;
 isTerminationKeyPressed = false;
 
-
+tic
 for   tc =  1 : parameters.numberOfBlocks
+    
+    % hadi send trigger here
+    
     if mod(tc,2) ~= 0
+        % hadi send trigger type 1 here
         blockText = parameters.blockOneMsg;
+        
+        
     else
+        % hadi send trigger type 2 here
         blockText = parameters.blockTwoMsg;
     end
     
