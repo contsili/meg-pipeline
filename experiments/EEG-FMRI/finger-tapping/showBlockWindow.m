@@ -17,7 +17,8 @@ function [startTime, endTime] = showBlockWindow(text)
                 [vbl, startTime, tstamp, miss_check]=Screen('Flip', screen.win);
                 % This is the first frame of the block, so we can just send
                 % one marker on the EEG data here
-                %Sending an S1 marker
+                
+                % Sending an S1 marker on the EEG data
                 
                 Datapixx('SetDoutValues', 2^2);
                 Datapixx('RegWrRd');

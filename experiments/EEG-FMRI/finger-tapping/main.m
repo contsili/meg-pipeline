@@ -1,5 +1,7 @@
-%fingertapping- this one for haidee only stop and tap 
-% big font
+
+% EEG-FMRI experiment for finger tapping
+% fingertapping: tap each finger then rest
+% Author: Hadi Zaatiti <hadi.zaatiti@nyu.edu>
 
 clear all
 close all
@@ -95,17 +97,27 @@ isTerminationKeyPressed = false;
 
 tic
 for   tc =  1 : parameters.numberOfBlocks
-    
+
     % hadi send trigger here
     
-    if mod(tc,2) ~= 0
-        % hadi send trigger type 1 here
-        blockText = parameters.blockOneMsg;
-        
-        
+%     if mod(tc,2) ~= 0
+%         blockText = parameters.blockOneMsg;
+%         
+%     else
+%         blockText = parameters.blockTwoMsg;
+%     end    
+
+    % Determine the block group (1 to 10)
+    block_group = ceil(tc / 20);
+    
+    % Determine the position within the current 20-block group
+    position_in_group = mod(tc - 1, 20) + 1;
+    
+    % Determine the type based on position
+    if position_in_group == 1
+        block_type = block_group; % 1st block in each group has type equal to block_group
     else
-        % hadi send trigger type 2 here
-        blockText = parameters.blockTwoMsg;
+        block_type = 2; % All other blocks in the group are type 2
     end
     
     [blockStartTime, blockEndTime] = showBlockWindow(blockText);

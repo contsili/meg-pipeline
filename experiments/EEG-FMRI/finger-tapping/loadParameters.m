@@ -53,9 +53,10 @@ function loadParameters()
 
     
     %   set the number of blocks in your experiment
-    parameters.numberOfBlocks = 20;
+    %parameters.numberOfBlocks = 20;
+    % 10 blocks for each finger tapping alternated by 10 blocks of no-tapping
     
-    
+    parameters.numberOfBlocks = 200;
     %---------------------------------------------------------------------%
     % tasks durations ( in seconds)
     %---------------------------------------------------------------------%
@@ -73,8 +74,12 @@ function loadParameters()
     parameters.welcomeMsg = sprintf('Please wait until the experimenter sets up parameters.');
     parameters.ttlMsg = sprintf('Initializing Scanner...');
     parameters.thankYouMsg = sprintf('Thank you for your participation!!!');
-    parameters.blockOneMsg = sprintf('Stop');
-    parameters.blockTwoMsg = sprintf('Tap finger');
+    parameters.blockOneMsg = sprintf('Stop tapping any finger');
+    parameters.blockTwoMsg = sprintf('Keep Tapping thumb');
+    parameters.blockThreeMsg = sprintf('Keep Tapping index');
+    parameters.blockFourMsg = sprintf('Keep Tapping middle');
+    parameters.blockFiveMsg = sprintf('Keep Tapping ring');
+    parameters.blockSixMsg = sprintf('Keep Tapping pinkie');
 
     %---------------------------------------------------------------------%
     % Some geometry parameters
