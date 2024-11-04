@@ -250,7 +250,15 @@ Datapixx('RegWrRd');
 % DOUTVALUES = 16 --> bit 1 is activated
 
 
-
+% Bits on Vpixx
+% Bit 0 on BP needs bit 2 on Vpixx
+% Bit 1 on BP needs bit 4 on Vpixx
+% Bit 2 on BP needs bit 6 on Vpixx
+% Bit 3 on BP needs bit 8 on Vpixx
+% Bit 4 on BP needs bit 10 on Vpixx
+% Bit 5 on BP needs bit 12 on Vpixx
+% Bit 6 on BP needs bit 14 on Vpixx
+% Bit 7 on BP needs bit 16 on Vpixx
 
 %% Bit testing 0-7 markers
 
@@ -264,7 +272,7 @@ Datapixx('RegWrRd');
 % 2^2 = 4 it activates bit number 2
 
 HitKeyToContinue('Hit any key to bring the bit 0 on:');
-Datapixx('SetDoutValues', 4);
+Datapixx('SetDoutValues', 2^2);
 Datapixx('RegWrRd');
 % Checked that we see Bit 0 on the BP recording app becoming on
 
@@ -285,7 +293,7 @@ Datapixx('RegWrRd');
 
 
 HitKeyToContinue('Hit any key to bring the bit 1 on:');
-Datapixx('SetDoutValues', 16);
+Datapixx('SetDoutValues', 2^4);
 Datapixx('RegWrRd');
 % Checked that we see Bit 0 on the BP recording app becoming on
 
@@ -309,7 +317,7 @@ Datapixx('RegWrRd');
 
 
 HitKeyToContinue('Hit any key to bring the bit 2 on:');
-Datapixx('SetDoutValues', 64);
+Datapixx('SetDoutValues', 2^6);
 Datapixx('RegWrRd');
 % Checked that we see Bit 0 on the BP recording app becoming on
   
@@ -332,7 +340,7 @@ Datapixx('RegWrRd');
 
 
 HitKeyToContinue('Hit any key to bring the bit 3 on:');
-Datapixx('SetDoutValues', 256);
+Datapixx('SetDoutValues', 2^8);
 Datapixx('RegWrRd');
 % Checked that we see Bit 0 on the BP recording app becoming on
   
@@ -356,7 +364,7 @@ Datapixx('RegWrRd');
 
 
 HitKeyToContinue('Hit any key to bring the bit 4 on:');
-Datapixx('SetDoutValues', 1024);
+Datapixx('SetDoutValues', 2^10);
 Datapixx('RegWrRd');
 % Checked that we see Bit 0 on the BP recording app becoming on
   
@@ -380,7 +388,7 @@ Datapixx('RegWrRd');
 
 
 HitKeyToContinue('Hit any key to bring the bit 5 on:');
-Datapixx('SetDoutValues', 4096);
+Datapixx('SetDoutValues', 2^12);
 Datapixx('RegWrRd');
 % Checked that we see Bit 0 on the BP recording app becoming on
   
@@ -416,7 +424,7 @@ Datapixx('RegWrRd');
 
 
 
-%% Bit 7 Test Debug
+%% Bit 7 Test Works
  
 % Should trigger S1 marker on EEG
 
