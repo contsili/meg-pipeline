@@ -6,11 +6,6 @@ pip install pandoc
 cd docs/source
 winget install --source winget --exact --id JohnMacFarlane.Pandoc
 python -m sphinx -T -W --keep-going -b html -d ../../rtd-build-output/_build/doctrees -D language=en . ../../rtd-build-output/html
-python -m sphinx -T -b latex -d rtd-build-output/_build/doctrees -D language=en docs/source rtd-build-output/pdf
-cd .\rtd-build-output\pdf\
-Testing:
-
-
-Untested:
-
+python -m sphinx -T -b latex -d ../../rtd-build-output/_build/doctrees -D language=en . ../../rtd-build-output/pdf
+cd ../../rtd-build-output/pdf/
 latexmk -r latexmkrc -pdf -f -dvi- -ps- -jobname=meg-pipeline -interaction=nonstopmode

@@ -5,9 +5,11 @@ MEG/EEG-pipeline documentation page
 
 Status of the documentation build
 
-.. image:: https://readthedocs.org/projects/meg-pipeline/badge/?version=latest
-    :target: https://example-sphinx-basic.readthedocs.io/en/latest/?badge=latest
-    :alt: Documentation Status
+.. only:: html
+
+   .. image:: https://readthedocs.org/projects/meg-pipeline/badge/?version=latest
+      :target: https://example-sphinx-basic.readthedocs.io/en/latest/?badge=latest
+      :alt: Documentation Status
 
 .. include:: ../../README.rst
 

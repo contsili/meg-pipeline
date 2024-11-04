@@ -1,39 +1,55 @@
-name: Build PDF from Docs
+name: RTD Replicate Build
 
 on:
   push:
     branches:
       - main
-  workflow_dispatch:
+  pull_request:
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  build-docs:
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        python-version: [3.10]
 
     steps:
-      - name: Checkout repository
+      - name: Check out the code
         uses: actions/checkout@v3
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.x'
+          python-version: ${{ matrix.python-version }}
 
-      - name: Install LaTeX and other dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade --no-cache-dir pip setuptools
+          python -m pip install --upgrade --no-cache-dir sphinx
+          python -m pip install --exists-action=w --no-cache-dir -r docs/requirements.txt
+          python -m pip install --upgrade --upgrade-strategy only-if-needed --no-cache-dir .
+
+      - name: Install pandoc
         run: |
           sudo apt-get update
-          sudo apt-get install texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended latexmk
-          python -m pip install --upgrade pip
-          pip install sphinx rst2pdf
-          
+          sudo apt-get install -y pandoc
 
-      - name: Build PDF
+      - name: Build HTML documentation
+        working-directory: docs/source
         run: |
-          cd docs  # Assuming your documentation is in a `docs` folder
-          make latexpdf
+          python -m sphinx -T -W --keep-going -b html -d ../../rtd-build-output/_build/doctrees -D language=en . ../../rtd-build-output/html
 
-      - name: Upload PDF as artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: docs-pdf
-          path: docs/_build/latex/*.pdf  # Adjust if necessary
+      - name: Build LaTeX documentation
+        working-directory: docs/source
+        run: |
+          python -m sphinx -T -b latex -d ../../rtd-build-output/_build/doctrees -D language=en . ../../rtd-build-output/pdf
+
+      - name: Install TeX Live for LaTeX PDF generation
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-base texlive-latex-extra texlive-fonts-recommended texlive-xetex latexmk
+
+      - name: Build PDF from LaTeX
+        working-directory: rtd-build-output/pdf
+        run: |
+          latexmk -r latexmkrc -pdf -f -dvi- -ps- -jobname=meg-pipeline -interaction=nonstopmode
