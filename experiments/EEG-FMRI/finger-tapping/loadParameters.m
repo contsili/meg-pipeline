@@ -8,15 +8,14 @@ function loadParameters()
     parameters.hideCursor = true;
     
     %   to set the demo mode with half-transparent screen
-    parameters.isDemoMode = true;
+    parameters.isDemoMode = false;
     
     %   screen transparency in demo mode
     parameters.transparency = 0.8;
     
     %   to make screen background darker (close to 0) or lighter (close to 1)
-    parameters.greyFactor = 0.6; 
-    
- 
+    parameters.greyFactor = 0.6;
+     
     parameters.viewDistance = 60;%default
     
     %---------------------------------------------------------------------%
@@ -56,9 +55,14 @@ function loadParameters()
     %parameters.numberOfBlocks = 20;
     % 10 blocks for each finger tapping alternated by 10 blocks of no-tapping
     
-    [~,idx] = sort(rand(5,5));
-    dsm = idx(:)
-    parameters.blocktype = dsm
+    % To regenerate the finger stimulus sequence
+%     [~,idx] = sort(rand(5,5));
+%     dsm = idx(:)
+%   save dsm finger_stimulus_sequence
+
+    temp = load('finger_stimulus_sequence.mat');
+    parameters.blocktype = temp.dsm;
+    
     parameters.numberOfBlocks = 25;
     %---------------------------------------------------------------------%
     % tasks durations ( in seconds)

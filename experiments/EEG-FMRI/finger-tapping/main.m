@@ -31,6 +31,7 @@ map = struct('block',0,...
 
 timingsReport=cell2mat(timingsReport);
 addpath('supportFiles');   
+
 %   Load parameters
 %--------------------------------------------------------------------------------------------------------------------------------------%
 loadParameters();
@@ -59,8 +60,7 @@ visDegrees2Pix();
 %-------------------------------------------------------------------------- ------------------------------------------------------------%
 
 if ~parameters.isDemoMode
-    % datapixx init
-    datapixx = 0;               
+    % datapixx init               
     AssertOpenGL;   % We use PTB-3;
     isReady =  Datapixx('Open');
     Datapixx('StopAllSchedules');
@@ -163,3 +163,10 @@ if ~parameters.isDemoMode
     Datapixx('StopAllSchedules');
     Datapixx('Close');
 end
+
+
+%% What do we need to save?
+
+% We need the stimulus finger sequence
+% The ID of the subject
+% Beginning and end of each block

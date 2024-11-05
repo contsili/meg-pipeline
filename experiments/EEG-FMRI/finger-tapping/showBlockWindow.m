@@ -19,9 +19,12 @@ function [startTime, endTime] = showBlockWindow(text)
                 % one marker on the EEG data here
                 
                 % Sending an S1 marker on the EEG data
-                
-                Datapixx('SetDoutValues', 2^2);
-                Datapixx('RegWrRd');
+                if ~parameters.isDemoMode
+                    
+                    Datapixx('SetDoutValues', 2^2);
+                    Datapixx('RegWrRd');
+                    
+                end
                 toc
             else
                 if frame == numFrames
