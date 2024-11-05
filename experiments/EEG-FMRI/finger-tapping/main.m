@@ -143,6 +143,7 @@ for   tc =  1 : parameters.numberOfBlocks
     timingsReport(:,tc).startTime =  blockStartTime;
     timingsReport(:,tc).endTime =  blockEndTime;
     timingsReport(:,tc).totalBlockDuration = blockEndTime - blockStartTime;
+    timingsReport(:,tc).blocktype = block_type;
 end
 %  init end of experiment procedures 
 %--------------------------------------------------------------------------------------------------------------------------------------%
@@ -153,6 +154,7 @@ startEoeTime = showEoeWindow();
 %  save the data
 %--------------------------------------------------------------------------------------------------------------------------------------%
 % 
+
 
 writetable(struct2table(timingsReport),parameters.datafile);
 
