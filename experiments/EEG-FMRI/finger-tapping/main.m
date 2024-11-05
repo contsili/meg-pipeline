@@ -74,9 +74,9 @@ end
 % have 25 blocks,  5 blocks for each finger
 % pseudo-randomly permute the blocks by:
 % ensuring we are getting all the possible sequences of 
-[~,idx] = sort(rand(5,5));
-dsm = idx(:)
 
+
+%%
 %  run the experiment
 %--------------------------------------------------------------------------------------------------------------------------------------%
 %  
@@ -104,38 +104,32 @@ isTerminationKeyPressed = false;
 
 tic
 for   tc =  1 : parameters.numberOfBlocks
+    
+    block_type = parameters.blocktype(tc)
+    
+    switch block_type
+        case 1
+            blockText = parameters.blockOneMsg;
+        case 2
+            blockText = parameters.blockTwoMsg;
+        case 3
+            blockText = parameters.blockThreeMsg;
+        case 4
+            blockText = parameters.blockFourMsg;
+        case 5
+            blockText = parameters.blockFiveMsg;
+    end    
 
-    % hadi send trigger here
-    
-%     if mod(tc,2) ~= 0
-%         blockText = parameters.blockOneMsg;
-%         
-%     else
-%         blockText = parameters.blockTwoMsg;
-%     end    
-
-    % Determine the block group (1 to 10)
-    block_group = ceil(tc / 20);
-    
-    % Determine the position within the current 20-block group
-    position_in_group = mod(tc - 1, 20) + 1;
-    
-    % Determine the type based on position
-    if position_in_group == 1
-        block_type = block_group; % 1st block in each group has type equal to block_group
-    else
-        block_type = 2; % All other blocks in the group are type 2
-    end
     
     [blockStartTime, blockEndTime] = showBlockWindow(blockText);
 
     %% Putti says: if we are moving the right hand, this means the right hemisphere is not being used
-    %% in this case, we can use all the signals from the right hemisphere as a baseline
-    %% According to the paper https://pmc.ncbi.nlm.nih.gov/articles/PMC3713710/pdf/HBM-33-1594.pdf
-    %% it is best to have a random permutation of the finger order to get a better spatial accuracy
-    %% according to Putti: we should correct for the MRI artifact (causing higher signal amplitudes with time) that has an upward trend with time (this is done by adding a linear drift vector at the end of the design matrix)
-    %% Add a first vector of constant values in order to take the average of the BOLD signals from all fingers as a baseline
-    %% In the paper the block duration is 3 seconds, however we can then take 12 seconds per finger
+    % in this case, we can use all the signals from the right hemisphere as a baseline
+    % According to the paper https://pmc.ncbi.nlm.nih.gov/articles/PMC3713710/pdf/HBM-33-1594.pdf
+    % it is best to have a random permutation of the finger order to get a better spatial accuracy
+    % according to Putti: we should correct for the MRI artifact (causing higher signal amplitudes with time) that has an upward trend with time (this is done by adding a linear drift vector at the end of the design matrix)
+    % Add a first vector of constant values in order to take the average of the BOLD signals from all fingers as a baseline
+    % In the paper the block duration is 3 seconds, however we can then take 12 seconds per finger
 
     timingsReport(:,tc).trial = tc;
     timingsReport(:,tc).startTime =  blockStartTime;

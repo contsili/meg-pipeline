@@ -8,7 +8,7 @@ function loadParameters()
     parameters.hideCursor = true;
     
     %   to set the demo mode with half-transparent screen
-    parameters.isDemoMode = false;
+    parameters.isDemoMode = true;
     
     %   screen transparency in demo mode
     parameters.transparency = 0.8;
@@ -56,7 +56,10 @@ function loadParameters()
     %parameters.numberOfBlocks = 20;
     % 10 blocks for each finger tapping alternated by 10 blocks of no-tapping
     
-    parameters.numberOfBlocks = 200;
+    [~,idx] = sort(rand(5,5));
+    dsm = idx(:)
+    parameters.blocktype = dsm
+    parameters.numberOfBlocks = 25;
     %---------------------------------------------------------------------%
     % tasks durations ( in seconds)
     %---------------------------------------------------------------------%
@@ -74,12 +77,11 @@ function loadParameters()
     parameters.welcomeMsg = sprintf('Please wait until the experimenter sets up parameters.');
     parameters.ttlMsg = sprintf('Initializing Scanner...');
     parameters.thankYouMsg = sprintf('Thank you for your participation!!!');
-    parameters.blockOneMsg = sprintf('Stop tapping any finger');
-    parameters.blockTwoMsg = sprintf('Keep Tapping thumb');
-    parameters.blockThreeMsg = sprintf('Keep Tapping index');
-    parameters.blockFourMsg = sprintf('Keep Tapping middle');
-    parameters.blockFiveMsg = sprintf('Keep Tapping ring');
-    parameters.blockSixMsg = sprintf('Keep Tapping pinkie');
+    parameters.blockOneMsg = sprintf('Keep Tapping thumb');
+    parameters.blockTwoMsg = sprintf('Keep Tapping index');
+    parameters.blockThreeMsg = sprintf('Keep Tapping middle');
+    parameters.blockFourMsg = sprintf('Keep Tapping ring');
+    parameters.blockFiveMsg = sprintf('Keep Tapping pinkie');
 
     %---------------------------------------------------------------------%
     % Some geometry parameters
