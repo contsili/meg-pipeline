@@ -60,8 +60,7 @@ visDegrees2Pix();
 %-------------------------------------------------------------------------- ------------------------------------------------------------%
 
 if ~parameters.isDemoMode
-    % datapixx init
-    datapixx = 0;               
+    % datapixx init              
     AssertOpenGL;   % We use PTB-3;
     isReady =  Datapixx('Open');
     Datapixx('StopAllSchedules');
@@ -132,6 +131,7 @@ for   tc =  1 : parameters.numberOfBlocks
     timingsReport(:,tc).startTime =  blockStartTime;
     timingsReport(:,tc).endTime =  blockEndTime;
     timingsReport(:,tc).totalBlockDuration = blockEndTime - blockStartTime;
+    timingsReport(:,tc).blocktype = block_type;
 end
 %  init end of experiment procedures 
 %--------------------------------------------------------------------------------------------------------------------------------------%

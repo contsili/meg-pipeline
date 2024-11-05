@@ -56,12 +56,11 @@ function loadParameters()
     % 10 blocks for each finger tapping alternated by 10 blocks of no-tapping
     
     % To regenerate the finger stimulus sequence
-%     [~,idx] = sort(rand(5,5));
-%     dsm = idx(:)
-%   save dsm finger_stimulus_sequence
+    
+    [~,idx] = sort(rand(5,5));
+    parameters.blocktype = idx(:);
 
-    temp = load('finger_stimulus_sequence.mat');
-    parameters.blocktype = temp.dsm;
+    %parameters.blocktype = temp.dsm;
     
     parameters.numberOfBlocks = 25;
     %---------------------------------------------------------------------%
@@ -69,6 +68,7 @@ function loadParameters()
     %---------------------------------------------------------------------%
     
     %   sample task duration
+    %parameters.blockDuration = 12;
     parameters.blockDuration = 12;
     
     %   eoe task duration
