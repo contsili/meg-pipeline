@@ -1,9 +1,7 @@
 Example Experiments MEG
 -----------------------
 
-.. toctree::
-   :maxdepth: 1
-   :caption: MEG Experiments
+.. nbgallery::
 
    experiments/1-exp-resting-state
    experiments/2-exp-trigger-psychtoolbox
@@ -12,17 +10,12 @@ Example Experiments MEG
    experiments/5-responsebox
    experiments/6-exp-sound
    experiments/7-attention-experiment
+   experiments/8-photodiode
+
 
 
 Example Experiment EEG-FMRI
 ---------------------------
-
-.. toctree::
-   :maxdepth: 1
-   :caption: EEG-FMRI Experiments
-
-   experiments-eeg-fmri/1-alpha-blocking
-   experiments-eeg-fmri/2-finger-tapping
 
 .. nbgallery::
 
@@ -33,8 +26,6 @@ Example Experiment EEG-FMRI
 MEG Lab demonstrations
 ----------------------
 
-.. toctree::
-   :maxdepth: 1
-   :caption: Demonstrations
+.. nbgallery::
 
    demonstration/1-meg-class-demo
