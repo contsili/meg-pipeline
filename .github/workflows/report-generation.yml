@@ -59,24 +59,15 @@ jobs:
         run: |
           latexmk -r latexmkrc -pdf -f -dvi- -ps- -jobname=meg-pipeline -interaction=nonstopmode || true
 
-
-      - name: Create GitHub Release
-        id: create_release
-        uses: actions/create-release@v1
+      - name: Commit and Push PDF to Documents Directory
+        if: ${{ success() }}
+        run: |
+          git config --global user.email "hadizaatiti@gmail.com"
+          git config --global user.name "hzaatiti"
+          mkdir -p documents
+          cp rtd-build-output/pdf/meg-pipeline.pdf documents/meg-pipeline.pdf
+          git add documents/meg-pipeline.pdf
+          git commit -m "Update PDF documentation"
+          git push origin main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: "v1.0.0" # Use your versioning strategy
-          release_name: "Documentation Release v1.0.0"
-          draft: false
-          prerelease: false
-
-      - name: Upload PDF to Release
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: rtd-build-output/pdf/meg-pipeline.pdf
-          asset_name: meg-pipeline.pdf
-          asset_content_type: application/pdf
