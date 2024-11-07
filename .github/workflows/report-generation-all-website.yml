@@ -65,6 +65,6 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: rtd-build-output/pdf/meg-pipeline.pdf
-          tag_name: v${{ github.sha.substring(0,7) }}  # Use first 7 characters of the commit SHA as the release tag
+          tag_name: v${{ github.sha[0:7] }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
