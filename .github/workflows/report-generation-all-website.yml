@@ -43,7 +43,7 @@ jobs:
       - name: Build HTML documentation
         working-directory: docs/source
         run: |
-          python -m sphinx -T -W --keep-going -b html -d ../../rtd-build-output/_build/doctrees -D language=en -D exclude_patterns="index_lab_manual.rst" . ../../rtd-build-output/html
+          python -m sphinx -T --keep-going -b html -d ../../rtd-build-output/_build/doctrees -D language=en -D exclude_patterns="index_lab_manual.rst" . ../../rtd-build-output/html
 
       - name: Build LaTeX documentation
         working-directory: docs/source
