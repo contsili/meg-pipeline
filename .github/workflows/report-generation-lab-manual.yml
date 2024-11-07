@@ -60,14 +60,11 @@ jobs:
         run: |
           latexmk -r latexmkrc -pdf -f -dvi- -ps- -jobname=meg-pipeline -interaction=nonstopmode || true
 
-      - name: Commit and Push PDF to Documents Directory
+      - name: Create or Update GitHub Release and Upload PDF
         if: ${{ success() }}
-        run: |
-          git config --global user.email "hadizaatiti@gmail.com"
-          git config --global user.name "hzaatiti"
-          mkdir -p documents
-          cp rtd-build-output/pdf/meg-pipeline.pdf documents/meg-lab-manual.pdf
-          git checkout main  # Ensure you are on the main branch
-          git add documents/meg-pipeline.pdf
-          git commit -m "Update PDF documentation" || echo "No changes to commit"
-          git push "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Hzaatiti/meg-pipeline.git" main
+        uses: softprops/action-gh-release@v1
+        with:
+          files: rtd-build-output/pdf/meg-pipeline.pdf
+          tag_name: ${{ github.sha }}  # Use commit SHA as the release tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
