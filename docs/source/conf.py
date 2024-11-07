@@ -22,6 +22,18 @@ author = "Hadi Zaatiti hadi.zaatiti@nyu.edu"
 release = "0.1"
 version = "0.1.0"
 
+PDF_GENERATION_INDEX = os.getenv('PDF_GENERATION_INDEX', 'ALL_WEBSITE')
+
+master_doc = 'index'
+
+
+if PDF_GENERATION_INDEX == 'LABMANUAL':
+    master_doc = 'index_lab_manual'
+
+elif PDF_GENERATION_INDEX == 'ALL_WEBSITE':
+    master_doc = 'index'
+
+
 # -- General configuration
 
 extensions = [

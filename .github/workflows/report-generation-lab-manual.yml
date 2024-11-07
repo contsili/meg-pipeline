@@ -1,4 +1,4 @@
-name: ReadTheDocs Build
+name: Report Generation MEG Lab Manual
 
 on:
   push:
@@ -17,6 +17,7 @@ jobs:
       BOX_PUBLIC_KEY_ID: ${{ secrets.BOX_PUBLIC_KEY_ID }}
       BOX_PRIVATE_KEY: ${{ secrets.BOX_PRIVATE_KEY }}
       BOX_PASSPHRASE: ${{ secrets.BOX_PASSPHRASE }}
+      PDF_GENERATION_INDEX: "LABMANUAL"
 
     steps:
       - name: Check out the code
@@ -65,9 +66,8 @@ jobs:
           git config --global user.email "hadizaatiti@gmail.com"
           git config --global user.name "hzaatiti"
           mkdir -p documents
-          cp rtd-build-output/pdf/meg-pipeline.pdf documents/meg-pipeline.pdf
+          cp rtd-build-output/pdf/meg-pipeline.pdf documents/meg-lab-manual.pdf
+          git checkout main  # Ensure you are on the main branch
           git add documents/meg-pipeline.pdf
-          git commit -m "Update PDF documentation"
-          git push origin main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          git commit -m "Update PDF documentation" || echo "No changes to commit"
+          git push "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Hzaatiti/meg-pipeline.git" main
