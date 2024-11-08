@@ -3,8 +3,6 @@ MEG Lab Manual
 ##############
 
 
-
-
 .. toctree::
    :maxdepth: 2
    :caption: Operation Protocol
