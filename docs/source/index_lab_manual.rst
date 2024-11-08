@@ -9,5 +9,7 @@ MEG Lab Manual
    :maxdepth: 2
    :caption: Operation Protocol
 
-   2-operationprotocol/participant_document
-   2-operationprotocol/meg-operationprotocol
+   2-operationprotocol/bookingsystem
+   2-operationprotocol/training_meg
+   2-operationprotocol/kit-operationalprotocol
+   2-operationprotocol/opm-operationalprotocol
