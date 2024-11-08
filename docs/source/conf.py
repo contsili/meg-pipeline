@@ -26,6 +26,7 @@ PDF_GENERATION_INDEX = os.getenv('PDF_GENERATION_INDEX', 'ALL_WEBSITE')
 
 master_doc = 'index'
 
+print('Global variable', PDF_GENERATION_INDEX)
 if PDF_GENERATION_INDEX == 'LABMANUAL':
     master_doc = 'index_lab_manual'
     exclude_patterns = ['index.rst']
