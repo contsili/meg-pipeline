@@ -206,7 +206,8 @@ avgCWDG2 = ft_timelockanalysis(cfg, dataCrowding2);
 avgCWDG3 = ft_timelockanalysis(cfg, dataCrowding3);
 
 
-%%
+%% save
+
 for k = 1
     % Define the subject ID based on k
     subject_id = sprintf('sub-%03d-vcp', k);
@@ -223,6 +224,10 @@ end
 load(fullfile(derivatives_folder, 'avgCWDG1.mat'), 'avgCWDG1');
 load(fullfile(derivatives_folder, 'avgCWDG2.mat'), 'avgCWDG2');
 load(fullfile(derivatives_folder, 'avgCWDG3.mat'), 'avgCWDG3'); 
+
+% avgCWDG1: high crowding
+% avgCWDG2: medium crowding
+% avgCWDG3: no crowding
 
 %% Plot all ERPs in sensor space
 

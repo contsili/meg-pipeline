@@ -122,6 +122,22 @@ hold on
 ft_plot_headshape(lasershape_laser2ctf)
 title('way1')
 
+% save
+for k = 1
+    % Define the subject ID based on k
+    subject_id = sprintf('sub-%03d-vcp', k);
+    
+    % Define the folder path
+    derivatives_folder = fullfile(SAVE_PATH, subject_id, 'derivatives');
+   
+    % Save the data files in the defined folder
+    save(fullfile(derivatives_folder, 'grad_mrk2ctf.mat'), 'grad_mrk2ctf');
+    save(fullfile(derivatives_folder, 'lasershape_laser2ctf.mat'), 'lasershape_laser2ctf');
+end
+
+load(fullfile(derivatives_folder, 'grad_mrk2ctf.mat'), 'grad_mrk2ctf');
+load(fullfile(derivatives_folder, 'lasershape_laser2ctf.mat'), 'lasershape_laser2ctf');
+
 %% way2: bring mrk to the laserscan coordsys
 
 mrk2ctf   = ft_headcoordinates(mrka.fid.pos(1,:), mrka.fid.pos(2,:), mrka.fid.pos(3,:), 'ctf'); 
