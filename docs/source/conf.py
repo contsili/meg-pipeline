@@ -29,11 +29,10 @@ master_doc = 'index'
 print('Global variable', PDF_GENERATION_INDEX)
 if PDF_GENERATION_INDEX == 'LABMANUAL':
     master_doc = 'index_lab_manual'
-    exclude_patterns = ['index.rst']
 
 elif PDF_GENERATION_INDEX == 'ALL_WEBSITE':
     master_doc = 'index'
-    exclude_patterns = ['index_lab_manual.rst']
+
 
 
 # -- General configuration
