@@ -110,7 +110,7 @@ Screen width 65 cm
 
 
 Electronic lag times between visual stimulus and KIT trigger box
----------------------------------------------------------------
+----------------------------------------------------------------
 
 A trigger signal, representing a visual stimulus sent from the Vpixx system to the KIT DAQ computers arrives slightly prior to the visual stimulus from the Vpixx projector due to the electronic circuits.
 This result has been deeply investigated by Gayathri Satheesh after performing a photodiode experiment with 1000 trial.
