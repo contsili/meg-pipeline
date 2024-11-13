@@ -179,7 +179,7 @@ meg_channels = setdiff(1:208, 92);
 cfg                  = [];
 cfg.method           = 'summary';
 cfg.channel          = meg_channels;  % Include only MEG channels
-segmented_data_clean = ft_rejectvisual(cfg, segmented_data); % I set threshold 8e-25. I remove only trials, I kept all the channels
+segmented_data_clean = ft_rejectvisual(cfg, segmented_data); % I set threshold 7e-25. I remove only trials, I kept all the channels
 
  %% separate the trials into the conditions
 
@@ -237,31 +237,33 @@ meg_channels = setdiff(1:208, 92);
 cfg = [];
 cfg.showlabels = 'yes';
 cfg.channel          = meg_channels;  % Include only MEG channels
+cfg.linecolor = [0 0 1; 0 1 0; 1 0 0]; % Blue, Green, Red
 ft_multiplotER(cfg, avgCWDG1, avgCWDG2, avgCWDG3); % it automatically creates layout for yokogawa208 system
-legend(avgCWDG1, avgCWDG2, avgCWDG3)
 title(sprintf('ERP Activity in sensor space: %s', subjectID), 'Interpreter', 'none');
 
-saveas(gcf, fullfile(derivatives_folder, sprintf('%s_ERP_Sensor_Space.png', subjectID)));
+% saveas(gcf, fullfile(derivatives_folder, sprintf('%s_ERP_Sensor_Space.png', subjectID)));
 
 
 % Plot all ERPs from a specific channel
 cfg = [];
-cfg.xlim = [-0.2 1.0];
-cfg.ylim = [-1e-13 3e-13];
-cfg.channel = 'AG001';
+cfg.xlim =  [0.2 0.3];
+% cfg.ylim = [-1e-13 3e-13];
+cfg.channel = {'AG080', 'AG131', 'AG142', 'AG153', 'AG169', 'AG176'};
+cfg.linecolor = [0 0 1; 0 1 0; 1 0 0]; % Blue, Green, Red
 ft_singleplotER(cfg, avgCWDG1, avgCWDG2, avgCWDG3);
 title(sprintf('ERP Activity of Subject: %s', subjectID), 'Interpreter', 'none');
 
-saveas(gcf, fullfile(derivatives_folder, sprintf('%s_ERP.png', subjectID)));
+% saveas(gcf, fullfile(derivatives_folder, sprintf('%s_ERP.png', subjectID)));
 
 % Topographic plot of the ERP
 cfg = [];
-cfg.xlim =  [0.3 0.5];
+cfg.xlim =  [0.26 0.29];
 cfg.colorbar = 'yes';
 %cfg.layout = 'CTF151_helmet.mat';
 ft_topoplotER(cfg, avgCWDG1);
 title(sprintf('Topographic plot of condition 1: %s', subjectID), 'Interpreter', 'none');
-saveas(gcf, fullfile(derivatives_folder, sprintf('%s_Topographic_plot_cwdg_1.png', subjectID)));
+
+% saveas(gcf, fullfile(derivatives_folder, sprintf('%s_Topographic_plot_cwdg_1.png', subjectID)));
 
 
 
@@ -271,7 +273,8 @@ cfg.colorbar = 'yes';
 %cfg.layout = 'CTF151_helmet.mat';
 ft_topoplotER(cfg, avgCWDG2);
 title(sprintf('Topographic plot of condition 2: %s', subjectID), 'Interpreter', 'none');
-saveas(gcf, fullfile(derivatives_folder, sprintf('%s_Topographic_plot_cwdg_2.png', subjectID)));
+
+% saveas(gcf, fullfile(derivatives_folder, sprintf('%s_Topographic_plot_cwdg_2.png', subjectID)));
 
 
 
@@ -281,4 +284,5 @@ cfg.colorbar = 'yes';
 %cfg.layout = 'CTF151_helmet.mat';
 ft_topoplotER(cfg, avgCWDG3);
 title(sprintf('Topographic plot of condition 3: %s', subjectID), 'Interpreter', 'none');
-saveas(gcf, fullfile(derivatives_folder, sprintf('%s_Topographic_plot_cwdg_3.png', subjectID)));
+
+% saveas(gcf, fullfile(derivatives_folder, sprintf('%s_Topographic_plot_cwdg_3.png', subjectID)));

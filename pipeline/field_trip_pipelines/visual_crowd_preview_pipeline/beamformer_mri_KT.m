@@ -249,7 +249,8 @@ source1               = ft_sourceanalysis(cfg, avgCWDG1);
 %% 6. Plot activity
 
 cfg              = [];
-cfg.method       = 'slice';
+cfg.method       = 'ortho';
 % cfg.interactive   = 'yes';
+cfg.latency  =  [0.26 0.29];
 cfg.funparameter = 'pow';
 ft_sourceplot(cfg, source1, mri_coreg_sphere); 
