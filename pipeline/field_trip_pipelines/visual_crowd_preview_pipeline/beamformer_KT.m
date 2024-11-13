@@ -1,3 +1,44 @@
+%% We corefister a template headmodel with our polhemus
+
+%% configure paths
+
+MEG_DATA_FOLDER = getenv('MEG_DATA');
+
+% Set path to KIT .con file of sub-03
+DATASET_PATH = [MEG_DATA_FOLDER,'visual_crowding_preview'];
+
+% This needs fixing to save properly
+SAVE_PATH = [MEG_DATA_FOLDER, 'visual_crowding_preview'];
+
+%% MEGFILES, POLHEMUS_FILES, MRK_FILES
+
+% Get a list of all MEG data files
+MEGFILES = dir(fullfile(DATASET_PATH, 'sub-*-vcp','meg-kit', 'sub-*-vcp-analysis_NR.con'));
+
+% Get a list of all the Polhemus files
+POLHEMUS_FILES = dir(fullfile(DATASET_PATH, 'sub-*-vcp','digitizer', 'sub-*-scan*.txt'));
+
+% Get a list of all the .mrk files
+MRK_FILES = dir(fullfile(DATASET_PATH, 'sub-*-vcp','meg-kit', '*.mrk'));
+
+for k = 1
+
+    % Get the current MEG data file name   
+    confile = fullfile(MEGFILES(k).folder, MEGFILES(k).name);
+
+    laser_stylus = fullfile(POLHEMUS_FILES(k).folder, POLHEMUS_FILES(k).name);
+    laser_surf = fullfile(POLHEMUS_FILES(k+1).folder, POLHEMUS_FILES(k+1).name);
+
+    mrkfile1 = fullfile(MRK_FILES(k).folder, MRK_FILES(k).name);
+    mrkfile2 = fullfile(MRK_FILES(k+1).folder, MRK_FILES(k+1).name);
+
+end
+
+% Display the paths to ensure they are correct
+disp(['Confile Path: ', confile]);
+disp(['Laser Surface Path: ', laser_surf]);
+disp(['Laser Points Path: ', laser_stylus]);
+
 %% 1. Load ERFs and coregistered lasershape/sensors
 
 for k = 1
@@ -19,12 +60,7 @@ for k = 1
 
 end 
 
-%% 2. Deface headshape
 
-cfg = [];
-cfg.method    = 'plane';     
-cfg.selection = 'outside';    
-lasershape_laser2ctf = ft_defacemesh(cfg, lasershape_laser2ctf); % rotate 0 25 0, translate  0 0 -15
 
 %% 3. Create a subject-specific headmodel using the headshape 
 % (normally we use an individual MRI, but we do not have that - see https://www.fieldtriptoolbox.org/example/fittemplate/)
@@ -61,13 +97,22 @@ template_coreg = rmfield(template_coreg, 'mat');
 
 %% Improve/Refine coregistration 
 
+% remove the part below the nasion
+cfg = [];
+cfg.rotate = [0 30 0];
+cfg.translate = [0 0 55];
+cfg.method    = 'plane';     
+cfg.selection = 'outside';
+cfg.unit ='m';
+headshape_denosed = ft_defacemesh(cfg, lasershape_laser2ctf);
+
 cfg             = [];
 cfg.method      = 'singlesphere';
 sphere_template = ft_prepare_headmodel(cfg, template_coreg.bnd(1));
 
 cfg              = [];
 cfg.method      = 'singlesphere';
-sphere_polhemus = ft_prepare_headmodel(cfg, lasershape_laser2ctf);
+sphere_polhemus = ft_prepare_headmodel(cfg, headshape_denosed);
 
 scale = sphere_polhemus.r/sphere_template.r;
 
@@ -109,9 +154,104 @@ cfg.method                   = 'singleshell';
 headmodel_singleshell_sphere = ft_prepare_headmodel(cfg, template_fit_sphere.bnd(3));
 
 %% 4. Create a subject-specific MRI using the headshape (see https://www.fieldtriptoolbox.org/example/sphere_fitting/)
+%%
+load standard_mri
+mri = ft_convert_units(mri, 'm');
+
+cfg           = [];
+cfg.output    = {'brain','skull','scalp'};
+segmentedmri  = ft_volumesegment(cfg, mri);
+
+cfg             = [];
+cfg.tissue      = {'scalp'};
+cfg.numvertices = 3600;
+bnd             = ft_prepare_mesh(cfg, segmentedmri);
+
+% remove the part below the nasion
+cfg = [];
+cfg.translate = [0 0 -30];
+cfg.scale     = [0.300 0.300 0.300];
+cfg.method    = 'plane';     
+cfg.selection = 'outside';
+bnd_deface = ft_defacemesh(cfg,bnd);
+
+% remove the part below the nasion
+cfg = [];
+cfg.rotate = [0 30 0];
+cfg.translate = [0 0 55];
+cfg.method    = 'plane';     
+cfg.selection = 'outside';
+cfg.unit ='m';
+headshape_denosed = ft_defacemesh(cfg, lasershape_laser2ctf);
+
+% check
+figure
+ft_plot_mesh(bnd_deface, 'edgecolor', 'none', 'facecolor', 'skin', 'facealpha',0.9)
+ft_plot_headshape(headshape_denosed)
+camlight 
+
+%%
+% manually align
+cfg = [];
+cfg.template.headshape      = headshape_denosed;
+cfg.individual.mesh         = bnd;
+cfg.unit                    = 'm';
+cfg                         = ft_interactiverealign(cfg); % rotate 0 30 -90 translate 0 0 0 
+
+bnd_coreg              = ft_transform_geometry(cfg.m, bnd_deface);
+
+% Check
+figure;
+ft_plot_sens(grad_mrk2ctf)
+hold on
+ft_plot_headshape(headshape_denosed)
+hold on
+ft_plot_mesh(bnd_coreg)
+title('before refinement')
+
+%% Improve/Refine co-registration: 
+
+% fit a sphere to the MRI template
+cfg=[];
+cfg.method='singlesphere';
+sphere_bnd = ft_prepare_headmodel(cfg, bnd_coreg);
+
+%fit a sphere to the polhemus headshape
+cfg=[];
+cfg.method = 'singlesphere';
+sphere_polhemus = ft_prepare_headmodel(cfg, headshape_denosed);
+
+scale = sphere_polhemus.r/sphere_bnd.r;
+
+T1 = [1 0 0 -sphere_bnd.o(1);
+      0 1 0 -sphere_bnd.o(2);
+      0 0 1 -sphere_bnd.o(3);
+      0 0 0 1                ];
+
+S  = [scale 0 0 0;
+      0 scale 0 0;
+      0 0 scale 0;
+      0 0 0 1 ];
+
+T2 = [1 0 0 sphere_polhemus.o(1);
+      0 1 0 sphere_polhemus.o(2);
+      0 0 1 sphere_polhemus.o(3);
+      0 0 0 1                 ];
 
 
-% TODO
+bnd2polhemus = T2*S*T1;
+
+bnd_coreg_sphere              = ft_transform_geometry(bnd2polhemus, bnd_coreg);
+
+
+% Check
+figure;
+ft_plot_sens(grad_mrk2ctf)
+hold on
+ft_plot_headshape(lasershape_laser2ctf)
+hold on
+ft_plot_mesh(bnd_coreg_sphere)
+title('after refinement')
 
 % Next I can use this method for group analysis:
 % https://www.fieldtriptoolbox.org/tutorial/sourcemodel/#procedure-1
