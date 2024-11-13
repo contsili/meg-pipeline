@@ -1,4 +1,4 @@
-% Coregister 5 HPI coils from mrk file with 8 points from polhemus laser scan
+%% Coregister 5 HPI coils from mrk file with 8 points from polhemus laser scan
 
 %% configure paths
 
