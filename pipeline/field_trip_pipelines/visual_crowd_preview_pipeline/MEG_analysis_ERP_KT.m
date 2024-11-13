@@ -201,6 +201,7 @@ dataCrowding3 = ft_selectdata(cfg, segmented_data_clean);
  %% Timelockanalysis
 
 cfg = [];
+cfg.covariance       = 'yes'; % for beamformer
 avgCWDG1 = ft_timelockanalysis(cfg, dataCrowding1);
 avgCWDG2 = ft_timelockanalysis(cfg, dataCrowding2);
 avgCWDG3 = ft_timelockanalysis(cfg, dataCrowding3);

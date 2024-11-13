@@ -62,7 +62,7 @@ end
 
 
 
-%% 2. Create a subject-specific headmodel using the headshape 
+%% 2. Coregister a template headmodel with our polhemus 
 % (normally we use an individual MRI, but we do not have that - see https://www.fieldtriptoolbox.org/example/fittemplate/)
 
 %% Template headmodel 
@@ -152,7 +152,6 @@ title('after refinement') % The frontal areas are better coregistered after the 
 cfg                          = [];
 cfg.method                   = 'singleshell';
 headmodel_singleshell_sphere = ft_prepare_headmodel(cfg, template_fit_sphere.bnd(3));
-
 
 %% 3. Generate sourcemodel based on headmodel
 
