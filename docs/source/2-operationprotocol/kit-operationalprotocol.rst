@@ -325,6 +325,7 @@ Perform the MEG Experiment (Participant is present)
                 - Avoid overlapping sweeps
                 - Making sweeps for head and face separately.
                 - Keep a consistent distance between the head and scanner.
+
                 .. hint::
 
                     Press half a click while using the laser scanner to shift the view on the `FastScan II` software to the current view as seen from the device.
@@ -439,12 +440,15 @@ Perform the MEG Experiment (Participant is present)
 
             Continuous mode (left) and Marker measurement (right).
 
+        - A `.mrk` file named as `YYYYMMDD-x.mrk` is automatically generated in the specified directory following the marker measurement, where `x` is an integer 1,2,3,... indicating the order of recording of the marker
         - If your experiment is lengthy i.e. 2 hours long, we recommend that you perform a marker measurement in between, i.e., after 1 hour is elapsed
     - On “Monitor and Acquisition” window:
         - Continuous Mode > Start - see above picture
         - Sampling rate: 1000 (default)
         - Time: 4000 [66 minutes] (this is the maximum possible time in the MEG160 software)
         - Start Acquisition
+        - You can now safely start your experiment from the `Stimulus computer`
+    - If your experiment is lengthy i.e. 2 hours long, we recommend that you perform a marker measurement in between, i.e., after 1 hour is elapsed
     - [While end-of-task text is prompted] Perform marker measurement again as in the step above
     - Main task - block 1 (see points 8-10)
         - Start recording
