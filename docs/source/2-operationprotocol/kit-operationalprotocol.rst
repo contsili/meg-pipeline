@@ -289,6 +289,11 @@ Perform the MEG Experiment (Participant is present)
     - Ask the participant to put their phone on Airplane mode
     - Put your own phone and all other phones in the MEG lab on airplane mode
     - Call the security guard on `85849` and ask them to turn off their walkie-talkies for the duration of the experiment
+    .. figure:: figures/meg-operationprotocol/glasses_case.png
+        :alt: Glasses briefcase
+        :align: center
+
+        MR safe glasses briefcase.
 
 #. Perform the FastScan laser head scan
     - Capping the participant
@@ -387,6 +392,7 @@ Perform the MEG Experiment (Participant is present)
 
     - When the marker box is switched on with the power button, there is a light on for a brief moment. If there is no light, batteries run out of energy and should be changed (see below picture of rechargeable battery device).
         - The marker box requires 4 rechargeable AA batteries
+        - The recharged batteries are available below the `Eye-tracker computer`
 
         .. figure:: figures/meg-operationprotocol/batteries.png
             :alt: Batteries
