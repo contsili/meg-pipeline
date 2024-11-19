@@ -289,6 +289,7 @@ Perform the MEG Experiment (Participant is present)
     - Ask the participant to put their phone on Airplane mode
     - Put your own phone and all other phones in the MEG lab on airplane mode
     - Call the security guard on `85849` and ask them to turn off their walkie-talkies for the duration of the experiment
+
     .. figure:: figures/meg-operationprotocol/glasses_case.png
         :alt: Glasses briefcase
         :align: center
@@ -340,6 +341,20 @@ Perform the MEG Experiment (Participant is present)
             - Press 'New'
             - Ensure the scanner is in Sweep mode (add [IMAGE])
             - Point the laser gun at the stationary point (the box on the ring you place around the neck, [IMAGE]) with a half-click, followed by a full click.
+
+            .. warning::
+
+                ** Error message during scanning **
+                If the following error message appear, this means that the laser scan device lost the reference point.
+
+                .. figure:: figures/meg-operationprotocol/error_laser_scanner.png
+                    :alt: Neck brace with tissue for sanitary purposes
+                    :align: center
+
+                    Neck brace with tissue for sanitary purposes.
+
+                In such situation, do not press the cancel on the message, but point the laser scanner to the reference point with a half click first to point at it then a full click.
+
             - Scan head shape (sweeps) with full click. Tips:
                 - All cap surface + surfaces with fiducial points
                 - Avoid overlapping sweeps
@@ -372,13 +387,15 @@ Perform the MEG Experiment (Participant is present)
 
         FastScan divide MUST be always like this: laser on foam, cables on table (not floor).
 
-    - Put off the neck brace and make subject stand up
-        - Save as (this is the .fsn files)
-        - Create folder: FastScan Files/<Lab_Name>/<Study CODE>/sub_<subjectID>/ sess_<session_number>
-        - [e.g. sub_12/sess_01]
-        - Filename: sub-<subjectID>-sess-<session_number>_<data in yyyymmdd>_raw
-        - Export as basic surface   (check)
-        - Save the file and press `Yes` to export stylus points aswell
+    - Remove the cap from the participant's head and toss into the washing bin
+    - Put off the neck brace and make participant stand up
+    - Save as (this is the .fsn files)
+    - Create folder: FastScan Files/<Lab_Name>/<Study CODE>/sub_<subjectID>/ sess_<session_number>
+    - [e.g. sub_12/sess_01]
+    - Filename: `sub-<subjectID>-sess-<session_number>_<data in yyyymmdd>_raw.fsn`
+    - Export as basic surface   (check)
+    - Save the file as `sub-<subjectID>_basicsurface.txt`
+    - Press `Yes` to export stylus points aswell name the file as `sub-<subjectID>_laserpoints.txt`
 
 
 #. Marker Box check
@@ -544,6 +561,11 @@ After the MEG session
     - Refer to the uploading data section to upload your data
 
 
+Perspectives for KIT Operational Protocol
+-----------------------------------------
+
+- Automate the `Noise Reduction` filter for multi-subjects in `MEG160`
+- Automatic savings of the `.con` files was enabled before but is no longer the case, it would be ideal to go back to automatic saving
 
 
 Appendix. A: Stylus location and markers
