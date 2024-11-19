@@ -340,7 +340,19 @@ Perform the MEG Experiment (Participant is present)
             - Open `FastScan II` software on the computer
             - Press 'New'
             - Ensure the scanner is in Sweep mode (add [IMAGE])
-            - Point the laser gun at the stationary point (the box on the ring you place around the neck, [IMAGE]) with a half-click, followed by a full click.
+            - Point the laser gun at the `laser scanner reference point` (the box on the ring you place around the neck, see below) with a half-click, followed by a full click.
+
+            .. figure:: figures/meg-operationprotocol/reference_point.png
+                :alt: Reference point
+                :align: center
+
+                Laser scanner reference point.
+
+            .. figure:: figures/meg-operationprotocol/neck_brace.png
+                :alt: Neck brace with tissue for sanitary purposes
+                :align: center
+
+                Neckbrace with laser scanner reference point on the bottom left.
 
             .. warning::
 
@@ -353,7 +365,7 @@ Perform the MEG Experiment (Participant is present)
 
                     LaserScan error when device is dereferenced.
 
-                In such situation, do not press the cancel on the message, but point the laser scanner to the reference point with a half click first to point at it then a full click.
+                In such situation, do not press the `Cancel` on the message, but point the laser scanner to the reference point with a half click first to point at it then a full click.
 
             - Scan head shape (sweeps) with full click. Tips:
                 - All cap surface + surfaces with fiducial points
