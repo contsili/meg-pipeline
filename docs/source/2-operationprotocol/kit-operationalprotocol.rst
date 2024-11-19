@@ -282,6 +282,7 @@ Perform the MEG Experiment (Participant is present)
         - People with long hair, can keep most part of their hair outside the cap behind their ears and onto the back
         - The ears must be clear of hair
         - The cap must cover all the hair that can be seen at the anterior, left and right parts of the head
+        - Smoothen the hair under the cap as much as possible, excess long hair can be drawn to outside the cap at the cerebellum level
         - The goal is that the cap takes the shape of the skull at best
     - Mark the fiducials
         - Use the “T” template, with the line aligning the participant’s nasion as in the below picture
@@ -324,6 +325,11 @@ Perform the MEG Experiment (Participant is present)
                 - Avoid overlapping sweeps
                 - Making sweeps for head and face separately.
                 - Keep a consistent distance between the head and scanner.
+                .. hint::
+
+                    Press half a click while using the laser scanner to shift the view on the `FastScan II` software to the current view as seen from the device.
+                    This feature allows you to quickly identify areas that are not covered well by the current laser scan.
+
         - After sweeps, switch to Laser Points and click on Stylus List for points options, ensure that Stylus > Properties > Capture Points (NOT capture lines)
             - Close the flap down on the laser gun and start registering the fiducial points following this order - see picture.
             - Nasion - between eye-brows (not marked)
