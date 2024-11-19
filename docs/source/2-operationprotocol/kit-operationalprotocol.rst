@@ -216,7 +216,13 @@ Prepare the lab equipment (prior to participant arrival) Estimated Time: 20min
         - Make sure you arrive to the `Introduction Page` mentioned in the :ref:`design_experiment` section
     - You can make a quick test run to make sure that trigger signals are appearing correctly on the `MEG160` software
 
-#. Turn-off the bell ring at the entrance of the lab by turning off the plug [IMAGE]
+#. Turn-off the doorbell ring at the entrance of the lab by turning off the plug [IMAGE]
+
+.. figure:: figures/meg-operationprotocol/doorbell.png
+    :alt: Doorbell
+    :align: center
+
+    Deactivate the doorbell by pressing the plug button.
 
 Perform the MEG Experiment (Participant is present)
 ---------------------------------------------------
@@ -267,10 +273,19 @@ Perform the MEG Experiment (Participant is present)
         - Cochlear implant or hearing aid
         - Make-up, especially red color makeup
         - Hair pins
-        - Jewelry
+        - Jewelry and piercings
         - Keys
         - Phone
     - If the subject arrives with make-up, ask him/her to completely remove it
+    - If the subject wears glasses, ask them to remove the glasses and provide them with an MR compatible glasses from the briefcase found in the lab
+        - Determine their vision prescription and provide them with the closest matching pair of glasses from the briefcase.
+
+        .. figure:: figures/meg-operationprotocol/glasses_case.png
+            :alt: Glasses briefcase
+            :align: center
+
+            MR safe glasses briefcase.
+
     - Ask the participant to put their phone on Airplane mode
     - Put your own phone and all other phones in the MEG lab on airplane mode
     - Call the security guard on `85849` and ask them to turn off their walkie-talkies for the duration of the experiment
