@@ -244,7 +244,7 @@ cfg.sourcemodel      = lf; % leadfield
 cfg.headmodel        = headmodel; % volume conduction model (headmodel)
 cfg.lcmv.keepfilter  = 'yes';
 cfg.lcmv.fixedori    = 'yes'; % project on axis of most variance using SVD
-source1               = ft_sourceanalysis(cfg, avgCWDG1); 
+sourceCWDG1               = ft_sourceanalysis(cfg, avgCWDG1); 
 
 %% 6. Plot activity
 
