@@ -108,7 +108,31 @@ should happen
         - the needle is put into the ATL cylinder and a flashing and a little nois eand the fog image
         - The T diode on the atl if it is above 3, then we need to evacuate some of the helium with the second valve image
         - When it is below 3 (we know from the display there is a built in battery on the ATL that keeps pwoering it on) then we can procceed with the needle
-        -
+        - before refilling we put the apollo handle to transsfer counter clockwise 90 degrees
+        - if the pressure is high some release wqill hapen at this point from th e valve near the apollo handle
+        - we might partially close the valve (image) when the presure is very high, just for a few minutes to avoid a strong evacuation of the high pressure
+        - after the pressure is gone, then fully open back agai (red handle to the south direction)
+- from the back of the dewar you remove the cap (image)
+- and then put the needle from the short end into the dewar removed cap thingie (image), then make it tight
+- then ATL need to start the transfer mode
+- and then press Start green square button on the Automatic Helium Supplier device (image)
+- Wait a few minutes then the Automatic Heliun Supplier level should start increasing
+- During this time, the liquid helium is being transfered to the dewar, at the same time the vapor will channel through the tubes back to the 4 cylinders
+- when the 4 cylinders are full, (the gage pressure shows 70  check unit), the light becomes red (image)
+- if we need to fill more liquid helium and the cylinders are full, then we need to empty some vapor using the black handle above the KIT racks (image), we keep open until the filling is finished
+- when the helium level is 90-95% then
+- The stopping criterion is either the cylinders are full or the helium level became 90-95%, if the atl is below 20 liter then we should stop the filling
+- To stop the filling, put the ATL on stop transfer switch, and then on the automatic helium supplier press "Stop" (red square button) image
+- everyone wears the cryogenic glove during the maintenance intervention
+- then disconnect the needle from the upper side and from the atl side, put back the needle in its place
+- then move the ATL system back to the helium chamber, then connect the ATL again, before starting again the ATL, put back the yellow handle to BPC
+- then turn the ATL on and the mode liquefication
+- Make sur ethe black handle above the rack is well closed, and the cap on the dewar back is back
+- update the excel sheet wit the new helium values
+- ever 3 month the water filter is replaced image
+
+To fill from an external helium dewar from a supplier the procedure is a little different.
+
 
 
 
