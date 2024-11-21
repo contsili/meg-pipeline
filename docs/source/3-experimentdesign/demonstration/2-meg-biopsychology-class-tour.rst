@@ -1,10 +1,10 @@
 Cognitive Neuroscience class MEG demonstration
 ==============================================
 
-Place and time: MEG lab in A2-008 at the 9th of October 2024, from 12:15 to 2pm
+Place and time: MEG lab in A2-008 at the 29th of November 2024, from 9:15 am to 10:40 am
 
-Agenda 105min total
--------------------
+Agenda 55min
+------------
 
 .. dropdown:: Lab tour and general equipment presentation `10min`
 
@@ -26,23 +26,21 @@ Agenda 105min total
     - Show marker measurement and explain their importance for source localization
     - Show reference magnetometers and explain denoising for external noise
 
-.. dropdown:: Two demonstrations: Resting state and Attention (contra-lateral) `50min`
+.. dropdown:: Two demonstrations: Resting state and Auditory vs Visual `50min`
 
     - Experiment 1: `Resting state: Access link to code and description <../../3-experimentdesign/experiments/1-exp-resting-state.rst>`_ `25min`
         - Two blocks: a block of 10min eyes open and a second block of 10min eyes closed
-    - Experiment 2: `Attention: Access link to code and description <../../3-experimentdesign/experiments/7-attention-experiment.rst>`_ `25min`
-        - the participant is asked to focus on a centered point for some duration of time
-        - at some instant, a flash to a point in the far left of the visual field will appear
-        - the participant must press a button when they see the flash
-        - the experiment repeats itself for the right side.
+    - Experiment 2: `Auditory vs Visual: Access link to code and description <../../3-experimentdesign/experiments/9-auditory-vs-visual.rst>`_ `25min`
+        - A random sequence of two types of stimulus: auditory 300 Hz stimulus and visual (white flash)
+
 
 .. dropdown:: Show and discuss analysis results `15min`
 
     - Experiment 1: `Resting state: Access link to Analysis Notebook <../../5-pipeline/notebooks/mne/resting_state_pipeline.ipynb>`_
         - Show higher alpha power in eyes closed than in eyes open in the alpha band (8-12Hz)
         - Show that this difference is better seen in the occipital region
-    - Experiment 2: `Attention: Access link to Analysis Notebook <../../5-pipeline/notebooks/mne/attention_experiment.ipynb>`_
-        - NA
-        - NA
+    - Experiment 2: `Auditory vs Visual experiment`
+        - Show auditory trials activating the auditory cortex
+        - Show visual trials activating the visual cortex
 
 
