@@ -1,5 +1,5 @@
 Experiment example 9: Auditory vs Visual stimulus
------------------------------------------------
+-------------------------------------------------
 
 In this experiment, a random sequence of two stimulus is performed:
 - an auditory stimulus with a 300 Hz audio
