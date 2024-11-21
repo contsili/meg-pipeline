@@ -83,22 +83,20 @@ CTP members can raise requests to purchase new needed equipment, lab supplies an
 Helium Refill steps
 -------------------
 
-- The Helium measurement system behind the dewar when it indicates that the helium level is below 20%, means a refill
-should happen
+- The Helium measurement system behind the dewar when it indicates that the helium level is below 20%, means a refill should happen
 - Bijoy come to check physically the measurement if it is below 20% using the display
 - The percentage should not go below 20%, when the level starts approaching 20%, a refill is needed
 - Every monday Bijoy and his team will perform the Helium refill
     - The team comes at 9am UAE time on monday
-        - If the level became below 20% before the next monday, a refill will happen before that monday
-- THe team will take the measurements and log them into the excel sheet
+    - If the level became below 20% before the next monday, a refill will happen before that monday
+- The team will take the measurements and log them into the excel sheet
     - of the Helium level at the dewar
-    - The ATL level the L Volume from the display\
+    - The ATL level the L Volume from the display
     - The AT recovery compressor Output Pressure
     - The ATP Pinput and P output
     - cylinder levels
     - the gas counting meter in the back of the helium room
     - chilled water temperature there is two thermostat
-    -
 - The ATL system is shut down using power off button from the touch screen on the ATL
         - mode then stop
         - after 10 seconds it stops the ATL compressor will also be off
