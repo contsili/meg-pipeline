@@ -447,8 +447,8 @@ end
 
 %Debug only remove
 
-ntrial = 3;
-triallist = [1, 2, 3];
+% ntrial = 3;
+% triallist = [1, 2, 3];
 
 
 text_motor = 'Press the red button on the button box';
