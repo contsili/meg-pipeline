@@ -25,7 +25,7 @@ el = 0; % 1 = Eyelink on; 0 = Eyelink off;
 
 vpix_use = 0;    %Vpixx send triggers or not
 
-DEBUG = true;
+DEBUG = false;
 %% Experiment parameters
 
 RESTING_STATE = false;  % If true then collect resting state data
@@ -447,10 +447,9 @@ end
 
 %Debug only remove
 
-if DEBUG
 ntrial = 3;
 triallist = [1, 2, 3];
-end
+
 
 text_motor = 'Press the red button on the button box';
 
@@ -471,17 +470,21 @@ for k = 1:ntrial
                 disp('Visual start')
 
                 Screen('FillRect', window, white_rgb);
-                % Screen('DrawLine', window, [black black black], fxpointH(1), fxpointH(2), fxpointH(3), fxpointH(4), 4);
-                % Screen('DrawLine', window, [black black black], fxpointV(1), fxpointV(2), fxpointV(3), fxpointV(4), 4);
+                Screen('DrawLine', window, [black black black], fxpointH(1), fxpointH(2), fxpointH(3), fxpointH(4), 4);
+                Screen('DrawLine', window, [black black black], fxpointV(1), fxpointV(2), fxpointV(3), fxpointV(4), 4);
                 Screen('FillRect', window, trigch224, trigRect);
                 Screen('Flip', window);
                 Screen('FillRect', window, white_rgb);
+                Screen('DrawLine', window, [black black black], fxpointH(1), fxpointH(2), fxpointH(3), fxpointH(4), 4);
+                Screen('DrawLine', window, [black black black], fxpointV(1), fxpointV(2), fxpointV(3), fxpointV(4), 4);
                 Screen('FillRect', window, black_rgb, trigRect);
                 Screen('Flip', window);
                 
-                WaitSecs(0.5);
+                WaitSecs(2);
 
                 Screen('FillRect', window, black_rgb);
+                Screen('DrawLine', window, [white white white], fxpointH(1), fxpointH(2), fxpointH(3), fxpointH(4), 4);
+                Screen('DrawLine', window, [white white white], fxpointV(1), fxpointV(2), fxpointV(3), fxpointV(4), 4);
                 Screen('FillRect', window, black_rgb, trigRect);
                 Screen('Flip', window);
                 
@@ -506,20 +509,20 @@ for k = 1:ntrial
                     %% Play sound
                 disp('Auditory start')
                 
-                Screen('DrawLine', window, [black black black], fxpointH(1), fxpointH(2), fxpointH(3), fxpointH(4), 4);
-                Screen('DrawLine', window, [black black black], fxpointV(1), fxpointV(2), fxpointV(3), fxpointV(4), 4);
                 Screen('FillRect', window, black_rgb);
+                Screen('DrawLine', window, [white white white], fxpointH(1), fxpointH(2), fxpointH(3), fxpointH(4), 4);
+                Screen('DrawLine', window, [white white white], fxpointV(1), fxpointV(2), fxpointV(3), fxpointV(4), 4);
                 Screen('FillRect', window, trigch225, trigRect);
                 Screen('Flip', window);
-                Screen('DrawLine', window, [black black black], fxpointH(1), fxpointH(2), fxpointH(3), fxpointH(4), 4);
-                Screen('DrawLine', window, [black black black], fxpointV(1), fxpointV(2), fxpointV(3), fxpointV(4), 4);
                 Screen('FillRect', window, black_rgb);
+                Screen('DrawLine', window, [white white white], fxpointH(1), fxpointH(2), fxpointH(3), fxpointH(4), 4);
+                Screen('DrawLine', window, [white white white], fxpointV(1), fxpointV(2), fxpointV(3), fxpointV(4), 4);
                 Screen('FillRect', window, black_rgb, trigRect);
                 Screen('Flip', window);
                 PsychPortAudio('FillBuffer',padevice,BufferHandles(k));
                 PsychPortAudio('Start', padevice, 1, 0, 1); %Start audio playback, return onset timestamp
                 
-                WaitSecs(0.5);
+                WaitSecs(5);
                 
                 
                 if DEBUG
@@ -545,14 +548,17 @@ for k = 1:ntrial
                 Screen(window,'TextFont','Arial');
                 Screen(window,'TextSize',textSize);
                 x=(ExpCond.rect(3)-textSize*18)/2;
-                y=(ExpCond.rect(4)+textSize*0.75)/2;
+                y=(ExpCond.rect(4)+textSize*0.75)/2+30;
                 Screen(window,'DrawText',text_motor,x,y,[white white white]);
+                Screen('DrawLine', window, [white white white], fxpointH(1), fxpointH(2), fxpointH(3), fxpointH(4), 4);
+                Screen('DrawLine', window, [white white white], fxpointV(1), fxpointV(2), fxpointV(3), fxpointV(4), 4);
+                Screen('FillRect', window, black_rgb, trigRect);
                 Screen('Flip', window);
                 WaitSecs(5);
                 %listenButton();
-                Screen('DrawLine', window, [black black black], fxpointH(1), fxpointH(2), fxpointH(3), fxpointH(4), 4);
-                Screen('DrawLine', window, [black black black], fxpointV(1), fxpointV(2), fxpointV(3), fxpointV(4), 4);
                 Screen('FillRect', window, black_rgb);
+                Screen('DrawLine', window, [white white white], fxpointH(1), fxpointH(2), fxpointH(3), fxpointH(4), 4);
+                Screen('DrawLine', window, [white white white], fxpointV(1), fxpointV(2), fxpointV(3), fxpointV(4), 4);
                 Screen('FillRect', window, trigch226, trigRect);
                 Screen('Flip', window);
                 Screen('FillRect', window, black_rgb);
@@ -579,10 +585,6 @@ for k = 1:ntrial
             otherwise
                 disp('Invalid condition');
         end
-
-        Screen('Flip', window);
-        Screen('FillRect', window, black_rgb, trigRect);
-        Screen('Flip', window);
 
 
         % For debugging only
