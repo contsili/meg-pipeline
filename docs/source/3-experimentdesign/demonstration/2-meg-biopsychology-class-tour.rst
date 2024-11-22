@@ -1,7 +1,7 @@
 Biopsychology class MEG demonstration
 =====================================
 
-Place and time: MEG lab in A2-008 at the 29th of November 2024, from 9:15 am to 10:40 am
+Place and time: MEG lab in A2-008 at the `29th of November 2024`, from 9:15 am to 10:40 am
 
 Agenda 85min
 ------------
