@@ -9,5 +9,5 @@ Author: Hadi Zaatiti <hadi.zaatiti@nyu.edu>
 
 .. dropdown:: Photodiode experiment
 
-    .. literalinclude:: ../../../../experiments/psychtoolbox/auditory-vs-visual/auditory-vs-visual.m
+    .. literalinclude:: ../../../../experiments/psychtoolbox/auditory-vs-visual/auditory_vs_visual.m
       :language: matlab
