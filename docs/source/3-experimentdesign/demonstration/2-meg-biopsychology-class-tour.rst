@@ -35,6 +35,7 @@ Agenda 85min
 
 
 .. dropdown:: Show and discuss analysis results `20min`
+
     - Recap SQUID sensor operation, forward and inverse models, source reconstruction algorithms
     - Experiment 1 analysis: `Resting state: Access link to Analysis Notebook <../../5-pipeline/notebooks/mne/fieldtrip_kit_restingstate.ipynb>`_
         - Show higher alpha power in eyes closed than in eyes open in the alpha band (8-12Hz)
