@@ -16,7 +16,7 @@ clear;close all;clc
 rng('shuffle');
 dbstop if error;
 
-Screen('Preference', 'SkipSyncTests', 1);
+%Screen('Preference', 'SkipSyncTests', 1);
 
 
 %% Hardware parameters
@@ -144,7 +144,7 @@ triallist = shuffleidx(randperm(ntrial));
 % end
 % % ## This part needs to be optimised.
 % 
-% ExpCond.triallist = triallist;
+ExpCond.triallist = triallist;
 
 %% Initialize PsychPortAudio & Create Buffer
 
@@ -289,7 +289,7 @@ centerpx = [ExpCond.rect(3)/2 ExpCond.rect(4)/2];       % position of the center
 fxpointH = [centerpx(1) centerpx(2) centerpx(1) centerpx(2)]+[-1 0 1 0]*floor(VA1deg.px/2);
 fxpointV = [centerpx(1) centerpx(2) centerpx(1) centerpx(2)]+[0 -1 0 1]*floor(VA1deg.px/2);
 
-textSize = 16;
+textSize = 32;
 text='Press SPACE KEY to start the experiment';
 Screen('FillRect', window, bgColor);
 Screen(window,'TextFont','Arial');
@@ -452,6 +452,8 @@ ntrial = 3;
 triallist = [1, 2, 3];
 end
 
+text_motor = 'Press the red button on the button box';
+
 for k = 1:ntrial
        
     disp(['Block:',thisblock,' Trial:',num2str(k),' Condition: ', condlist{triallist(k)}]);
@@ -477,7 +479,7 @@ for k = 1:ntrial
                 Screen('FillRect', window, black_rgb, trigRect);
                 Screen('Flip', window);
                 
-                WaitSecs(5);
+                WaitSecs(0.5);
 
                 Screen('FillRect', window, black_rgb);
                 Screen('FillRect', window, black_rgb, trigRect);
@@ -496,17 +498,21 @@ for k = 1:ntrial
                     Screen('FillRect', window, black_rgb, trigRect);
                     Screen('Flip', window);
     
-                    WaitSecs(5);
+                    WaitSecs(0.5);
 
                 end
                 
             case 2  % Auditory Stimulus
                     %% Play sound
                 disp('Auditory start')
-
+                
+                Screen('DrawLine', window, [black black black], fxpointH(1), fxpointH(2), fxpointH(3), fxpointH(4), 4);
+                Screen('DrawLine', window, [black black black], fxpointV(1), fxpointV(2), fxpointV(3), fxpointV(4), 4);
                 Screen('FillRect', window, black_rgb);
                 Screen('FillRect', window, trigch225, trigRect);
                 Screen('Flip', window);
+                Screen('DrawLine', window, [black black black], fxpointH(1), fxpointH(2), fxpointH(3), fxpointH(4), 4);
+                Screen('DrawLine', window, [black black black], fxpointV(1), fxpointV(2), fxpointV(3), fxpointV(4), 4);
                 Screen('FillRect', window, black_rgb);
                 Screen('FillRect', window, black_rgb, trigRect);
                 Screen('Flip', window);
@@ -528,20 +534,31 @@ for k = 1:ntrial
                     Screen('FillRect', window, black_rgb, trigRect);
                     Screen('Flip', window);
 
-                    WaitSecs(5);
+                    WaitSecs(0.5);
                 end
 
             case 3  % Motor Response Box stimulus
 
                 disp('Motor start')
+                
+                Screen('FillRect', window, bgColor);
+                Screen(window,'TextFont','Arial');
+                Screen(window,'TextSize',textSize);
+                x=(ExpCond.rect(3)-textSize*18)/2;
+                y=(ExpCond.rect(4)+textSize*0.75)/2;
+                Screen(window,'DrawText',text_motor,x,y,[white white white]);
+                Screen('Flip', window);
+                WaitSecs(5);
                 %listenButton();
+                Screen('DrawLine', window, [black black black], fxpointH(1), fxpointH(2), fxpointH(3), fxpointH(4), 4);
+                Screen('DrawLine', window, [black black black], fxpointV(1), fxpointV(2), fxpointV(3), fxpointV(4), 4);
                 Screen('FillRect', window, black_rgb);
                 Screen('FillRect', window, trigch226, trigRect);
                 Screen('Flip', window);
                 Screen('FillRect', window, black_rgb);
                 Screen('FillRect', window, black_rgb, trigRect);
                 Screen('Flip', window);
-                WaitSecs(1);
+                WaitSecs(0.5);
 
 
                 if DEBUG
@@ -556,7 +573,7 @@ for k = 1:ntrial
                     Screen('FillRect', window, black_rgb, trigRect);
                     Screen('Flip', window);
 
-                    WaitSecs(5);
+                    WaitSecs(0.5);
                 end
 
             otherwise
@@ -585,12 +602,11 @@ for k = 1:ntrial
 end
 
 
-
-
+%%
 
 totaltime = GetSecs - tmptime;
 
-ListenChar(0);
+%ListenChar(0);
 for k=1:ntrial
     PsychPortAudio('DeleteBuffer',BufferHandles(k));
 end
@@ -611,6 +627,10 @@ Screen('FillRect', window, black_rgb, trigRect);
 Screen('Flip', window);
 WaitSecs(1.5);
 
+
+
+
+%%
 if strcmp(Eyelinkuse,'on')==1
     
     EyelinkName=[ExpDataDrct outfile];
@@ -633,6 +653,8 @@ if strcmp(Eyelinkuse,'on')==1
         movefile([tmpname '_event.asc'],[EyelinkName '_event.asc']);
     end
 end
+
+
 
 
 % Ensure all parts are strings
@@ -660,9 +682,10 @@ Screen(window,'TextFont','Arial');
 Screen(window,'TextSize',textSize);
 x=(ExpCond.rect(3)-textSize*18)/2;
 y=(ExpCond.rect(4)+textSize*0.75)/2;
-Screen(window,'DrawText',textend,x,y,[black black black]);
+Screen(window,'DrawText',textend,x,y,[white white white]);
 Screen('FillRect', window, black_rgb, trigRect);
 Screen('Flip', window);
+
 
 while 1
     [ keyIsDown, ~, keyCode ] = KbCheck;
@@ -672,6 +695,7 @@ while 1
         end
     end
 end
+
 
 Screen('CloseAll');
 
