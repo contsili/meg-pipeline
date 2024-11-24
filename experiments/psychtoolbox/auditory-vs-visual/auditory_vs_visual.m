@@ -554,8 +554,7 @@ for k = 1:ntrial
                 Screen('DrawLine', window, [white white white], fxpointV(1), fxpointV(2), fxpointV(3), fxpointV(4), 4);
                 Screen('FillRect', window, black_rgb, trigRect);
                 Screen('Flip', window);
-
-                %listenButton();
+                listenButton();
                 Screen('FillRect', window, black_rgb);
                 Screen('DrawLine', window, [white white white], fxpointH(1), fxpointH(2), fxpointH(3), fxpointH(4), 4);
                 Screen('DrawLine', window, [white white white], fxpointV(1), fxpointV(2), fxpointV(3), fxpointV(4), 4);
