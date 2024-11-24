@@ -228,11 +228,14 @@ diary(diary_string);
 %% Eyelink Setting
 dummymode = 0;
 KbName('UnifyKeyNames');
-Screen('Preference', 'VisualDebuglevel', 2);
+%Screen('Preference', 'VisualDebuglevel', 2);
+PsychDebugWindowConfiguration(0, 1); % 1 for running exp; 0.5 for debugging
+PsychDefaultSetup(2);
 screens=Screen('Screens');
 
 % screenNumber = 1;
 screenNumber = max(screens);
+
 [window,ExpCond.rect]=Screen('OpenWindow',screenNumber);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% EyeLink Calibration %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if strcmp(Eyelinkuse,'on')==1
