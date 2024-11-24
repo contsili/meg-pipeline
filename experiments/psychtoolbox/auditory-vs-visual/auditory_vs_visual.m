@@ -10,14 +10,12 @@
     % Motor: A button press is requested
 
 
-
 %% 
 clear;close all;clc
 rng('shuffle');
 dbstop if error;
 
 %Screen('Preference', 'SkipSyncTests', 1);
-
 
 %% Hardware parameters
 
@@ -39,7 +37,7 @@ thisblock = input(' BLOCK INDEX? = ');
 ntrial_c = [50, 50, 50];
 ntrial = sum(ntrial_c);
 
-ISI = 3:0.1:3.5; % [second] Inter-soundonset-interval. The distance between the onset of the current trial and the next sound
+ISI = 2:0.1:2.5; % [second] Inter-soundonset-interval. The distance between the onset of the current trial and the next sound
 Fs = 44100; % sampling rate for sound play
 stimDur = 0.5; % [second] sound duration. this must be pre-set and identical across all sounds
 
@@ -480,7 +478,7 @@ for k = 1:ntrial
                 Screen('FillRect', window, black_rgb, trigRect);
                 Screen('Flip', window);
                 
-                WaitSecs(2);
+                WaitSecs(0.5);
 
                 Screen('FillRect', window, black_rgb);
                 Screen('DrawLine', window, [white white white], fxpointH(1), fxpointH(2), fxpointH(3), fxpointH(4), 4);
@@ -522,7 +520,6 @@ for k = 1:ntrial
                 PsychPortAudio('FillBuffer',padevice,BufferHandles(k));
                 PsychPortAudio('Start', padevice, 1, 0, 1); %Start audio playback, return onset timestamp
                 
-                WaitSecs(5);
                 
                 
                 if DEBUG
@@ -554,7 +551,7 @@ for k = 1:ntrial
                 Screen('DrawLine', window, [white white white], fxpointV(1), fxpointV(2), fxpointV(3), fxpointV(4), 4);
                 Screen('FillRect', window, black_rgb, trigRect);
                 Screen('Flip', window);
-                WaitSecs(5);
+
                 %listenButton();
                 Screen('FillRect', window, black_rgb);
                 Screen('DrawLine', window, [white white white], fxpointH(1), fxpointH(2), fxpointH(3), fxpointH(4), 4);
@@ -562,9 +559,10 @@ for k = 1:ntrial
                 Screen('FillRect', window, trigch226, trigRect);
                 Screen('Flip', window);
                 Screen('FillRect', window, black_rgb);
+                Screen('DrawLine', window, [white white white], fxpointH(1), fxpointH(2), fxpointH(3), fxpointH(4), 4);
+                Screen('DrawLine', window, [white white white], fxpointV(1), fxpointV(2), fxpointV(3), fxpointV(4), 4);
                 Screen('FillRect', window, black_rgb, trigRect);
                 Screen('Flip', window);
-                WaitSecs(0.5);
 
 
                 if DEBUG
@@ -691,6 +689,7 @@ Screen('Flip', window);
 
 while 1
     [ keyIsDown, ~, keyCode ] = KbCheck;
+    WaitSecs(0.2);
     if keyIsDown
         if keyCode(KbName('Space'))
             break
