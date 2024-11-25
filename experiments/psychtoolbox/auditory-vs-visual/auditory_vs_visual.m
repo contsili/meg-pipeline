@@ -21,7 +21,7 @@ dbstop if error;
 
 el = 0; % 1 = Eyelink on; 0 = Eyelink off;
 
-vpix_use = 0;    %Vpixx send triggers or not
+vpix_use = 1;    %Vpixx send triggers or not
 
 DEBUG = false;
 %% Experiment parameters
@@ -228,11 +228,14 @@ diary(diary_string);
 %% Eyelink Setting
 dummymode = 0;
 KbName('UnifyKeyNames');
-Screen('Preference', 'VisualDebuglevel', 2);
+%Screen('Preference', 'VisualDebuglevel', 2);
+PsychDebugWindowConfiguration(0, 1); % 1 for running exp; 0.5 for debugging
+PsychDefaultSetup(2);
 screens=Screen('Screens');
 
 % screenNumber = 1;
 screenNumber = max(screens);
+
 [window,ExpCond.rect]=Screen('OpenWindow',screenNumber);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% EyeLink Calibration %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if strcmp(Eyelinkuse,'on')==1
@@ -551,8 +554,7 @@ for k = 1:ntrial
                 Screen('DrawLine', window, [white white white], fxpointV(1), fxpointV(2), fxpointV(3), fxpointV(4), 4);
                 Screen('FillRect', window, black_rgb, trigRect);
                 Screen('Flip', window);
-
-                %listenButton();
+                getButton();
                 Screen('FillRect', window, black_rgb);
                 Screen('DrawLine', window, [white white white], fxpointH(1), fxpointH(2), fxpointH(3), fxpointH(4), 4);
                 Screen('DrawLine', window, [white white white], fxpointV(1), fxpointV(2), fxpointV(3), fxpointV(4), 4);
