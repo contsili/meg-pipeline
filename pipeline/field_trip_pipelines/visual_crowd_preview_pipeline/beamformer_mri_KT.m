@@ -246,6 +246,16 @@ cfg.lcmv.keepfilter  = 'yes';
 cfg.lcmv.fixedori    = 'yes'; % project on axis of most variance using SVD
 sourceCWDG1               = ft_sourceanalysis(cfg, avgCWDG1); 
 
+% create spatial filter using the lcmv beamformer
+cfg                  = [];
+cfg.method           = 'lcmv';
+cfg.sourcemodel      = lf; % leadfield
+cfg.headmodel        = headmodel; % volume conduction model (headmodel)
+cfg.lcmv.keepfilter  = 'yes';
+cfg.lcmv.fixedori    = 'yes'; % project on axis of most variance using SVD
+sourceCWDG3               = ft_sourceanalysis(cfg, avgCWDG3); 
+
+
 %% 6. Plot activity
 
 cfg              = [];
@@ -253,4 +263,12 @@ cfg.method       = 'ortho';
 % cfg.interactive   = 'yes';
 cfg.latency  =  [0.26 0.29];
 cfg.funparameter = 'pow';
-ft_sourceplot(cfg, source1, mri_coreg_sphere); 
+ft_sourceplot(cfg, sourceCWDG1, mri_coreg_sphere); 
+
+
+cfg              = [];
+cfg.method       = 'ortho';
+% cfg.interactive   = 'yes';
+cfg.latency  =  [0.26 0.29];
+cfg.funparameter = 'pow';
+ft_sourceplot(cfg, sourceCWDG3, mri_coreg_sphere);

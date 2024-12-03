@@ -248,7 +248,7 @@ title(sprintf('ERP Activity in sensor space: %s', subjectID), 'Interpreter', 'no
 cfg = [];
 cfg.xlim =  [0.2 0.3];
 % cfg.ylim = [-1e-13 3e-13];
-cfg.channel = {'AG080', 'AG131', 'AG142', 'AG153', 'AG169', 'AG176'};
+cfg.channel = {'AG080', 'AG131', 'AG142', 'AG153', 'AG169', 'AG176'}; % channels on the positive part of the dipolar pattern
 cfg.linecolor = [0 0 1; 0 1 0; 1 0 0]; % Blue, Green, Red
 ft_singleplotER(cfg, avgCWDG1, avgCWDG2, avgCWDG3);
 title(sprintf('ERP Activity of Subject: %s', subjectID), 'Interpreter', 'none');
